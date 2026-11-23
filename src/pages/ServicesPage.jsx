@@ -24,8 +24,6 @@ export default function ServicesPage() {
   } = useBilling();
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('ALL');
-  const [statusFilter, setStatusFilter] = useState('ALL');
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -43,9 +41,6 @@ export default function ServicesPage() {
   };
 
   const [formData, setFormData] = useState(initialForm);
-
-  // Extract unique categories
-  const categories = ['ALL', ...Array.from(new Set(services.map((s) => s.category)))];
 
   const openAddModal = () => {
     setEditingService(null);
@@ -95,18 +90,12 @@ export default function ServicesPage() {
   // Filtered Services
   const filteredServices = services.filter((srv) => {
     const q = searchQuery.toLowerCase();
-    const matchSearch =
+    return (
       srv.name.toLowerCase().includes(q) ||
       srv.id.toLowerCase().includes(q) ||
       (srv.description && srv.description.toLowerCase().includes(q)) ||
-      srv.category.toLowerCase().includes(q);
-
-    if (!matchSearch) return false;
-
-    const matchCategory = selectedCategory === 'ALL' || srv.category === selectedCategory;
-    const matchStatus = statusFilter === 'ALL' || srv.status === statusFilter;
-
-    return matchCategory && matchStatus;
+      srv.category.toLowerCase().includes(q)
+    );
   });
 
   const activeCount = services.filter((s) => s.status === 'Active').length;
@@ -203,7 +192,7 @@ export default function ServicesPage() {
         )}
       </div>
 
-      {/* Search & Filter Bar */}
+      {/* Search Bar */}
       <div
         style={{
           backgroundColor: '#ffffff',
@@ -211,15 +200,10 @@ export default function ServicesPage() {
           borderRadius: 'var(--radius-md)',
           padding: '16px 20px',
           marginBottom: '22px',
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '16px',
           boxShadow: 'var(--shadow-sm)'
         }}
       >
-        <div style={{ position: 'relative', flex: 1, minWidth: '280px' }}>
+        <div style={{ position: 'relative', width: '100%' }}>
           <Search
             size={16}
             color="var(--gold-500)"
@@ -241,33 +225,6 @@ export default function ServicesPage() {
               width: '100%'
             }}
           />
-        </div>
-
-        {/* Category & Status Filter */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-          <select
-            className="form-input"
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            style={{ height: '38px', fontSize: '0.82rem', padding: '0 10px', minWidth: '160px' }}
-          >
-            {categories.map((c) => (
-              <option key={c} value={c}>
-                {c === 'ALL' ? 'All Categories' : c}
-              </option>
-            ))}
-          </select>
-
-          <select
-            className="form-input"
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            style={{ height: '38px', fontSize: '0.82rem', padding: '0 10px' }}
-          >
-            <option value="ALL">All Statuses</option>
-            <option value="Active">Active Only</option>
-            <option value="Inactive">Inactive Only</option>
-          </select>
         </div>
       </div>
 
