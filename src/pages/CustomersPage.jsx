@@ -19,8 +19,7 @@ import {
   Gauge, 
   Fuel, 
   ShieldCheck,
-  ChevronRight,
-  Filter
+  ChevronRight
 } from 'lucide-react';
 
 export default function CustomersPage() {
@@ -35,7 +34,6 @@ export default function CustomersPage() {
   } = useBilling();
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterType, setFilterType] = useState('ALL');
 
   // Modals state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -169,10 +167,10 @@ export default function CustomersPage() {
     setIsModalOpen(false);
   };
 
-  // Filter and search
+  // Search customers
   const filteredCustomers = customers.filter((cust) => {
     const q = searchQuery.toLowerCase();
-    const matchSearch =
+    return (
       cust.name.toLowerCase().includes(q) ||
       cust.phone.includes(q) ||
       cust.id.toLowerCase().includes(q) ||
@@ -181,17 +179,8 @@ export default function CustomersPage() {
           v.vehicleNumber.toLowerCase().includes(q) ||
           v.model.toLowerCase().includes(q) ||
           v.brand.toLowerCase().includes(q)
-      );
-
-    if (!matchSearch) return false;
-
-    if (filterType === 'MULTI_VEHICLE') {
-      return cust.vehicles && cust.vehicles.length > 1;
-    }
-    if (filterType === 'WITH_GSTIN') {
-      return Boolean(cust.gstin && cust.gstin.trim());
-    }
-    return true;
+      )
+    );
   });
 
   // Calculate customer's invoices
@@ -269,7 +258,7 @@ export default function CustomersPage() {
         </button>
       </div>
 
-      {/* Search & Filter Bar */}
+      {/* Search Bar */}
       <div
         style={{
           backgroundColor: '#ffffff',
@@ -277,15 +266,10 @@ export default function CustomersPage() {
           borderRadius: 'var(--radius-md)',
           padding: '16px 20px',
           marginBottom: '22px',
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '16px',
           boxShadow: 'var(--shadow-sm)'
         }}
       >
-        <div style={{ position: 'relative', flex: 1, minWidth: '280px' }}>
+        <div style={{ position: 'relative', width: '100%' }}>
           <Search
             size={16}
             color="var(--gold-500)"
@@ -307,31 +291,6 @@ export default function CustomersPage() {
               width: '100%'
             }}
           />
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-          <Filter size={15} color="var(--gold-500)" />
-          <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)' }}>Filter:</span>
-          {['ALL', 'MULTI_VEHICLE', 'WITH_GSTIN'].map((mode) => (
-            <button
-              key={mode}
-              onClick={() => setFilterType(mode)}
-              style={{
-                padding: '6px 12px',
-                borderRadius: '6px',
-                fontSize: '0.76rem',
-                fontWeight: 700,
-                border: filterType === mode ? '1px solid var(--gold-500)' : '1px solid #e7e5e0',
-                backgroundColor: filterType === mode ? 'var(--gold-100)' : '#ffffff',
-                color: filterType === mode ? 'var(--gold-600)' : 'var(--text-secondary)',
-                cursor: 'pointer'
-              }}
-            >
-              {mode === 'ALL' && 'All Customers'}
-              {mode === 'MULTI_VEHICLE' && 'Multi-Vehicle Fleets'}
-              {mode === 'WITH_GSTIN' && 'GST Registered'}
-            </button>
-          ))}
         </div>
       </div>
 

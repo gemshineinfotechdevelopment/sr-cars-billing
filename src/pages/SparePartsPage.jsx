@@ -24,9 +24,7 @@ export default function SparePartsPage() {
   } = useBilling();
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('ALL');
-  const [brandFilter, setBrandFilter] = useState('ALL');
-  const [stockStatusFilter, setStockStatusFilter] = useState('ALL'); // ALL | LOW_STOCK | IN_STOCK
+  const [stockStatusFilter, setStockStatusFilter] = useState('ALL'); // ALL | LOW_STOCK
 
   // Modals
   const [isAddEditModalOpen, setIsAddEditModalOpen] = useState(false);
@@ -56,10 +54,6 @@ export default function SparePartsPage() {
   };
 
   const [formData, setFormData] = useState(initialForm);
-
-  // Distinct categories and brands
-  const categories = ['ALL', ...Array.from(new Set(spareParts.map((p) => p.category)))];
-  const brands = ['ALL', ...Array.from(new Set(spareParts.map((p) => p.brand)))];
 
   const lowStockParts = spareParts.filter(
     (p) => (p.availableQuantity || 0) <= (p.minimumStockLevel || 5)
@@ -151,17 +145,11 @@ export default function SparePartsPage() {
 
     if (!matchSearch) return false;
 
-    const matchCategory = categoryFilter === 'ALL' || p.category === categoryFilter;
-    const matchBrand = brandFilter === 'ALL' || p.brand === brandFilter;
-
-    let matchStock = true;
     if (stockStatusFilter === 'LOW_STOCK') {
-      matchStock = (p.availableQuantity || 0) <= (p.minimumStockLevel || 5);
-    } else if (stockStatusFilter === 'IN_STOCK') {
-      matchStock = (p.availableQuantity || 0) > (p.minimumStockLevel || 5);
+      return (p.availableQuantity || 0) <= (p.minimumStockLevel || 5);
     }
 
-    return matchCategory && matchBrand && matchStock;
+    return true;
   });
 
   const totalInventoryValue = spareParts.reduce(
@@ -276,12 +264,12 @@ export default function SparePartsPage() {
         </div>
 
         <div
-          onClick={() => setStockStatusFilter('LOW_STOCK')}
+          onClick={() => setStockStatusFilter((prev) => (prev === 'LOW_STOCK' ? 'ALL' : 'LOW_STOCK'))}
           style={{
             padding: '16px 20px',
             borderRadius: '10px',
-            backgroundColor: lowStockParts.length > 0 ? '#fffbeb' : '#ffffff',
-            border: lowStockParts.length > 0 ? '1.5px solid #fde68a' : '1px solid var(--border-subtle)',
+            backgroundColor: stockStatusFilter === 'LOW_STOCK' ? '#fef3c7' : (lowStockParts.length > 0 ? '#fffbeb' : '#ffffff'),
+            border: stockStatusFilter === 'LOW_STOCK' ? '2px solid #f59e0b' : (lowStockParts.length > 0 ? '1.5px solid #fde68a' : '1px solid var(--border-subtle)'),
             boxShadow: 'var(--shadow-sm)',
             cursor: 'pointer'
           }}
@@ -293,13 +281,15 @@ export default function SparePartsPage() {
             {lowStockParts.length} Parts Critical
           </div>
           <div style={{ fontSize: '0.74rem', color: lowStockParts.length > 0 ? '#b45309' : '#059669', marginTop: '2px', fontWeight: 600 }}>
-            {lowStockParts.length > 0 ? 'Click to filter low stock items' : 'All stocks above safety threshold'}
+            {stockStatusFilter === 'LOW_STOCK'
+              ? 'Showing low stock items (Click to reset)'
+              : lowStockParts.length > 0 ? 'Click to filter low stock items' : 'All stocks above safety threshold'}
           </div>
         </div>
       </div>
 
       {/* Low Stock Banner Alert */}
-      {lowStockParts.length > 0 && stockStatusFilter !== 'LOW_STOCK' && (
+      {lowStockParts.length > 0 && (
         <div
           style={{
             backgroundColor: '#fffdfa',
@@ -329,7 +319,7 @@ export default function SparePartsPage() {
           </div>
 
           <button
-            onClick={() => setStockStatusFilter('LOW_STOCK')}
+            onClick={() => setStockStatusFilter((prev) => (prev === 'LOW_STOCK' ? 'ALL' : 'LOW_STOCK'))}
             style={{
               padding: '6px 14px',
               borderRadius: '6px',
@@ -341,12 +331,12 @@ export default function SparePartsPage() {
               cursor: 'pointer'
             }}
           >
-            Show Low Stock Only
+            {stockStatusFilter === 'LOW_STOCK' ? 'Show All Parts' : 'Show Low Stock Only'}
           </button>
         </div>
       )}
 
-      {/* Search & Filters */}
+      {/* Search Bar */}
       <div
         style={{
           backgroundColor: '#ffffff',
@@ -354,15 +344,10 @@ export default function SparePartsPage() {
           borderRadius: 'var(--radius-md)',
           padding: '16px 20px',
           marginBottom: '22px',
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '14px',
           boxShadow: 'var(--shadow-sm)'
         }}
       >
-        <div style={{ position: 'relative', flex: 1, minWidth: '280px' }}>
+        <div style={{ position: 'relative', width: '100%' }}>
           <Search
             size={16}
             color="var(--gold-500)"
@@ -384,62 +369,6 @@ export default function SparePartsPage() {
               width: '100%'
             }}
           />
-        </div>
-
-        {/* Dropdown Filters */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-          <select
-            className="form-input"
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            style={{ height: '38px', fontSize: '0.82rem', padding: '0 10px', minWidth: '150px' }}
-          >
-            {categories.map((c) => (
-              <option key={c} value={c}>
-                {c === 'ALL' ? 'All Categories' : c}
-              </option>
-            ))}
-          </select>
-
-          <select
-            className="form-input"
-            value={brandFilter}
-            onChange={(e) => setBrandFilter(e.target.value)}
-            style={{ height: '38px', fontSize: '0.82rem', padding: '0 10px', minWidth: '130px' }}
-          >
-            {brands.map((b) => (
-              <option key={b} value={b}>
-                {b === 'ALL' ? 'All Brands' : b}
-              </option>
-            ))}
-          </select>
-
-          <select
-            className="form-input"
-            value={stockStatusFilter}
-            onChange={(e) => setStockStatusFilter(e.target.value)}
-            style={{ height: '38px', fontSize: '0.82rem', padding: '0 10px' }}
-          >
-            <option value="ALL">All Stock Levels</option>
-            <option value="LOW_STOCK">Low Stock Alert Only</option>
-            <option value="IN_STOCK">Well Stocked</option>
-          </select>
-
-          {stockStatusFilter !== 'ALL' && (
-            <button
-              onClick={() => setStockStatusFilter('ALL')}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: 'var(--gold-600)',
-                fontSize: '0.78rem',
-                fontWeight: 700,
-                cursor: 'pointer'
-              }}
-            >
-              Clear Filter
-            </button>
-          )}
         </div>
       </div>
 
