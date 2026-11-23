@@ -2,18 +2,37 @@ import React from 'react';
 import { useBilling } from '../../context/useBilling';
 import { 
   LayoutDashboard, 
+  Users, 
+  Wrench, 
+  Package, 
   ReceiptText, 
-  Boxes, 
   BarChart3, 
   Settings as SettingsIcon,
   Crown,
   ChevronRight,
   ShieldCheck,
-  Sparkles
+  Sparkles,
+  AlertTriangle
 } from 'lucide-react';
 
 export default function Sidebar({ isOpen, onClose }) {
-  const { activeTab, setActiveTab, invoices, products, settings } = useBilling();
+  const { 
+    activeTab, 
+    setActiveTab, 
+    customers, 
+    services, 
+    spareParts, 
+    invoices, 
+    settings 
+  } = useBilling();
+
+  const lowStockCount = spareParts.filter(
+    (p) => (p.availableQuantity || 0) <= (p.minimumStockLevel || 5)
+  ).length;
+
+  const pendingInvoicesCount = invoices.filter(
+    (i) => i.status === 'Pending' || i.status === 'Unpaid' || i.status === 'Partial'
+  ).length;
 
   const navItems = [
     {
@@ -23,26 +42,39 @@ export default function Sidebar({ isOpen, onClose }) {
       badge: null
     },
     {
-      id: 'invoices',
-      label: 'Invoices',
-      icon: ReceiptText,
-      badge: invoices.length
+      id: 'customers',
+      label: 'Customers',
+      icon: Users,
+      badge: customers.length
     },
     {
-      id: 'products',
-      label: 'Products & Inventory',
-      icon: Boxes,
-      badge: products.length
+      id: 'services',
+      label: 'Services',
+      icon: Wrench,
+      badge: services.filter((s) => s.status === 'Active').length
+    },
+    {
+      id: 'parts',
+      label: 'Spare Parts',
+      icon: Package,
+      badge: lowStockCount > 0 ? `${lowStockCount} Low` : spareParts.length,
+      badgeWarning: lowStockCount > 0
+    },
+    {
+      id: 'invoices',
+      label: 'Invoice & Billing',
+      icon: ReceiptText,
+      badge: pendingInvoicesCount > 0 ? `${pendingInvoicesCount} Due` : invoices.length
     },
     {
       id: 'reports',
-      label: 'Financial Reports',
+      label: 'Reports',
       icon: BarChart3,
       badge: null
     },
     {
       id: 'settings',
-      label: 'Dealership Settings',
+      label: 'Settings',
       icon: SettingsIcon,
       badge: null
     }
@@ -78,7 +110,7 @@ export default function Sidebar({ isOpen, onClose }) {
         {/* Majestic Brand Header in White & Gold */}
         <div
           style={{
-            padding: '26px 24px 20px',
+            padding: '24px 22px 18px',
             borderBottom: '1px solid var(--border-subtle)',
             display: 'flex',
             alignItems: 'center',
@@ -129,28 +161,28 @@ export default function Sidebar({ isOpen, onClose }) {
                 marginTop: '1px'
               }}
             >
-              Luxury Automotives
+              Automotive Center
             </div>
           </div>
         </div>
 
         {/* Navigation Section */}
-        <div style={{ flex: 1, padding: '24px 16px', overflowY: 'auto' }}>
+        <div style={{ flex: 1, padding: '20px 14px', overflowY: 'auto' }}>
           <div
             style={{
-              fontSize: '0.7rem',
+              fontSize: '0.68rem',
               fontWeight: 800,
               textTransform: 'uppercase',
               letterSpacing: '1.2px',
               color: 'var(--gold-600)',
-              marginBottom: '12px',
+              marginBottom: '10px',
               paddingLeft: '12px'
             }}
           >
-            Billing & Operations
+            Garage Management System
           </div>
 
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <nav style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -167,17 +199,17 @@ export default function Sidebar({ isOpen, onClose }) {
                     alignItems: 'center',
                     gap: '12px',
                     width: '100%',
-                    padding: '12px 14px',
+                    padding: '11px 13px',
                     borderRadius: 'var(--radius-md)',
                     border: isActive
-                      ? '1px solid var(--gold-500)'
+                      ? '1.5px solid var(--gold-500)'
                       : '1px solid transparent',
                     background: isActive
-                      ? 'linear-gradient(90deg, rgba(212,175,55,0.14) 0%, rgba(212,175,55,0.03) 100%)'
+                      ? 'linear-gradient(90deg, rgba(212,175,55,0.16) 0%, rgba(212,175,55,0.04) 100%)'
                       : 'transparent',
                     color: isActive ? 'var(--gold-600)' : 'var(--text-secondary)',
                     fontWeight: isActive ? 700 : 500,
-                    fontSize: '0.92rem',
+                    fontSize: '0.9rem',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
                     textAlign: 'left'
@@ -196,7 +228,7 @@ export default function Sidebar({ isOpen, onClose }) {
                   }}
                 >
                   <Icon
-                    size={20}
+                    size={19}
                     color={isActive ? 'var(--gold-500)' : 'currentColor'}
                   />
                   <span style={{ flex: 1 }}>{item.label}</span>
@@ -204,12 +236,21 @@ export default function Sidebar({ isOpen, onClose }) {
                   {item.badge !== null && (
                     <span
                       style={{
-                        padding: '2px 8px',
+                        padding: '2px 7px',
                         borderRadius: '999px',
-                        fontSize: '0.72rem',
+                        fontSize: '0.7rem',
                         fontWeight: 700,
-                        background: isActive ? 'var(--gold-500)' : 'rgba(212,175,55,0.15)',
-                        color: isActive ? '#ffffff' : 'var(--gold-600)'
+                        background: item.badgeWarning 
+                          ? '#fef3c7' 
+                          : isActive 
+                            ? 'var(--gold-500)' 
+                            : 'rgba(212,175,55,0.14)',
+                        color: item.badgeWarning 
+                          ? '#b45309' 
+                          : isActive 
+                            ? '#ffffff' 
+                            : 'var(--gold-600)',
+                        border: item.badgeWarning ? '1px solid #fde68a' : 'none'
                       }}
                     >
                       {item.badge}
@@ -221,11 +262,11 @@ export default function Sidebar({ isOpen, onClose }) {
             })}
           </nav>
 
-          {/* Luxury Showcase Callout in White & Gold */}
+          {/* Quick Info Badge */}
           <div
             style={{
-              marginTop: '32px',
-              padding: '16px',
+              marginTop: '28px',
+              padding: '14px 16px',
               borderRadius: 'var(--radius-md)',
               background: 'linear-gradient(145deg, #ffffff 0%, #fbf8f1 100%)',
               border: '1px solid var(--border-gold)',
@@ -235,19 +276,19 @@ export default function Sidebar({ isOpen, onClose }) {
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
               <Sparkles size={16} color="var(--gold-500)" />
               <span style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--gold-600)' }}>
-                Certified Studio
+                GST Compliant Billing
               </span>
             </div>
-            <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
-              Automotive invoices comply with GST regulations and OEM warranty standards.
+            <p style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+              Automatic CGST/SGST/IGST computation with instant inventory deductions.
             </p>
           </div>
         </div>
 
-        {/* Footer info in clean White & Gold */}
+        {/* Footer Info */}
         <div
           style={{
-            padding: '16px 20px',
+            padding: '14px 18px',
             borderTop: '1px solid var(--border-subtle)',
             backgroundColor: '#fdfbf7',
             display: 'flex',
@@ -256,14 +297,14 @@ export default function Sidebar({ isOpen, onClose }) {
           }}
         >
           <div>
-            <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-              GST: {settings.gstin?.slice(0, 8)}...
+            <div style={{ fontSize: '0.76rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+              GST: {settings.gstin || '36AABCU9603R1ZM'}
             </div>
             <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
               {settings.phone}
             </div>
           </div>
-          <ShieldCheck size={20} color="var(--gold-500)" title="Verified Dealership System" />
+          <ShieldCheck size={19} color="var(--gold-500)" title="Certified Automotive Billing" />
         </div>
       </aside>
     </>

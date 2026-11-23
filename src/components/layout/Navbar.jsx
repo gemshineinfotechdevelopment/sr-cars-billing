@@ -4,8 +4,13 @@ import {
   Plus, 
   Search, 
   Menu,
-  ShieldAlert,
-  Sparkles
+  Clock,
+  Sparkles,
+  Users,
+  Wrench,
+  Package,
+  ReceiptText,
+  AlertTriangle
 } from 'lucide-react';
 
 export default function Navbar({ onToggleSidebar }) {
@@ -13,7 +18,9 @@ export default function Navbar({ onToggleSidebar }) {
     setIsInvoiceModalOpen, 
     setInvoiceToEdit, 
     invoices, 
-    products, 
+    customers,
+    services,
+    spareParts, 
     setActiveTab,
     setSelectedInvoiceForView
   } = useBilling();
@@ -39,40 +46,68 @@ export default function Navbar({ onToggleSidebar }) {
     return () => clearInterval(interval);
   }, []);
 
-  // Quick universal search
+  // Universal search across Invoices, Customers, Services & Spare Parts
   const searchResults = useMemo(() => {
     if (!searchQuery.trim()) {
-      return { invoices: [], products: [] };
+      return { invoices: [], customers: [], services: [], spareParts: [] };
     }
     const q = searchQuery.toLowerCase();
     
     const matchedInvoices = invoices.filter(
       (inv) =>
-        inv.invoiceNumber.toLowerCase().includes(q) ||
-        inv.customer.name.toLowerCase().includes(q) ||
-        inv.vehicle.regNumber.toLowerCase().includes(q) ||
-        inv.vehicle.makeModel.toLowerCase().includes(q)
+        inv.invoiceNumber?.toLowerCase().includes(q) ||
+        inv.customer?.name?.toLowerCase().includes(q) ||
+        inv.customer?.phone?.includes(q) ||
+        inv.vehicle?.regNumber?.toLowerCase().includes(q) ||
+        inv.vehicle?.model?.toLowerCase().includes(q) ||
+        inv.jobCardNumber?.toLowerCase().includes(q)
     ).slice(0, 4);
 
-    const matchedProducts = products.filter(
+    const matchedCustomers = customers.filter(
+      (c) =>
+        c.name.toLowerCase().includes(q) ||
+        c.phone.includes(q) ||
+        c.id.toLowerCase().includes(q) ||
+        c.vehicles?.some((v) => v.vehicleNumber.toLowerCase().includes(q) || v.model.toLowerCase().includes(q))
+    ).slice(0, 4);
+
+    const matchedServices = services.filter(
+      (s) =>
+        s.name.toLowerCase().includes(q) ||
+        s.category.toLowerCase().includes(q) ||
+        s.id.toLowerCase().includes(q)
+    ).slice(0, 4);
+
+    const matchedSpareParts = spareParts.filter(
       (p) =>
         p.name.toLowerCase().includes(q) ||
-        p.sku.toLowerCase().includes(q) ||
+        p.partNumber.toLowerCase().includes(q) ||
+        p.brand.toLowerCase().includes(q) ||
         p.category.toLowerCase().includes(q)
     ).slice(0, 4);
 
     return {
       invoices: matchedInvoices,
-      products: matchedProducts
+      customers: matchedCustomers,
+      services: matchedServices,
+      spareParts: matchedSpareParts
     };
-  }, [searchQuery, invoices, products]);
+  }, [searchQuery, invoices, customers, services, spareParts]);
+
+  const hasAnyResults = 
+    searchResults.invoices.length > 0 || 
+    searchResults.customers.length > 0 || 
+    searchResults.services.length > 0 || 
+    searchResults.spareParts.length > 0;
 
   const handleOpenNewInvoice = () => {
     setInvoiceToEdit(null);
     setIsInvoiceModalOpen(true);
   };
 
-  const overdueCount = invoices.filter((i) => i.status === 'Overdue').length;
+  const lowStockCount = spareParts.filter(
+    (p) => (p.availableQuantity || 0) <= (p.minimumStockLevel || 5)
+  ).length;
 
   return (
     <header
@@ -92,7 +127,7 @@ export default function Navbar({ onToggleSidebar }) {
       }}
     >
       {/* Left: Mobile Toggle & Quick Universal Search */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1, maxWidth: '480px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1, maxWidth: '520px' }}>
         <button
           className="btn-icon mobile-menu-btn"
           onClick={onToggleSidebar}
@@ -118,7 +153,7 @@ export default function Navbar({ onToggleSidebar }) {
           <input
             type="text"
             className="form-input"
-            placeholder="Search invoices, clients, vehicles (VIN/Reg), products..."
+            placeholder="Search customers, vehicles, services, spare parts, invoices..."
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
@@ -128,7 +163,7 @@ export default function Navbar({ onToggleSidebar }) {
             style={{
               paddingLeft: '40px',
               height: '40px',
-              fontSize: '0.85rem',
+              fontSize: '0.84rem',
               borderRadius: 'var(--radius-full)',
               background: '#fdfbf7',
               borderColor: 'var(--border-subtle)'
@@ -149,13 +184,13 @@ export default function Navbar({ onToggleSidebar }) {
                 boxShadow: 'var(--shadow-lg)',
                 padding: '12px',
                 zIndex: 100,
-                maxHeight: '380px',
+                maxHeight: '420px',
                 overflowY: 'auto'
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                 <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: 'var(--gold-600)', fontWeight: 800 }}>
-                  Search Results
+                  Quick Search Results
                 </span>
                 <button
                   onClick={() => setIsSearchOpen(false)}
@@ -165,11 +200,17 @@ export default function Navbar({ onToggleSidebar }) {
                 </button>
               </div>
 
+              {!hasAnyResults && (
+                <div style={{ padding: '16px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                  No matches found for "{searchQuery}"
+                </div>
+              )}
+
               {/* Invoices match */}
               {searchResults.invoices.length > 0 && (
                 <div style={{ marginBottom: '10px' }}>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--gold-600)', fontWeight: 700, padding: '4px 8px' }}>
-                    Invoices & Vehicles
+                  <div style={{ fontSize: '0.74rem', color: 'var(--gold-600)', fontWeight: 700, padding: '4px 8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <ReceiptText size={14} /> Invoices ({searchResults.invoices.length})
                   </div>
                   {searchResults.invoices.map((inv) => (
                     <div
@@ -180,74 +221,152 @@ export default function Navbar({ onToggleSidebar }) {
                         setSearchQuery('');
                       }}
                       style={{
-                        padding: '8px',
+                        padding: '8px 10px',
                         borderRadius: '6px',
                         cursor: 'pointer',
                         display: 'flex',
-                        alignItems: 'center',
                         justifyContent: 'space-between',
-                        transition: 'background 0.2s',
-                        fontSize: '0.84rem'
+                        alignItems: 'center',
+                        fontSize: '0.82rem',
+                        transition: 'background 0.15s'
                       }}
-                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#fdfbf7')}
+                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--gold-100)')}
                       onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                     >
                       <div>
-                        <strong>{inv.invoiceNumber}</strong> • {inv.customer.name}
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                          {inv.vehicle.makeModel} ({inv.vehicle.regNumber})
+                        <strong>{inv.invoiceNumber}</strong> • {inv.customer?.name}
+                        <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                          {inv.vehicle?.regNumber} • {inv.vehicle?.brand} {inv.vehicle?.model}
                         </div>
                       </div>
-                      <span className={`badge badge-${inv.status.toLowerCase()}`}>{inv.status}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Products match */}
-              {searchResults.products.length > 0 && (
-                <div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--gold-600)', fontWeight: 700, padding: '4px 8px' }}>
-                    Catalog & Parts
-                  </div>
-                  {searchResults.products.map((p) => (
-                    <div
-                      key={p.id}
-                      onClick={() => {
-                        setActiveTab('products');
-                        setIsSearchOpen(false);
-                        setSearchQuery('');
-                      }}
-                      style={{
-                        padding: '8px',
-                        borderRadius: '6px',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        transition: 'background 0.2s',
-                        fontSize: '0.84rem'
-                      }}
-                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#fdfbf7')}
-                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-                    >
-                      <div>
-                        <strong>{p.name}</strong>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                          {p.sku} • {p.category}
-                        </div>
-                      </div>
-                      <span style={{ color: 'var(--gold-600)', fontWeight: 700, fontSize: '0.82rem' }}>
-                        ₹ {p.price.toLocaleString('en-IN')}
+                      <span style={{ fontWeight: 700, color: 'var(--gold-600)' }}>
+                        ₹{(inv.grandTotal || inv.totalAmount || 0).toLocaleString('en-IN')}
                       </span>
                     </div>
                   ))}
                 </div>
               )}
 
-              {searchResults.invoices.length === 0 && searchResults.products.length === 0 && (
-                <div style={{ padding: '16px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                  No matches found for "{searchQuery}"
+              {/* Customers match */}
+              {searchResults.customers.length > 0 && (
+                <div style={{ marginBottom: '10px' }}>
+                  <div style={{ fontSize: '0.74rem', color: 'var(--gold-600)', fontWeight: 700, padding: '4px 8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Users size={14} /> Customers ({searchResults.customers.length})
+                  </div>
+                  {searchResults.customers.map((c) => (
+                    <div
+                      key={c.id}
+                      onClick={() => {
+                        setActiveTab('customers');
+                        setIsSearchOpen(false);
+                        setSearchQuery('');
+                      }}
+                      style={{
+                        padding: '8px 10px',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        fontSize: '0.82rem',
+                        transition: 'background 0.15s'
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--gold-100)')}
+                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                    >
+                      <div>
+                        <strong>{c.name}</strong> • {c.phone}
+                        <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                          {c.vehicles?.map((v) => v.vehicleNumber).join(', ') || 'No vehicles registered'}
+                        </div>
+                      </div>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--gold-600)', fontWeight: 700 }}>
+                        {c.id}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Spare Parts match */}
+              {searchResults.spareParts.length > 0 && (
+                <div style={{ marginBottom: '10px' }}>
+                  <div style={{ fontSize: '0.74rem', color: 'var(--gold-600)', fontWeight: 700, padding: '4px 8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Package size={14} /> Spare Parts ({searchResults.spareParts.length})
+                  </div>
+                  {searchResults.spareParts.map((p) => (
+                    <div
+                      key={p.id}
+                      onClick={() => {
+                        setActiveTab('parts');
+                        setIsSearchOpen(false);
+                        setSearchQuery('');
+                      }}
+                      style={{
+                        padding: '8px 10px',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        fontSize: '0.82rem',
+                        transition: 'background 0.15s'
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--gold-100)')}
+                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                    >
+                      <div>
+                        <strong>{p.name}</strong> • {p.partNumber}
+                        <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                          Brand: {p.brand} | In Stock: {p.availableQuantity} units
+                        </div>
+                      </div>
+                      <span style={{ fontWeight: 700, color: 'var(--gold-600)' }}>
+                        ₹{p.sellingPrice?.toLocaleString('en-IN')}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Services match */}
+              {searchResults.services.length > 0 && (
+                <div>
+                  <div style={{ fontSize: '0.74rem', color: 'var(--gold-600)', fontWeight: 700, padding: '4px 8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Wrench size={14} /> Services ({searchResults.services.length})
+                  </div>
+                  {searchResults.services.map((s) => (
+                    <div
+                      key={s.id}
+                      onClick={() => {
+                        setActiveTab('services');
+                        setIsSearchOpen(false);
+                        setSearchQuery('');
+                      }}
+                      style={{
+                        padding: '8px 10px',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        fontSize: '0.82rem',
+                        transition: 'background 0.15s'
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--gold-100)')}
+                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                    >
+                      <div>
+                        <strong>{s.name}</strong> • {s.category}
+                        <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                          Duration: {s.estimatedDuration}
+                        </div>
+                      </div>
+                      <span style={{ fontWeight: 700, color: 'var(--gold-600)' }}>
+                        ₹{s.price?.toLocaleString('en-IN')}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
@@ -255,67 +374,56 @@ export default function Navbar({ onToggleSidebar }) {
         </div>
       </div>
 
-      {/* Right Actions: Clock, Overdue Notification, Create Invoice */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-        {/* Dealership Clock */}
-        <div
-          style={{
-            fontSize: '0.8rem',
-            color: 'var(--text-secondary)',
-            fontWeight: 600,
-            padding: '6px 14px',
-            borderRadius: 'var(--radius-full)',
-            background: '#ffffff',
-            border: '1px solid var(--border-gold)',
-            boxShadow: 'var(--shadow-sm)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}
-        >
-          <Sparkles size={14} color="var(--gold-500)" />
-          {currentTime || 'SR Live'}
-        </div>
-
-        {/* Overdue alert indicator */}
-        {overdueCount > 0 && (
+      {/* Right: Actions, Date & Quick New Invoice */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
+        {lowStockCount > 0 && (
           <button
-            onClick={() => setActiveTab('invoices')}
-            className="btn-icon"
-            title={`${overdueCount} Overdue Invoices Requiring Attention`}
-            style={{ position: 'relative', color: 'var(--status-overdue)', borderColor: 'var(--status-overdue-border)' }}
+            onClick={() => setActiveTab('parts')}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '6px 12px',
+              borderRadius: '999px',
+              border: '1px solid #fde68a',
+              backgroundColor: '#fef3c7',
+              color: '#b45309',
+              fontSize: '0.78rem',
+              fontWeight: 700,
+              cursor: 'pointer'
+            }}
           >
-            <ShieldAlert size={19} />
-            <span
-              style={{
-                position: 'absolute',
-                top: '-4px',
-                right: '-4px',
-                width: '18px',
-                height: '18px',
-                borderRadius: '50%',
-                background: 'var(--status-overdue)',
-                color: '#fff',
-                fontSize: '0.68rem',
-                fontWeight: 700,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              {overdueCount}
-            </span>
+            <AlertTriangle size={15} />
+            <span>{lowStockCount} Parts Low in Stock</span>
           </button>
         )}
 
-        {/* Main Action: Create Invoice Button */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-secondary)', fontSize: '0.82rem' }}>
+          <Clock size={16} color="var(--gold-500)" />
+          <span style={{ fontWeight: 600 }}>{currentTime}</span>
+        </div>
+
+        {/* Generate Invoice Primary CTA */}
         <button
           onClick={handleOpenNewInvoice}
-          className="btn-gold"
-          style={{ padding: '8px 20px', fontSize: '0.88rem' }}
+          className="btn-primary"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '9px 18px',
+            fontSize: '0.86rem',
+            fontWeight: 700,
+            borderRadius: 'var(--radius-full)',
+            background: 'var(--gold-shimmer)',
+            color: '#ffffff',
+            border: 'none',
+            boxShadow: 'var(--shadow-gold)',
+            cursor: 'pointer'
+          }}
         >
-          <Plus size={18} />
-          <span>Create Invoice</span>
+          <Plus size={17} />
+          <span>New Invoice</span>
         </button>
       </div>
     </header>

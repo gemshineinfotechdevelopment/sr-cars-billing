@@ -1,618 +1,837 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useBilling } from '../../context/useBilling';
 import { 
   X, 
   Plus, 
   Trash2, 
   User, 
-  FileText, 
-  Sparkles, 
+  Car, 
+  ReceiptText, 
+  Wrench, 
+  Package, 
+  CreditCard, 
   Check, 
-  Car 
+  Calculator
 } from 'lucide-react';
-
-function getDefaultFormData(invoiceToEdit, settings) {
-  if (invoiceToEdit) {
-    return {
-      ...invoiceToEdit,
-      discountAmount: invoiceToEdit.discountAmount || 0
-    };
-  }
-
-  const now = new Date();
-  const todayStr = now.toISOString().split('T')[0];
-  const nextWeek = new Date(now.getTime() + 7 * 86400000);
-  const nextWeekStr = nextWeek.toISOString().split('T')[0];
-
-  return {
-    invoiceNumber: '',
-    date: todayStr,
-    dueDate: nextWeekStr,
-    status: 'Pending',
-    paymentMethod: 'Bank Transfer (NEFT/RTGS)',
-    customer: {
-      name: '',
-      company: '',
-      phone: '',
-      email: '',
-      address: '',
-      gstin: ''
-    },
-    vehicle: {
-      makeModel: '',
-      regNumber: '',
-      vin: '',
-      year: now.getFullYear().toString(),
-      odometer: '',
-      color: ''
-    },
-    items: [
-      {
-        id: 'item-1',
-        productId: '',
-        name: '',
-        category: 'Services',
-        qty: 1,
-        unitPrice: 0,
-        taxPercent: settings?.taxRate || 18,
-        total: 0
-      }
-    ],
-    discountAmount: 0,
-    notes: settings?.notes || ''
-  };
-}
 
 export default function InvoiceModal() {
   const { 
     isInvoiceModalOpen, 
     setIsInvoiceModalOpen, 
     invoiceToEdit, 
-    products, 
+    customers, 
+    services, 
+    spareParts, 
     settings, 
     addInvoice, 
-    updateInvoice 
+    updateInvoice, 
+    setSelectedInvoiceForView, 
+    formatCurrency 
   } = useBilling();
 
-  const [formData, setFormData] = useState(() => getDefaultFormData(invoiceToEdit, settings));
+  const now = new Date();
+  const todayStr = now.toISOString().split('T')[0];
 
-  if (!isInvoiceModalOpen) return null;
-
-  const handleCustomerChange = (field, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      customer: { ...prev.customer, [field]: value }
-    }));
-  };
-
-  const handleVehicleChange = (field, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      vehicle: { ...prev.vehicle, [field]: value }
-    }));
-  };
-
-  const handleItemSelectProduct = (index, prodId) => {
-    const selectedProd = products.find((p) => p.id === prodId);
-    if (!selectedProd) return;
-
-    setFormData((prev) => {
-      const newItems = [...prev.items];
-      newItems[index] = {
-        ...newItems[index],
-        productId: selectedProd.id,
-        name: selectedProd.name,
-        category: selectedProd.category,
-        unitPrice: selectedProd.price,
-        total: (Number(newItems[index].qty) || 1) * selectedProd.price
+  // Default state initialization
+  const [formData, setFormData] = useState(() => {
+    if (invoiceToEdit) {
+      return {
+        ...invoiceToEdit,
+        services: invoiceToEdit.services || [],
+        spareParts: invoiceToEdit.spareParts || []
       };
-      return { ...prev, items: newItems };
-    });
-  };
+    }
 
-  const handleItemChange = (index, field, value) => {
-    setFormData((prev) => {
-      const newItems = [...prev.items];
-      const current = { ...newItems[index], [field]: value };
-      
-      const qty = Number(field === 'qty' ? value : current.qty) || 0;
-      const unitPrice = Number(field === 'unitPrice' ? value : current.unitPrice) || 0;
-      current.total = qty * unitPrice;
-      
-      newItems[index] = current;
-      return { ...prev, items: newItems };
-    });
-  };
+    const autoNumber = `${settings?.invoicePrefix || 'SRC-2026-'}${String(Date.now()).slice(-3)}`;
+    const autoJobCard = `JC-2026-${String(Date.now()).slice(-4)}`;
 
-  const addItemRow = () => {
+    return {
+      // Section A: Invoice Information
+      invoiceNumber: autoNumber,
+      date: todayStr,
+      jobCardNumber: autoJobCard,
+      invoiceType: 'Tax Invoice',
+
+      // Section B: Customer Information
+      customerId: '',
+      customer: {
+        name: '',
+        phone: '',
+        email: '',
+        address: '',
+        gstin: ''
+      },
+
+      // Section C: Vehicle Information
+      vehicleId: '',
+      vehicle: {
+        regNumber: '',
+        brand: '',
+        model: '',
+        odometer: ''
+      },
+
+      // Section D: Service Details
+      services: [
+        {
+          id: 'srv-' + Date.now(),
+          serviceId: '',
+          name: 'General Service',
+          quantity: 1,
+          rate: 4800,
+          discount: 0,
+          gst: 18,
+          amount: 5664
+        }
+      ],
+
+      // Section E: Spare Parts Details
+      spareParts: [
+        {
+          id: 'part-' + Date.now(),
+          partId: '',
+          name: 'Fully Synthetic Engine Oil 5W-40 (4L)',
+          partNumber: 'CAS-EDG-5W40-4L',
+          quantity: 1,
+          unitPrice: 4200,
+          discount: 0,
+          gst: 18,
+          amount: 4956
+        }
+      ],
+
+      // Section F: Billing Summary
+      serviceSubtotal: 0,
+      sparePartsSubtotal: 0,
+      grossTotal: 0,
+      discountAmount: 0,
+      taxableAmount: 0,
+      cgst: 0,
+      sgst: 0,
+      igst: 0,
+      roundOff: 0,
+      grandTotal: 0,
+
+      // Section G: Payment Details
+      paymentMethod: 'UPI',
+      amountPaid: 0,
+      balanceAmount: 0,
+      paymentStatus: 'Paid',
+      transactionId: '',
+      notes: settings?.notes || 'Thank you for choosing SR CARS. Precision engineering & warranty assured.'
+    };
+  });
+
+  // When customer is selected from dropdown, populate info & available vehicles
+  const handleSelectCustomer = (e) => {
+    const custId = e.target.value;
+    if (!custId) {
+      setFormData((prev) => ({
+        ...prev,
+        customerId: '',
+        vehicleId: ''
+      }));
+      return;
+    }
+
+    const selectedCust = customers.find((c) => c.id === custId);
+    if (!selectedCust) return;
+
+    const firstVehicle = selectedCust.vehicles && selectedCust.vehicles.length > 0 ? selectedCust.vehicles[0] : null;
+
     setFormData((prev) => ({
       ...prev,
-      items: [
-        ...prev.items,
+      customerId: selectedCust.id,
+      customer: {
+        name: selectedCust.name,
+        phone: selectedCust.phone,
+        email: selectedCust.email || '',
+        address: selectedCust.address || '',
+        gstin: selectedCust.gstin || ''
+      },
+      vehicleId: firstVehicle ? firstVehicle.id : '',
+      vehicle: firstVehicle
+        ? {
+            regNumber: firstVehicle.vehicleNumber,
+            brand: firstVehicle.brand,
+            model: firstVehicle.model,
+            odometer: firstVehicle.odometer || ''
+          }
+        : { regNumber: '', brand: '', model: '', odometer: '' }
+    }));
+  };
+
+  // When vehicle is selected
+  const handleSelectVehicle = (e) => {
+    const vehId = e.target.value;
+    const currentCust = customers.find((c) => c.id === formData.customerId);
+    const targetVeh = currentCust?.vehicles?.find((v) => v.id === vehId);
+
+    if (targetVeh) {
+      setFormData((prev) => ({
+        ...prev,
+        vehicleId: targetVeh.id,
+        vehicle: {
+          regNumber: targetVeh.vehicleNumber,
+          brand: targetVeh.brand,
+          model: targetVeh.model,
+          odometer: targetVeh.odometer || ''
+        }
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        vehicleId: vehId
+      }));
+    }
+  };
+
+  // Section D: Service Handlers
+  const handleAddServiceRow = () => {
+    setFormData((prev) => ({
+      ...prev,
+      services: [
+        ...prev.services,
         {
-          id: 'item-' + Date.now(),
-          productId: '',
+          id: 'srv-' + Date.now() + Math.random().toString().slice(-3),
+          serviceId: '',
           name: '',
-          category: 'Services',
-          qty: 1,
-          unitPrice: 0,
-          taxPercent: settings.taxRate || 18,
-          total: 0
+          quantity: 1,
+          rate: 0,
+          discount: 0,
+          gst: 18,
+          amount: 0
         }
       ]
     }));
   };
 
-  const removeItemRow = (index) => {
-    if (formData.items.length <= 1) return;
+  const handleRemoveServiceRow = (index) => {
     setFormData((prev) => ({
       ...prev,
-      items: prev.items.filter((_, i) => i !== index)
+      services: prev.services.filter((_, i) => i !== index)
     }));
   };
 
-  // Financial calculations
-  const subtotal = formData.items.reduce((sum, itm) => sum + (Number(itm.total) || 0), 0);
-  const discount = Math.min(Number(formData.discountAmount) || 0, subtotal);
-  const taxableAmount = Math.max(0, subtotal - discount);
-  const taxRate = Number(settings.taxRate) || 18;
-  const taxAmount = Math.round(taxableAmount * (taxRate / 100));
-  const grandTotal = taxableAmount + taxAmount;
+  const handleServiceSelect = (index, srvId) => {
+    const srv = services.find((s) => s.id === srvId);
+    if (!srv) return;
 
-  const handleSubmit = (e) => {
+    setFormData((prev) => {
+      const nextServices = [...prev.services];
+      const qty = nextServices[index].quantity || 1;
+      const rate = srv.price || 0;
+      const discount = nextServices[index].discount || 0;
+      const gst = srv.gstPercentage || 18;
+      const discountedVal = Math.max(0, qty * rate - discount);
+      const amount = Math.round(discountedVal * (1 + gst / 100));
+
+      nextServices[index] = {
+        ...nextServices[index],
+        serviceId: srv.id,
+        name: srv.name,
+        rate,
+        gst,
+        amount
+      };
+      return { ...prev, services: nextServices };
+    });
+  };
+
+  const handleServiceFieldChange = (index, field, value) => {
+    setFormData((prev) => {
+      const nextServices = [...prev.services];
+      const updatedRow = { ...nextServices[index], [field]: value };
+      const qty = Number(field === 'quantity' ? value : updatedRow.quantity) || 1;
+      const rate = Number(field === 'rate' ? value : updatedRow.rate) || 0;
+      const discount = Number(field === 'discount' ? value : updatedRow.discount) || 0;
+      const gst = Number(field === 'gst' ? value : updatedRow.gst) || 18;
+
+      const discountedVal = Math.max(0, qty * rate - discount);
+      updatedRow.amount = Math.round(discountedVal * (1 + gst / 100));
+      nextServices[index] = updatedRow;
+      return { ...prev, services: nextServices };
+    });
+  };
+
+  // Section E: Spare Parts Handlers
+  const handleAddSparePartRow = () => {
+    setFormData((prev) => ({
+      ...prev,
+      spareParts: [
+        ...prev.spareParts,
+        {
+          id: 'part-' + Date.now() + Math.random().toString().slice(-3),
+          partId: '',
+          name: '',
+          partNumber: '',
+          quantity: 1,
+          unitPrice: 0,
+          discount: 0,
+          gst: 18,
+          amount: 0
+        }
+      ]
+    }));
+  };
+
+  const handleRemoveSparePartRow = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      spareParts: prev.spareParts.filter((_, i) => i !== index)
+    }));
+  };
+
+  const handleSparePartSelect = (index, partId) => {
+    const part = spareParts.find((p) => p.id === partId);
+    if (!part) return;
+
+    setFormData((prev) => {
+      const nextParts = [...prev.spareParts];
+      const qty = nextParts[index].quantity || 1;
+      const unitPrice = part.sellingPrice || 0;
+      const discount = nextParts[index].discount || 0;
+      const gst = part.gstPercentage || 18;
+      const discountedVal = Math.max(0, qty * unitPrice - discount);
+      const amount = Math.round(discountedVal * (1 + gst / 100));
+
+      nextParts[index] = {
+        ...nextParts[index],
+        partId: part.id,
+        name: part.name,
+        partNumber: part.partNumber,
+        unitPrice,
+        gst,
+        amount
+      };
+      return { ...prev, spareParts: nextParts };
+    });
+  };
+
+  const handleSparePartFieldChange = (index, field, value) => {
+    setFormData((prev) => {
+      const nextParts = [...prev.spareParts];
+      const updatedRow = { ...nextParts[index], [field]: value };
+      const qty = Number(field === 'quantity' ? value : updatedRow.quantity) || 1;
+      const unitPrice = Number(field === 'unitPrice' ? value : updatedRow.unitPrice) || 0;
+      const discount = Number(field === 'discount' ? value : updatedRow.discount) || 0;
+      const gst = Number(field === 'gst' ? value : updatedRow.gst) || 18;
+
+      const discountedVal = Math.max(0, qty * unitPrice - discount);
+      updatedRow.amount = Math.round(discountedVal * (1 + gst / 100));
+      nextParts[index] = updatedRow;
+      return { ...prev, spareParts: nextParts };
+    });
+  };
+
+  // Section F: Billing Summary Automatic Recalculation
+  // Automatically calculate all amounts whenever quantities, prices or discounts change!
+  useEffect(() => {
+    let sSubtotal = 0;
+    let sDiscount = 0;
+    let sTax = 0;
+
+    formData.services.forEach((s) => {
+      const q = Number(s.quantity) || 1;
+      const r = Number(s.rate) || 0;
+      const d = Number(s.discount) || 0;
+      const gst = Number(s.gst) || 18;
+      const taxable = Math.max(0, q * r - d);
+      sSubtotal += q * r;
+      sDiscount += d;
+      sTax += taxable * (gst / 100);
+    });
+
+    let pSubtotal = 0;
+    let pDiscount = 0;
+    let pTax = 0;
+
+    formData.spareParts.forEach((p) => {
+      const q = Number(p.quantity) || 1;
+      const up = Number(p.unitPrice) || 0;
+      const d = Number(p.discount) || 0;
+      const gst = Number(p.gst) || 18;
+      const taxable = Math.max(0, q * up - d);
+      pSubtotal += q * up;
+      pDiscount += d;
+      pTax += taxable * (gst / 100);
+    });
+
+    const grossTotal = sSubtotal + pSubtotal;
+    const totalDiscount = sDiscount + pDiscount;
+    const taxableAmount = Math.max(0, grossTotal - totalDiscount);
+    const totalTax = sTax + pTax;
+
+    const cgst = Math.round((totalTax / 2) * 100) / 100;
+    const sgst = Math.round((totalTax / 2) * 100) / 100;
+    const igst = 0;
+
+    const rawGrandTotal = taxableAmount + totalTax;
+    const roundedGrandTotal = Math.round(rawGrandTotal);
+    const roundOff = Math.round((roundedGrandTotal - rawGrandTotal) * 100) / 100;
+
+    setFormData((prev) => {
+      const amountPaid = prev.paymentStatus === 'Paid' ? roundedGrandTotal : prev.amountPaid;
+      const balanceAmount = Math.max(0, roundedGrandTotal - amountPaid);
+
+      return {
+        ...prev,
+        serviceSubtotal: sSubtotal,
+        sparePartsSubtotal: pSubtotal,
+        grossTotal,
+        discountAmount: totalDiscount,
+        taxableAmount,
+        cgst,
+        sgst,
+        igst,
+        roundOff,
+        grandTotal: roundedGrandTotal,
+        totalAmount: roundedGrandTotal,
+        amountPaid,
+        balanceAmount
+      };
+    });
+  }, [formData.services, formData.spareParts]);
+
+  // Handle Save / Confirm Invoice
+  const handleConfirmInvoice = (e) => {
     e.preventDefault();
-
-    if (!formData.customer.name.trim()) {
-      alert('Please enter customer name');
-      return;
-    }
-    if (!formData.vehicle.makeModel.trim()) {
-      alert('Please enter vehicle model');
-      return;
-    }
-    if (formData.items.some((i) => !i.name.trim())) {
-      alert('Please ensure all items have a description/name');
+    if (!formData.customer?.name?.trim() || !formData.customer?.phone?.trim()) {
+      alert('Please fill in Customer Name and Mobile Number.');
       return;
     }
 
-    const payload = {
-      ...formData,
-      subtotal,
-      discountAmount: discount,
-      taxableAmount,
-      taxAmount,
-      totalAmount: grandTotal
-    };
+    if (!formData.vehicle?.regNumber?.trim()) {
+      alert('Please fill in Vehicle Number (e.g. TS 09 EA 4589).');
+      return;
+    }
 
+    if (formData.services.length === 0 && formData.spareParts.length === 0) {
+      alert('Please add at least one service or spare part item.');
+      return;
+    }
+
+    // Save
+    let finalizedInvoice;
     if (invoiceToEdit) {
-      updateInvoice(invoiceToEdit.id, payload);
+      updateInvoice(invoiceToEdit.id, formData);
+      finalizedInvoice = { ...formData, id: invoiceToEdit.id };
     } else {
-      addInvoice(payload);
+      finalizedInvoice = addInvoice(formData);
     }
 
     setIsInvoiceModalOpen(false);
+
+    // Also open the printable view modal for direct viewing / printing!
+    setSelectedInvoiceForView(finalizedInvoice);
   };
+
+  const customerList = customers;
+  const currentCustomerVehicles = customers.find((c) => c.id === formData.customerId)?.vehicles || [];
+
+  if (!isInvoiceModalOpen) return null;
 
   return (
     <div className="modal-backdrop" onClick={() => setIsInvoiceModalOpen(false)}>
-      <div 
-        className="modal-content" 
+      <div
+        className="modal-content"
         onClick={(e) => e.stopPropagation()}
-        style={{ maxWidth: '960px', width: '95%' }}
+        style={{
+          maxWidth: '1060px',
+          width: '100%',
+          backgroundColor: '#ffffff',
+          borderRadius: 'var(--radius-lg)',
+          border: '2px solid var(--border-gold)',
+          boxShadow: 'var(--shadow-lg)',
+          overflow: 'hidden'
+        }}
       >
         {/* Modal Header */}
         <div
           style={{
-            padding: '24px 28px',
-            borderBottom: '1px solid var(--border-medium)',
+            padding: '18px 26px',
+            borderBottom: '1.5px solid var(--border-gold)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            background: 'linear-gradient(180deg, rgba(212,175,55,0.06) 0%, transparent 100%)'
+            background: 'linear-gradient(135deg, #ffffff 0%, #fdfbf7 100%)'
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div
-              style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '8px',
-                background: 'var(--gold-subtle)',
-                border: '1px solid var(--border-gold)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'var(--gold-400)'
-              }}
-            >
-              <FileText size={18} />
-            </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <ReceiptText size={22} color="var(--gold-500)" />
             <div>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
-                {invoiceToEdit ? `Edit Invoice #${invoiceToEdit.invoiceNumber}` : 'Create Luxury Automotive Invoice'}
+              <h2 style={{ fontSize: '1.2rem', fontWeight: 900, color: 'var(--text-primary)' }}>
+                {invoiceToEdit ? `Edit Invoice #${formData.invoiceNumber}` : 'Create Professional Invoice & Billing'}
               </h2>
-              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-                Official billing statement with vehicle profile, catalog items and GST taxation
+              <span style={{ fontSize: '0.74rem', color: 'var(--gold-600)', fontWeight: 700 }}>
+                Sections A through G • Automatic Tax Calculation & Inventory Sync
               </span>
             </div>
           </div>
 
           <button
             onClick={() => setIsInvoiceModalOpen(false)}
-            className="btn-icon"
-            style={{ width: '32px', height: '32px' }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}
           >
-            <X size={18} />
+            <X size={22} />
           </button>
         </div>
 
-        {/* Modal Body Form */}
-        <form onSubmit={handleSubmit} style={{ padding: '28px' }}>
-          {/* Top Row: Meta Dates & Status */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-              gap: '16px',
-              marginBottom: '24px',
-              padding: '16px',
-              background: 'var(--bg-input)',
-              borderRadius: 'var(--radius-md)',
-              border: '1px solid var(--border-subtle)'
-            }}
-          >
-            <div>
-              <label className="form-label">Invoice Date</label>
-              <input
-                type="date"
-                className="form-input"
-                value={formData.date}
-                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                required
-              />
+        {/* Modal Form */}
+        <form onSubmit={handleConfirmInvoice} style={{ padding: '24px 28px', maxHeight: '82vh', overflowY: 'auto' }}>
+          {/* SECTION A: INVOICE INFORMATION */}
+          <div style={{ marginBottom: '22px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--gold-600)', letterSpacing: '1px' }}>
+                A. Invoice Information
+              </span>
             </div>
-            <div>
-              <label className="form-label">Payment Due Date</label>
-              <input
-                type="date"
-                className="form-input"
-                value={formData.dueDate}
-                onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-                required
-              />
-            </div>
-            <div>
-              <label className="form-label">Payment Status</label>
-              <select
-                className="form-select"
-                value={formData.status}
-                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-              >
-                <option value="Paid">Paid</option>
-                <option value="Pending">Pending</option>
-                <option value="Overdue">Overdue</option>
-                <option value="Draft">Draft</option>
-              </select>
-            </div>
-            <div>
-              <label className="form-label">Settlement Mode</label>
-              <select
-                className="form-select"
-                value={formData.paymentMethod}
-                onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
-              >
-                <option value="Bank Transfer (NEFT/RTGS)">Bank Transfer (NEFT/RTGS)</option>
-                <option value="UPI Instant / IMPS">UPI Instant / IMPS</option>
-                <option value="Credit Card">Credit Card</option>
-                <option value="Corporate Wire">Corporate Wire</option>
-                <option value="Automotive Financing">Automotive Financing</option>
-                <option value="Cash Deposit">Cash Deposit</option>
-              </select>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 700, marginBottom: '4px' }}>
+                  Invoice Number (Auto-generated) *
+                </label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={formData.invoiceNumber}
+                  onChange={(e) => setFormData({ ...formData, invoiceNumber: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 700, marginBottom: '4px' }}>
+                  Invoice Date *
+                </label>
+                <input
+                  type="date"
+                  className="form-input"
+                  value={formData.date}
+                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 700, marginBottom: '4px' }}>
+                  Job Card Number *
+                </label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={formData.jobCardNumber}
+                  onChange={(e) => setFormData({ ...formData, jobCardNumber: e.target.value })}
+                  placeholder="JC-2026-1042"
+                  required
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 700, marginBottom: '4px' }}>
+                  Invoice Type *
+                </label>
+                <select
+                  className="form-input"
+                  value={formData.invoiceType}
+                  onChange={(e) => setFormData({ ...formData, invoiceType: e.target.value })}
+                >
+                  <option value="Tax Invoice">Tax Invoice</option>
+                  <option value="Proforma Invoice">Proforma Invoice</option>
+                  <option value="Estimate / Quotation">Estimate / Quotation</option>
+                </select>
+              </div>
             </div>
           </div>
 
-          {/* Section 1: Client & Vehicle Information Grid */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-              gap: '24px',
-              marginBottom: '28px'
-            }}
-          >
-            {/* Customer Details Box */}
-            <div
-              style={{
-                border: '1px solid var(--border-subtle)',
-                borderRadius: 'var(--radius-md)',
-                padding: '20px',
-                background: 'rgba(255,255,255,0.01)'
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px', color: 'var(--gold-400)' }}>
-                <User size={16} />
-                <span style={{ fontSize: '0.85rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px' }}>
-                  Client Information
+          {/* SECTION B & C: CUSTOMER & VEHICLE INFORMATION */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '22px', marginBottom: '24px' }}>
+            {/* Section B: Customer Information */}
+            <div style={{ padding: '16px', borderRadius: '10px', backgroundColor: '#fdfbf7', border: '1px solid var(--border-subtle)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <span style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--gold-600)', letterSpacing: '1px' }}>
+                  B. Customer Information
                 </span>
+                <User size={16} color="var(--gold-500)" />
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ marginBottom: '10px' }}>
+                <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, marginBottom: '4px', color: 'var(--text-muted)' }}>
+                  Select Existing Customer (Auto-populates)
+                </label>
+                <select
+                  className="form-input"
+                  value={formData.customerId}
+                  onChange={handleSelectCustomer}
+                  style={{ backgroundColor: '#ffffff' }}
+                >
+                  <option value="">-- Choose Existing Client or Enter Below --</option>
+                  {customerList.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name} ({c.phone}) - {c.id}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px' }}>
                 <div>
-                  <label className="form-label">Client / Entity Name *</label>
+                  <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, marginBottom: '4px' }}>
+                    Customer Name *
+                  </label>
                   <input
                     type="text"
                     className="form-input"
-                    placeholder="e.g. Vikramaditya Singhania"
                     value={formData.customer.name}
-                    onChange={(e) => handleCustomerChange('name', e.target.value)}
+                    onChange={(e) => setFormData({ ...formData, customer: { ...formData.customer, name: e.target.value } })}
+                    placeholder="Full Name"
                     required
                   />
                 </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                  <div>
-                    <label className="form-label">Phone Number</label>
-                    <input
-                      type="text"
-                      className="form-input"
-                      placeholder="+91 98765 43210"
-                      value={formData.customer.phone}
-                      onChange={(e) => handleCustomerChange('phone', e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label className="form-label">Email Address</label>
-                    <input
-                      type="email"
-                      className="form-input"
-                      placeholder="client@luxury.com"
-                      value={formData.customer.email}
-                      onChange={(e) => handleCustomerChange('email', e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '12px' }}>
-                  <div>
-                    <label className="form-label">Company / Firm Name (Optional)</label>
-                    <input
-                      type="text"
-                      className="form-input"
-                      placeholder="Singhania Holdings & Infra"
-                      value={formData.customer.company}
-                      onChange={(e) => handleCustomerChange('company', e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label className="form-label">GSTIN / Tax ID</label>
-                    <input
-                      type="text"
-                      className="form-input"
-                      placeholder="36AAECS4592K1Z9"
-                      value={formData.customer.gstin}
-                      onChange={(e) => handleCustomerChange('gstin', e.target.value)}
-                    />
-                  </div>
-                </div>
-
                 <div>
-                  <label className="form-label">Billing Address</label>
+                  <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, marginBottom: '4px' }}>
+                    Mobile Number *
+                  </label>
                   <input
                     type="text"
                     className="form-input"
-                    placeholder="Villa / Suite, Street, City, Pincode"
-                    value={formData.customer.address}
-                    onChange={(e) => handleCustomerChange('address', e.target.value)}
+                    value={formData.customer.phone}
+                    onChange={(e) => setFormData({ ...formData, customer: { ...formData.customer, phone: e.target.value } })}
+                    placeholder="+91..."
+                    required
                   />
                 </div>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, marginBottom: '4px' }}>
+                  Billing Address
+                </label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={formData.customer.address}
+                  onChange={(e) => setFormData({ ...formData, customer: { ...formData.customer, address: e.target.value } })}
+                  placeholder="Address"
+                />
               </div>
             </div>
 
-            {/* Vehicle Profile Box */}
-            <div
-              style={{
-                border: '1px solid var(--border-subtle)',
-                borderRadius: 'var(--radius-md)',
-                padding: '20px',
-                background: 'rgba(255,255,255,0.01)'
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px', color: 'var(--accent-blue)' }}>
-                <Car size={16} />
-                <span style={{ fontSize: '0.85rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px' }}>
-                  Vehicle Specification
+            {/* Section C: Vehicle Information */}
+            <div style={{ padding: '16px', borderRadius: '10px', backgroundColor: '#fdfbf7', border: '1px solid var(--border-subtle)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <span style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--gold-600)', letterSpacing: '1px' }}>
+                  C. Vehicle Information
                 </span>
+                <Car size={16} color="var(--gold-500)" />
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ marginBottom: '10px' }}>
+                <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, marginBottom: '4px', color: 'var(--text-muted)' }}>
+                  Select Customer Vehicle
+                </label>
+                <select
+                  className="form-input"
+                  value={formData.vehicleId}
+                  onChange={handleSelectVehicle}
+                  style={{ backgroundColor: '#ffffff' }}
+                >
+                  <option value="">-- Select from Client Fleet or Type Below --</option>
+                  {currentCustomerVehicles.map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {v.vehicleNumber} ({v.brand} {v.model})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px' }}>
                 <div>
-                  <label className="form-label">Make & Model *</label>
+                  <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, marginBottom: '4px' }}>
+                    Vehicle Number (Reg) *
+                  </label>
                   <input
                     type="text"
                     className="form-input"
-                    placeholder="e.g. Porsche Macan GTS 2.9L Twin-Turbo"
-                    value={formData.vehicle.makeModel}
-                    onChange={(e) => handleVehicleChange('makeModel', e.target.value)}
+                    value={formData.vehicle.regNumber}
+                    onChange={(e) => setFormData({ ...formData, vehicle: { ...formData.vehicle, regNumber: e.target.value.toUpperCase() } })}
+                    placeholder="TS 09 EA 4589"
                     required
                   />
                 </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                  <div>
-                    <label className="form-label">Registration / Plate No</label>
-                    <input
-                      type="text"
-                      className="form-input"
-                      placeholder="TS 09 EU 4499"
-                      value={formData.vehicle.regNumber}
-                      onChange={(e) => handleVehicleChange('regNumber', e.target.value)}
-                      style={{ textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}
-                    />
-                  </div>
-                  <div>
-                    <label className="form-label">Chassis / VIN Number</label>
-                    <input
-                      type="text"
-                      className="form-input"
-                      placeholder="WP1ZZZ95ZPL120894"
-                      value={formData.vehicle.vin}
-                      onChange={(e) => handleVehicleChange('vin', e.target.value)}
-                      style={{ textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}
-                    />
-                  </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, marginBottom: '4px' }}>
+                    Brand / Make
+                  </label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    value={formData.vehicle.brand}
+                    onChange={(e) => setFormData({ ...formData, vehicle: { ...formData.vehicle, brand: e.target.value } })}
+                    placeholder="e.g. Mercedes-Benz"
+                  />
                 </div>
+              </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
-                  <div>
-                    <label className="form-label">Model Year</label>
-                    <input
-                      type="text"
-                      className="form-input"
-                      placeholder="2024"
-                      value={formData.vehicle.year}
-                      onChange={(e) => handleVehicleChange('year', e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label className="form-label">Odometer</label>
-                    <input
-                      type="text"
-                      className="form-input"
-                      placeholder="14,800 KM"
-                      value={formData.vehicle.odometer}
-                      onChange={(e) => handleVehicleChange('odometer', e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label className="form-label">Exterior Color</label>
-                    <input
-                      type="text"
-                      className="form-input"
-                      placeholder="Crayon Grey"
-                      value={formData.vehicle.color}
-                      onChange={(e) => handleVehicleChange('color', e.target.value)}
-                    />
-                  </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, marginBottom: '4px' }}>
+                    Model
+                  </label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    value={formData.vehicle.model}
+                    onChange={(e) => setFormData({ ...formData, vehicle: { ...formData.vehicle, model: e.target.value } })}
+                    placeholder="e.g. E-Class E 220d"
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, marginBottom: '4px' }}>
+                    Current Odometer Reading
+                  </label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    value={formData.vehicle.odometer}
+                    onChange={(e) => setFormData({ ...formData, vehicle: { ...formData.vehicle, odometer: e.target.value } })}
+                    placeholder="e.g. 34,500 km"
+                  />
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Section 2: Line Items Table */}
-          <div style={{ marginBottom: '28px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          {/* SECTION D: SERVICE DETAILS (Dynamic Multi-Row) */}
+          <div style={{ marginBottom: '24px', borderTop: '1.5px solid var(--border-subtle)', paddingTop: '18px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Sparkles size={16} color="var(--gold-400)" />
-                <h3 style={{ fontSize: '0.95rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                  Line Items & Services Catalog
-                </h3>
+                <Wrench size={18} color="var(--gold-500)" />
+                <span style={{ fontSize: '0.85rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--gold-600)', letterSpacing: '1px' }}>
+                  D. Service Details (Labor & Operations)
+                </span>
               </div>
 
               <button
                 type="button"
-                className="btn-outline-gold"
-                onClick={addItemRow}
-                style={{ padding: '6px 14px', fontSize: '0.8rem' }}
+                onClick={handleAddServiceRow}
+                style={{
+                  padding: '5px 12px',
+                  borderRadius: '6px',
+                  border: '1px solid var(--border-gold)',
+                  backgroundColor: 'var(--gold-100)',
+                  color: 'var(--gold-600)',
+                  fontSize: '0.76rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}
               >
                 <Plus size={14} />
-                <span>Add Item / Service</span>
+                <span>Add Service Row</span>
               </button>
             </div>
 
-            <div style={{ overflowX: 'auto', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)' }}>
-              <table className="luxury-table" style={{ minWidth: '700px' }}>
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.82rem' }}>
                 <thead>
-                  <tr>
-                    <th style={{ width: '40%' }}>Item / Service Description</th>
-                    <th style={{ width: '16%' }}>Category</th>
-                    <th style={{ width: '10%' }}>Qty</th>
-                    <th style={{ width: '18%' }}>Unit Price ({settings.currency})</th>
-                    <th style={{ width: '12%' }}>Total ({settings.currency})</th>
-                    <th style={{ width: '4%' }}></th>
+                  <tr style={{ backgroundColor: '#fbf9f5', borderBottom: '1px solid var(--border-subtle)', color: 'var(--text-muted)' }}>
+                    <th style={{ padding: '8px 10px', minWidth: '220px' }}>Service Name</th>
+                    <th style={{ padding: '8px 10px', width: '80px' }}>Quantity</th>
+                    <th style={{ padding: '8px 10px', width: '110px' }}>Rate (₹)</th>
+                    <th style={{ padding: '8px 10px', width: '90px' }}>Discount (₹)</th>
+                    <th style={{ padding: '8px 10px', width: '90px' }}>GST (%)</th>
+                    <th style={{ padding: '8px 10px', width: '110px' }}>Amount (₹)</th>
+                    <th style={{ padding: '8px 10px', width: '40px' }}></th>
                   </tr>
                 </thead>
                 <tbody>
-                  {formData.items.map((item, index) => (
-                    <tr key={item.id || index}>
-                      <td>
+                  {formData.services.map((row, index) => (
+                    <tr key={row.id || index} style={{ borderBottom: '1px solid #f5f3ed' }}>
+                      <td style={{ padding: '8px 10px' }}>
                         <select
-                          className="form-select"
-                          value={item.productId || ''}
-                          onChange={(e) => handleItemSelectProduct(index, e.target.value)}
-                          style={{ marginBottom: '6px', fontSize: '0.78rem', padding: '6px 10px' }}
+                          className="form-input"
+                          value={row.serviceId}
+                          onChange={(e) => handleServiceSelect(index, e.target.value)}
+                          style={{ height: '32px', fontSize: '0.8rem', marginBottom: '4px' }}
                         >
-                          <option value="">-- Quick Pick from Showroom Catalog --</option>
-                          {products.map((p) => (
-                            <option key={p.id} value={p.id}>
-                              [{p.category}] {p.name} - ₹{p.price.toLocaleString('en-IN')}
+                          <option value="">-- Choose from Catalog --</option>
+                          {services.map((s) => (
+                            <option key={s.id} value={s.id}>
+                              {s.name} (₹{s.price})
                             </option>
                           ))}
                         </select>
-
                         <input
                           type="text"
                           className="form-input"
-                          placeholder="Item name / service specification"
-                          value={item.name}
-                          onChange={(e) => handleItemChange(index, 'name', e.target.value)}
-                          required
+                          value={row.name}
+                          onChange={(e) => handleServiceFieldChange(index, 'name', e.target.value)}
+                          placeholder="Or type custom service description..."
+                          style={{ height: '30px', fontSize: '0.78rem' }}
                         />
                       </td>
 
-                      <td>
+                      <td style={{ padding: '8px 10px' }}>
+                        <input
+                          type="number"
+                          className="form-input"
+                          value={row.quantity}
+                          onChange={(e) => handleServiceFieldChange(index, 'quantity', e.target.value)}
+                          min="1"
+                          style={{ height: '32px', fontSize: '0.8rem' }}
+                        />
+                      </td>
+
+                      <td style={{ padding: '8px 10px' }}>
+                        <input
+                          type="number"
+                          className="form-input"
+                          value={row.rate}
+                          onChange={(e) => handleServiceFieldChange(index, 'rate', e.target.value)}
+                          min="0"
+                          style={{ height: '32px', fontSize: '0.8rem' }}
+                        />
+                      </td>
+
+                      <td style={{ padding: '8px 10px' }}>
+                        <input
+                          type="number"
+                          className="form-input"
+                          value={row.discount}
+                          onChange={(e) => handleServiceFieldChange(index, 'discount', e.target.value)}
+                          min="0"
+                          style={{ height: '32px', fontSize: '0.8rem' }}
+                        />
+                      </td>
+
+                      <td style={{ padding: '8px 10px' }}>
                         <select
-                          className="form-select"
-                          value={item.category}
-                          onChange={(e) => handleItemChange(index, 'category', e.target.value)}
+                          className="form-input"
+                          value={row.gst}
+                          onChange={(e) => handleServiceFieldChange(index, 'gst', Number(e.target.value))}
+                          style={{ height: '32px', fontSize: '0.8rem' }}
                         >
-                          <option value="Vehicles">Vehicles</option>
-                          <option value="Services">Services</option>
-                          <option value="Detailing">Detailing</option>
-                          <option value="Spare Parts">Spare Parts</option>
-                          <option value="Accessories">Accessories</option>
+                          <option value={18}>18%</option>
+                          <option value={28}>28%</option>
+                          <option value={12}>12%</option>
+                          <option value={0}>0%</option>
                         </select>
                       </td>
 
-                      <td>
-                        <input
-                          type="number"
-                          className="form-input"
-                          min="1"
-                          value={item.qty}
-                          onChange={(e) => handleItemChange(index, 'qty', e.target.value)}
-                          required
-                        />
+                      <td style={{ padding: '8px 10px', fontWeight: 800, color: 'var(--text-primary)' }}>
+                        {formatCurrency(row.amount)}
                       </td>
 
-                      <td>
-                        <input
-                          type="number"
-                          className="form-input"
-                          min="0"
-                          value={item.unitPrice}
-                          onChange={(e) => handleItemChange(index, 'unitPrice', e.target.value)}
-                          required
-                        />
-                      </td>
-
-                      <td>
-                        <span style={{ fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
-                          {(Number(item.total) || 0).toLocaleString('en-IN')}
-                        </span>
-                      </td>
-
-                      <td>
-                        {formData.items.length > 1 && (
+                      <td style={{ padding: '8px 10px', textAlign: 'center' }}>
+                        {formData.services.length > 1 && (
                           <button
                             type="button"
-                            onClick={() => removeItemRow(index)}
-                            style={{
-                              background: 'none',
-                              border: 'none',
-                              color: 'var(--status-overdue)',
-                              cursor: 'pointer',
-                              padding: '4px'
-                            }}
+                            onClick={() => handleRemoveServiceRow(index)}
+                            style={{ background: 'none', border: 'none', color: '#dc2626', cursor: 'pointer' }}
                           >
                             <Trash2 size={16} />
                           </button>
@@ -625,113 +844,412 @@ export default function InvoiceModal() {
             </div>
           </div>
 
-          {/* Section 3: Summary Breakdown & Notes */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'minmax(0, 1.2fr) minmax(0, 1fr)',
-              gap: '24px',
-              marginBottom: '28px'
-            }}
-          >
-            {/* Notes & Terms Box */}
-            <div>
-              <label className="form-label">Invoice Notes / Warranty & Inspection Remarks</label>
-              <textarea
-                className="form-textarea"
-                rows="4"
-                placeholder="Enter client instructions, vehicle diagnostics status, warranty terms..."
-                value={formData.notes}
-                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              />
-            </div>
-
-            {/* Calculations Box */}
-            <div
-              style={{
-                background: 'var(--bg-input)',
-                borderRadius: 'var(--radius-md)',
-                padding: '20px',
-                border: '1px solid var(--border-gold)'
-              }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.88rem' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>Items Subtotal:</span>
-                <span style={{ fontWeight: 600 }}>{subtotal.toLocaleString('en-IN')}</span>
-              </div>
-
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', fontSize: '0.88rem' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>Discount / Concession ({settings.currency}):</span>
-                <input
-                  type="number"
-                  min="0"
-                  style={{ width: '110px', textAlign: 'right', padding: '4px 8px' }}
-                  className="form-input"
-                  value={formData.discountAmount}
-                  onChange={(e) => setFormData({ ...formData, discountAmount: e.target.value })}
-                />
-              </div>
-
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.88rem' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>Taxable Value:</span>
-                <span style={{ fontWeight: 600 }}>{taxableAmount.toLocaleString('en-IN')}</span>
-              </div>
-
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '14px', fontSize: '0.88rem' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>
-                  Automotive GST ({taxRate}%):
+          {/* SECTION E: SPARE PARTS DETAILS (Dynamic Multi-Row) */}
+          <div style={{ marginBottom: '24px', borderTop: '1.5px solid var(--border-subtle)', paddingTop: '18px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Package size={18} color="var(--gold-500)" />
+                <span style={{ fontSize: '0.85rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--gold-600)', letterSpacing: '1px' }}>
+                  E. Spare Parts Details (Inventory Deducted Upon Confirmation)
                 </span>
-                <span style={{ fontWeight: 600, color: 'var(--gold-400)' }}>{taxAmount.toLocaleString('en-IN')}</span>
               </div>
 
-              <div
+              <button
+                type="button"
+                onClick={handleAddSparePartRow}
                 style={{
-                  paddingTop: '12px',
-                  borderTop: '1px solid var(--border-medium)',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'baseline'
+                  padding: '5px 12px',
+                  borderRadius: '6px',
+                  border: '1px solid var(--border-gold)',
+                  backgroundColor: 'var(--gold-100)',
+                  color: 'var(--gold-600)',
+                  fontSize: '0.76rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px'
                 }}
               >
-                <span style={{ fontSize: '1rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                  Grand Total:
+                <Plus size={14} />
+                <span>Add Spare Part Row</span>
+              </button>
+            </div>
+
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.82rem' }}>
+                <thead>
+                  <tr style={{ backgroundColor: '#fbf9f5', borderBottom: '1px solid var(--border-subtle)', color: 'var(--text-muted)' }}>
+                    <th style={{ padding: '8px 10px', minWidth: '220px' }}>Part Name</th>
+                    <th style={{ padding: '8px 10px', width: '130px' }}>Part Number</th>
+                    <th style={{ padding: '8px 10px', width: '80px' }}>Quantity</th>
+                    <th style={{ padding: '8px 10px', width: '110px' }}>Unit Price (₹)</th>
+                    <th style={{ padding: '8px 10px', width: '90px' }}>Discount (₹)</th>
+                    <th style={{ padding: '8px 10px', width: '90px' }}>GST (%)</th>
+                    <th style={{ padding: '8px 10px', width: '110px' }}>Amount (₹)</th>
+                    <th style={{ padding: '8px 10px', width: '40px' }}></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {formData.spareParts.map((row, index) => {
+                    const matchedPart = spareParts.find((p) => p.id === row.partId);
+                    return (
+                      <tr key={row.id || index} style={{ borderBottom: '1px solid #f5f3ed' }}>
+                        <td style={{ padding: '8px 10px' }}>
+                          <select
+                            className="form-input"
+                            value={row.partId}
+                            onChange={(e) => handleSparePartSelect(index, e.target.value)}
+                            style={{ height: '32px', fontSize: '0.8rem', marginBottom: '4px' }}
+                          >
+                            <option value="">-- Select from Inventory Catalog --</option>
+                            {spareParts.map((p) => (
+                              <option key={p.id} value={p.id}>
+                                {p.name} ({p.brand} - Stock: {p.availableQuantity})
+                              </option>
+                            ))}
+                          </select>
+                          <input
+                            type="text"
+                            className="form-input"
+                            value={row.name}
+                            onChange={(e) => handleSparePartFieldChange(index, 'name', e.target.value)}
+                            placeholder="Part Name"
+                            style={{ height: '30px', fontSize: '0.78rem' }}
+                          />
+                          {matchedPart && (
+                            <div style={{ fontSize: '0.7rem', color: matchedPart.availableQuantity <= 5 ? '#dc2626' : '#059669', marginTop: '2px', fontWeight: 600 }}>
+                              Available Stock: {matchedPart.availableQuantity} units
+                            </div>
+                          )}
+                        </td>
+
+                        <td style={{ padding: '8px 10px' }}>
+                          <input
+                            type="text"
+                            className="form-input"
+                            value={row.partNumber}
+                            onChange={(e) => handleSparePartFieldChange(index, 'partNumber', e.target.value)}
+                            placeholder="PN-1234"
+                            style={{ height: '32px', fontSize: '0.8rem' }}
+                          />
+                        </td>
+
+                        <td style={{ padding: '8px 10px' }}>
+                          <input
+                            type="number"
+                            className="form-input"
+                            value={row.quantity}
+                            onChange={(e) => handleSparePartFieldChange(index, 'quantity', e.target.value)}
+                            min="1"
+                            style={{ height: '32px', fontSize: '0.8rem' }}
+                          />
+                        </td>
+
+                        <td style={{ padding: '8px 10px' }}>
+                          <input
+                            type="number"
+                            className="form-input"
+                            value={row.unitPrice}
+                            onChange={(e) => handleSparePartFieldChange(index, 'unitPrice', e.target.value)}
+                            min="0"
+                            style={{ height: '32px', fontSize: '0.8rem' }}
+                          />
+                        </td>
+
+                        <td style={{ padding: '8px 10px' }}>
+                          <input
+                            type="number"
+                            className="form-input"
+                            value={row.discount}
+                            onChange={(e) => handleSparePartFieldChange(index, 'discount', e.target.value)}
+                            min="0"
+                            style={{ height: '32px', fontSize: '0.8rem' }}
+                          />
+                        </td>
+
+                        <td style={{ padding: '8px 10px' }}>
+                          <select
+                            className="form-input"
+                            value={row.gst}
+                            onChange={(e) => handleSparePartFieldChange(index, 'gst', Number(e.target.value))}
+                            style={{ height: '32px', fontSize: '0.8rem' }}
+                          >
+                            <option value={18}>18%</option>
+                            <option value={28}>28%</option>
+                            <option value={12}>12%</option>
+                            <option value={5}>5%</option>
+                          </select>
+                        </td>
+
+                        <td style={{ padding: '8px 10px', fontWeight: 800, color: 'var(--text-primary)' }}>
+                          {formatCurrency(row.amount)}
+                        </td>
+
+                        <td style={{ padding: '8px 10px', textAlign: 'center' }}>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveSparePartRow(index)}
+                            style={{ background: 'none', border: 'none', color: '#dc2626', cursor: 'pointer' }}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* SECTION F & G: BILLING SUMMARY & PAYMENT DETAILS */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '24px', borderTop: '1.5px solid var(--border-subtle)', paddingTop: '20px' }}>
+            {/* Section F: Billing Summary */}
+            <div style={{ padding: '20px', borderRadius: '10px', backgroundColor: '#fdfbf7', border: '1.5px solid var(--border-gold)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+                <Calculator size={18} color="var(--gold-500)" />
+                <span style={{ fontSize: '0.85rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--gold-600)', letterSpacing: '1px' }}>
+                  F. Billing Summary
                 </span>
-                <span
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.85rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-secondary)' }}>
+                  <span>Service Subtotal:</span>
+                  <strong>{formatCurrency(formData.serviceSubtotal)}</strong>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-secondary)' }}>
+                  <span>Spare Parts Subtotal:</span>
+                  <strong>{formatCurrency(formData.sparePartsSubtotal)}</strong>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-primary)', borderTop: '1px dashed #e5e0d4', paddingTop: '6px' }}>
+                  <span>Gross Total:</span>
+                  <strong>{formatCurrency(formData.grossTotal)}</strong>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', color: '#059669' }}>
+                  <span>Total Discount:</span>
+                  <strong>- {formatCurrency(formData.discountAmount)}</strong>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-secondary)', borderTop: '1px dashed #e5e0d4', paddingTop: '6px' }}>
+                  <span>Taxable Amount:</span>
+                  <strong>{formatCurrency(formData.taxableAmount)}</strong>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)', fontSize: '0.78rem' }}>
+                  <span>CGST (9%):</span>
+                  <span>{formatCurrency(formData.cgst)}</span>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)', fontSize: '0.78rem' }}>
+                  <span>SGST (9%):</span>
+                  <span>{formatCurrency(formData.sgst)}</span>
+                </div>
+
+                {formData.igst > 0 && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)', fontSize: '0.78rem' }}>
+                    <span>IGST:</span>
+                    <span>{formatCurrency(formData.igst)}</span>
+                  </div>
+                )}
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)', fontSize: '0.78rem' }}>
+                  <span>Round Off:</span>
+                  <span>{formatCurrency(formData.roundOff)}</span>
+                </div>
+
+                <div
                   style={{
-                    fontSize: '1.5rem',
-                    fontWeight: 800,
-                    color: 'var(--gold-400)',
-                    fontFamily: 'var(--font-sans)'
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    borderTop: '2px solid var(--gold-500)',
+                    paddingTop: '10px',
+                    marginTop: '6px'
                   }}
                 >
-                  {settings.currency} {grandTotal.toLocaleString('en-IN')}
+                  <span style={{ fontSize: '1.05rem', fontWeight: 900, color: 'var(--text-primary)' }}>
+                    Grand Total:
+                  </span>
+                  <span style={{ fontSize: '1.35rem', fontWeight: 900, color: 'var(--gold-600)', fontFamily: 'var(--font-display)' }}>
+                    {formatCurrency(formData.grandTotal)}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Section G: Payment Details */}
+            <div style={{ padding: '20px', borderRadius: '10px', backgroundColor: '#fdfbf7', border: '1px solid var(--border-subtle)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+                <CreditCard size={18} color="var(--gold-500)" />
+                <span style={{ fontSize: '0.85rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--gold-600)', letterSpacing: '1px' }}>
+                  G. Payment Details
                 </span>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 600, marginBottom: '4px' }}>
+                    Payment Method
+                  </label>
+                  <select
+                    className="form-input"
+                    value={formData.paymentMethod}
+                    onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
+                  >
+                    <option value="UPI">UPI (GooglePay / PhonePe / Paytm)</option>
+                    <option value="Card">Credit / Debit Card (POS)</option>
+                    <option value="Bank Transfer">Bank Transfer (NEFT / RTGS / IMPS)</option>
+                    <option value="Cash">Cash at Workshop Counter</option>
+                  </select>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 600, marginBottom: '4px' }}>
+                      Amount Paid (₹) *
+                    </label>
+                    <input
+                      type="number"
+                      className="form-input"
+                      value={formData.amountPaid}
+                      onChange={(e) => {
+                        const paid = Number(e.target.value) || 0;
+                        const bal = Math.max(0, formData.grandTotal - paid);
+                        const status = bal === 0 ? 'Paid' : paid > 0 ? 'Partial' : 'Unpaid';
+                        setFormData({
+                          ...formData,
+                          amountPaid: paid,
+                          balanceAmount: bal,
+                          paymentStatus: status,
+                          status
+                        });
+                      }}
+                      min="0"
+                      max={formData.grandTotal}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 600, marginBottom: '4px' }}>
+                      Balance Amount (₹)
+                    </label>
+                    <input
+                      type="number"
+                      className="form-input"
+                      value={formData.balanceAmount}
+                      readOnly
+                      style={{ backgroundColor: '#f5f3ed', color: '#b91c1c', fontWeight: 700 }}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 600, marginBottom: '4px' }}>
+                      Payment Status *
+                    </label>
+                    <select
+                      className="form-input"
+                      value={formData.paymentStatus}
+                      onChange={(e) => {
+                        const status = e.target.value;
+                        const paid = status === 'Paid' ? formData.grandTotal : status === 'Unpaid' ? 0 : formData.amountPaid;
+                        const bal = Math.max(0, formData.grandTotal - paid);
+                        setFormData({
+                          ...formData,
+                          paymentStatus: status,
+                          status,
+                          amountPaid: paid,
+                          balanceAmount: bal
+                        });
+                      }}
+                    >
+                      <option value="Paid">Paid (Full Settlement)</option>
+                      <option value="Partial">Partial (Part Settlement)</option>
+                      <option value="Unpaid">Unpaid (Awaiting Payment)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 600, marginBottom: '4px' }}>
+                      Transaction / Ref ID
+                    </label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={formData.transactionId}
+                      onChange={(e) => setFormData({ ...formData, transactionId: e.target.value })}
+                      placeholder="e.g. UPI/391024/HDFC"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 600, marginBottom: '4px' }}>
+                    Job Card Notes / Remarks
+                  </label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    value={formData.notes}
+                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                    placeholder="Notes printed on invoice..."
+                  />
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Modal Footer Actions */}
+          {/* Modal Actions */}
           <div
             style={{
               display: 'flex',
-              justifyContent: 'flex-end',
-              gap: '14px',
-              paddingTop: '20px',
-              borderTop: '1px solid var(--border-subtle)'
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '12px',
+              marginTop: '26px',
+              borderTop: '1px solid var(--border-subtle)',
+              paddingTop: '18px'
             }}
           >
             <button
               type="button"
-              className="btn-outline"
               onClick={() => setIsInvoiceModalOpen(false)}
+              className="btn-outline"
+              style={{ padding: '9px 20px', fontSize: '0.86rem' }}
             >
               Cancel
             </button>
 
-            <button type="submit" className="btn-gold" style={{ padding: '10px 28px' }}>
-              <Check size={18} />
-              <span>{invoiceToEdit ? 'Save Invoice Changes' : 'Generate & Authorize Invoice'}</span>
-            </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <button
+                type="submit"
+                className="btn-primary"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '10px 24px',
+                  fontSize: '0.88rem',
+                  fontWeight: 700,
+                  borderRadius: 'var(--radius-md)',
+                  background: 'var(--gold-shimmer)',
+                  color: '#ffffff',
+                  border: 'none',
+                  boxShadow: 'var(--shadow-gold)',
+                  cursor: 'pointer'
+                }}
+              >
+                <Check size={18} />
+                <span>Save & Generate Invoice</span>
+              </button>
+            </div>
           </div>
         </form>
       </div>

@@ -1,486 +1,939 @@
-// Mock data for SR CARS - Luxury Automotive Billing & Dealership Management
+// Mock Data for SR CARS - Luxury Automotive Service, Billing & Dealership Management
 
 export const initialSettings = {
   dealershipName: "SR CARS",
-  tagline: "Prestige Automobiles & Performance Center",
-  address: "Plot 42, Luxury Motor Boulevard, Jubilee Hills, Hyderabad - 500033",
+  tagline: "Prestige Automobiles & Performance Service Center",
+  companyLogo: "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=200&auto=format&fit=crop&q=80",
+  address: "Plot 42, Luxury Motor Boulevard, Jubilee Hills, Hyderabad - 500033, Telangana",
   phone: "+91 98490 87654",
   email: "billing@srcarsluxury.com",
   website: "www.srcarsluxury.com",
   gstin: "36AABCU9603R1ZM",
   pan: "AABCU9603R",
+  
+  // Invoice Settings
   invoicePrefix: "SRC-2026-",
+  invoiceNumberFormat: "PREFIX + 3-Digit Counter (e.g. SRC-2026-001)",
+  defaultGst: 18,
+  termsAndConditions: "1. Goods once sold and fitted will not be returned.\n2. All mechanical and service repairs carry a 6-month or 10,000 KM workshop warranty.\n3. Payment is strictly due upon vehicle handover unless an approved credit line is in place.\n4. Disputes subject to Hyderabad judicial jurisdiction only.",
+  invoiceFooter: "Thank you for choosing SR CARS. Precision engineering, certified technicians & supreme luxury care.",
+  
+  // General Settings
   currency: "₹",
-  taxRate: 18, // 18% GST default in automotive
-  paymentTerms: "Payment due within 7 days of invoice date.",
+  dateFormat: "DD/MM/YYYY",
+  notificationPreferences: {
+    smsInvoiceAlerts: true,
+    whatsappServiceUpdates: true,
+    lowStockAlerts: true,
+    dailySalesEmail: true
+  },
+  
   bankDetails: {
     bankName: "HDFC Bank Ltd",
     accountName: "SR CARS AUTOMOBILES PVT LTD",
     accountNumber: "50200088921473",
     ifsc: "HDFC0001234",
-    branch: "Jubilee Hills Road 36, Hyderabad",
+    branch: "Road No 36, Jubilee Hills, Hyderabad",
     upiId: "srcars@hdfcbank"
-  },
-  notes: "Thank you for trusting SR CARS for your luxury automotive needs. All mechanical work carries a 6-month or 10,000 KM limited warranty."
+  }
 };
 
-export const initialProducts = [
-  // Luxury Cars & Pre-Owned Exotics
+export const initialEmployees = [
   {
-    id: "prod-1",
-    name: "Mercedes-Benz E-Class E 220d AMG Line",
-    category: "Vehicles",
-    sku: "AUTO-MB-E220D",
-    price: 7850000,
-    cost: 7200000,
-    stock: 2,
-    warranty: "2 Years Comprehensive",
-    compatibility: "Luxury Sedan / 2024 Model",
-    description: "Obsidian Black, Burmester 3D Sound, Panoramic Sunroof, MBUX Infotainment"
+    id: "EMP-001",
+    name: "Vikram Singhania",
+    email: "admin@srcars.com",
+    role: "Super Admin",
+    phone: "+91 98490 11111",
+    status: "Active",
+    permissions: ["Manage All", "Invoices & Billing", "Services Catalog", "Spare Parts Inventory", "Customer Management", "Reports & Analytics", "System Settings"]
   },
   {
-    id: "prod-2",
-    name: "BMW M340i xDrive 3.0L Turbo",
-    category: "Vehicles",
-    sku: "AUTO-BMW-M340I",
-    price: 7490000,
-    cost: 6850000,
-    stock: 1,
-    warranty: "3 Years BSI Plus",
-    compatibility: "Performance Sedan / 2025 Model",
-    description: "Dravit Grey Metallic, 382 HP Inline 6, M Sport Brakes, Carbon Mirror Caps"
+    id: "EMP-002",
+    name: "Rahul Deshmukh",
+    email: "rahul.advisor@srcars.com",
+    role: "Service Advisor",
+    phone: "+91 98490 22222",
+    status: "Active",
+    permissions: ["Invoices & Billing", "Services Catalog", "Customer Management"]
   },
   {
-    id: "prod-3",
-    name: "Porsche Macan GTS 2.9L V6 Twin-Turbo",
-    category: "Vehicles",
-    sku: "AUTO-POR-MACGTS",
-    price: 15400000,
-    cost: 14100000,
-    stock: 1,
-    warranty: "2 Years Porsche Approved",
-    compatibility: "Luxury SUV / 2024 Model",
-    description: "Crayon Finish, Sport Chrono Package, 21-inch RS Spyder Design Wheels"
+    id: "EMP-003",
+    name: "Karthik Verma",
+    email: "karthik.inventory@srcars.com",
+    role: "Inventory Manager",
+    phone: "+91 98490 33333",
+    status: "Active",
+    permissions: ["Spare Parts Inventory", "Reports & Analytics"]
   },
+  {
+    id: "EMP-004",
+    name: "Mohammed Irfan",
+    email: "irfan.billing@srcars.com",
+    role: "Billing Specialist",
+    phone: "+91 98490 44444",
+    status: "Active",
+    permissions: ["Invoices & Billing", "Customer Management"]
+  }
+];
 
-  // Luxury Detailing & Protection
+export const initialCustomers = [
   {
-    id: "prod-4",
-    name: "Kavaca 9H Ceramic Shield Pro Coating",
+    id: "CUST-001",
+    name: "Vikramaditya Reddy",
+    phone: "+91 98765 43210",
+    email: "vikram.reddy@hyderabadgroup.com",
+    address: "Villa 14, Palm Meadows, Jubilee Hills, Hyderabad - 500033",
+    gstin: "36AAECR4921K1ZN",
+    createdAt: "2025-08-14",
+    vehicles: [
+      {
+        id: "VEH-101",
+        vehicleNumber: "TS 09 EA 4589",
+        brand: "Mercedes-Benz",
+        model: "E-Class E 220d AMG Line",
+        fuelType: "Diesel",
+        vehicleType: "Sedan",
+        chassisNumber: "WDB2130041A987654",
+        odometer: "34,500 km"
+      },
+      {
+        id: "VEH-102",
+        vehicleNumber: "TS 09 FH 0007",
+        brand: "Porsche",
+        model: "Macan GTS 2.9L Twin-Turbo",
+        fuelType: "Petrol",
+        vehicleType: "SUV",
+        chassisNumber: "WP1ZZZ95ZMLA12984",
+        odometer: "18,200 km"
+      }
+    ]
+  },
+  {
+    id: "CUST-002",
+    name: "Rajesh Sharma",
+    phone: "+91 98480 12345",
+    email: "rajesh.sharma@apexlogistics.in",
+    address: "Flat 9B, Horizon Towers, Gachibowli, Hyderabad - 500032",
+    gstin: "36AAACH7890P1ZQ",
+    createdAt: "2025-09-02",
+    vehicles: [
+      {
+        id: "VEH-103",
+        vehicleNumber: "TS 07 HK 9081",
+        brand: "BMW",
+        model: "M340i xDrive 3.0L",
+        fuelType: "Petrol",
+        vehicleType: "Sedan",
+        chassisNumber: "WBA5U71020FP43219",
+        odometer: "26,800 km"
+      }
+    ]
+  },
+  {
+    id: "CUST-003",
+    name: "Sneha Rao",
+    phone: "+91 99890 67890",
+    email: "sneha.rao@zenithtech.io",
+    address: "Plot 89, Financial District, Nanakramguda, Hyderabad - 500075",
+    gstin: "",
+    createdAt: "2025-10-10",
+    vehicles: [
+      {
+        id: "VEH-104",
+        vehicleNumber: "TS 08 EM 3344",
+        brand: "Audi",
+        model: "A6 45 TFSI Technology",
+        fuelType: "Petrol",
+        vehicleType: "Sedan",
+        chassisNumber: "WAUZZZF27LN054321",
+        odometer: "42,100 km"
+      }
+    ]
+  },
+  {
+    id: "CUST-004",
+    name: "Arvind Kumar",
+    phone: "+91 94400 98765",
+    email: "arvind.kumar@kumbuilders.com",
+    address: "Road No 10, Banjara Hills, Hyderabad - 500034",
+    gstin: "36ABCPK5432R1ZF",
+    createdAt: "2025-11-05",
+    vehicles: [
+      {
+        id: "VEH-105",
+        vehicleNumber: "TS 10 AB 1234",
+        brand: "Land Rover",
+        model: "Range Rover Velar R-Dynamic",
+        fuelType: "Diesel",
+        vehicleType: "SUV",
+        chassisNumber: "SALYA2V88LA789123",
+        odometer: "51,200 km"
+      },
+      {
+        id: "VEH-106",
+        vehicleNumber: "TS 10 CD 5678",
+        brand: "BMW",
+        model: "530d M Sport",
+        fuelType: "Diesel",
+        vehicleType: "Sedan",
+        chassisNumber: "WBAJC71070G891234",
+        odometer: "63,800 km"
+      }
+    ]
+  },
+  {
+    id: "CUST-005",
+    name: "Meera Nambiar",
+    phone: "+91 91234 56789",
+    email: "meera.nambiar@nambiardesign.com",
+    address: "402 Royal Palms, Madhapur, Hyderabad - 500081",
+    gstin: "",
+    createdAt: "2026-01-12",
+    vehicles: [
+      {
+        id: "VEH-107",
+        vehicleNumber: "TS 09 EQ 7788",
+        brand: "Volvo",
+        model: "XC60 B5 Inscription",
+        fuelType: "Hybrid",
+        vehicleType: "SUV",
+        chassisNumber: "YV4A22PK6M1098765",
+        odometer: "19,400 km"
+      }
+    ]
+  }
+];
+
+export const initialServices = [
+  {
+    id: "SRV-001",
+    name: "Car Water Wash",
+    description: "High-pressure foam wash, underbody chassis cleaning, tyre dressing and streak-free exterior rinse.",
+    category: "Washing & Cleaning",
+    price: 1200,
+    gstPercentage: 18,
+    estimatedDuration: "45 mins",
+    status: "Active"
+  },
+  {
+    id: "SRV-002",
+    name: "Interior Cleaning",
+    description: "Deep steam sanitization, upholstery shampooing, dashboard UV conditioning and boot vacuuming.",
     category: "Detailing",
-    sku: "SRV-DET-CER9H",
-    price: 45000,
-    cost: 18000,
-    stock: 45,
-    warranty: "3 Years Warranty",
-    compatibility: "All Luxury Cars",
-    description: "Multi-stage paint correction, 3-layer 9H nano-ceramic matrix, hydrophobic gloss finish"
+    price: 3500,
+    gstPercentage: 18,
+    estimatedDuration: "2 hours",
+    status: "Active"
   },
   {
-    id: "prod-5",
-    name: "XPEL Ultimate Plus Paint Protection Film (Full Body)",
+    id: "SRV-003",
+    name: "Exterior Polishing",
+    description: "3-stage machine cut, swirl mark removal and high-gloss polymer sealant protection.",
     category: "Detailing",
-    sku: "SRV-DET-PPF-FULL",
-    price: 185000,
-    cost: 95000,
-    stock: 12,
-    warranty: "10 Years Manufacturer Warranty",
-    compatibility: "Full Vehicle Wrap",
-    description: "Self-healing thermoplastic polyurethane PPF, anti-yellowing & optical clarity"
+    price: 6500,
+    gstPercentage: 18,
+    estimatedDuration: "3.5 hours",
+    status: "Active"
   },
   {
-    id: "prod-6",
-    name: "Interior Deep Spa & Leather Nourishment",
+    id: "SRV-004",
+    name: "Engine Oil Change",
+    description: "Complete engine oil draining, filter replacement, sump washer renewal and electronic oil level calibration.",
+    category: "Periodic Maintenance",
+    price: 1800,
+    gstPercentage: 18,
+    estimatedDuration: "1 hour",
+    status: "Active"
+  },
+  {
+    id: "SRV-005",
+    name: "General Service",
+    description: "Comprehensive 60-point mechanical checkup, fluid top-ups, spark plug clean, brake inspection & road test.",
+    category: "Periodic Maintenance",
+    price: 4800,
+    gstPercentage: 18,
+    estimatedDuration: "4 hours",
+    status: "Active"
+  },
+  {
+    id: "SRV-006",
+    name: "AC Service",
+    description: "Evaporator coil cleaning, cabin filter replacement, R134a/R1234yf gas leak test and recharge.",
+    category: "Electrical & AC",
+    price: 3800,
+    gstPercentage: 18,
+    estimatedDuration: "2 hours",
+    status: "Active"
+  },
+  {
+    id: "SRV-007",
+    name: "Wheel Alignment",
+    description: "Computerized 3D 4-wheel laser alignment, toe/camber/caster calibration for optimal tyre longevity.",
+    category: "Wheel & Tyre",
+    price: 1200,
+    gstPercentage: 18,
+    estimatedDuration: "40 mins",
+    status: "Active"
+  },
+  {
+    id: "SRV-008",
+    name: "Wheel Balancing",
+    description: "High-speed computerized dynamic wheel balancing with precision zinc weights (all 4 wheels).",
+    category: "Wheel & Tyre",
+    price: 1400,
+    gstPercentage: 18,
+    estimatedDuration: "45 mins",
+    status: "Active"
+  },
+  {
+    id: "SRV-009",
+    name: "Engine Repair",
+    description: "Complete computerized diagnostic scanning, timing belt/chain adjustment, valve clearing & overhaul.",
+    category: "Mechanical Repair",
+    price: 15500,
+    gstPercentage: 18,
+    estimatedDuration: "8 hours",
+    status: "Active"
+  },
+  {
+    id: "SRV-010",
+    name: "Denting and Painting",
+    description: "High-precision paintless dent removal (PDR), paint booth baking and OEM clear coat matching per panel.",
+    category: "Body Shop",
+    price: 8500,
+    gstPercentage: 18,
+    estimatedDuration: "24 hours",
+    status: "Active"
+  },
+  {
+    id: "SRV-011",
+    name: "Ceramic Coating 9H Pro",
+    description: "3-layer 9H nano-matrix ceramic protection with 3 years hydrophobic paint warranty.",
     category: "Detailing",
-    sku: "SRV-DET-LEATH",
-    price: 12500,
-    cost: 3500,
-    stock: 60,
-    warranty: "30 Days Freshness",
-    compatibility: "Nappa / Merino Leather",
-    description: "Swissvax steam sanitization, conditioner balm, dashboard UV anti-glare shield"
+    price: 28000,
+    gstPercentage: 18,
+    estimatedDuration: "12 hours",
+    status: "Active"
   },
+  {
+    id: "SRV-012",
+    name: "Brake System Overhaul",
+    description: "Brake caliper sliding pin greasing, rotor skim machining, bleed & DOT4 hydraulic flush.",
+    category: "Mechanical Repair",
+    price: 3200,
+    gstPercentage: 18,
+    estimatedDuration: "2.5 hours",
+    status: "Active"
+  }
+];
 
-  // Periodic Maintenance & Workshop Services
+export const initialSpareParts = [
   {
-    id: "prod-7",
-    name: "Major Annual Periodic Service Package",
-    category: "Services",
-    sku: "SRV-MNT-MAJOR",
-    price: 32000,
-    cost: 14000,
-    stock: 100,
-    warranty: "6 Months / 10,000 KM",
-    compatibility: "German & European Luxury Cars",
-    description: "Motul synthetic oil replacement, oil filter, air filter, pollen filter, 64-point digital scan"
+    id: "PRT-101",
+    name: "Fully Synthetic Engine Oil 5W-40 (4L)",
+    partNumber: "CAS-EDG-5W40-4L",
+    brand: "Castrol",
+    category: "Lubricants & Fluids",
+    hsnCode: "27101980",
+    purchasePrice: 2800,
+    sellingPrice: 4200,
+    availableQuantity: 4, // LOW STOCK (min is 10)
+    minimumStockLevel: 10,
+    gstPercentage: 18
   },
   {
-    id: "prod-8",
-    name: "Brembo High Performance Brake Overhaul",
-    category: "Services",
-    sku: "SRV-BRK-OVERHAUL",
-    price: 54000,
-    cost: 31000,
-    stock: 8,
-    warranty: "1 Year / 20,000 KM",
-    compatibility: "BMW / Audi / Mercedes",
-    description: "Front & rear ceramic low-dust pads, sensor replacement, brake fluid flush DOT 5.1"
+    id: "PRT-102",
+    name: "High Flow Spin-On Oil Filter",
+    partNumber: "BOS-OF-8921",
+    brand: "Bosch",
+    category: "Filters",
+    hsnCode: "84212300",
+    purchasePrice: 550,
+    sellingPrice: 950,
+    availableQuantity: 28,
+    minimumStockLevel: 8,
+    gstPercentage: 18
   },
   {
-    id: "prod-9",
-    name: "AC Climate Control Overhaul & Anti-Bacterial Treatment",
-    category: "Services",
-    sku: "SRV-AC-OVERHAUL",
-    price: 16500,
-    cost: 6500,
-    stock: 30,
-    warranty: "1 Year Cooling Warranty",
-    compatibility: "Dual & Quad Zone Climate Systems",
-    description: "R134a/R1234yf refrigerant evac & recharge, compressor oil, ozone cabin sterilization"
-  },
-
-  // Spare Parts & Performance
-  {
-    id: "prod-10",
-    name: "Michelin Pilot Sport 5 (245/45 R19) Tyre",
-    category: "Spare Parts",
-    sku: "PRT-TYR-MICH-19",
-    price: 24500,
-    cost: 19500,
-    stock: 16,
-    warranty: "5 Years Standard",
-    compatibility: "19-inch Alloy Wheels",
-    description: "Ultra high performance road contact, acoustic foam damping, velvet sidewall"
+    id: "PRT-103",
+    name: "Front Ceramic Brake Pad Set",
+    partNumber: "BRM-BP-4412",
+    brand: "Brembo",
+    category: "Braking System",
+    hsnCode: "87083000",
+    purchasePrice: 5400,
+    sellingPrice: 8500,
+    availableQuantity: 3, // LOW STOCK (min is 6)
+    minimumStockLevel: 6,
+    gstPercentage: 18
   },
   {
-    id: "prod-11",
-    name: "Bilstein B6 Performance Shock Absorber Set",
-    category: "Spare Parts",
-    sku: "PRT-SUS-BILST",
-    price: 88000,
-    cost: 62000,
-    stock: 4,
-    warranty: "2 Years Unlimited Mileage",
-    compatibility: "BMW G20 / G30 Chassis",
-    description: "Gas pressure monotube technology for heightened driving stability and agility"
+    id: "PRT-104",
+    name: "Activated Charcoal Cabin Pollen Filter",
+    partNumber: "MAN-CF-3301",
+    brand: "Mann-Filter",
+    category: "Filters",
+    hsnCode: "84213920",
+    purchasePrice: 950,
+    sellingPrice: 1750,
+    availableQuantity: 16,
+    minimumStockLevel: 5,
+    gstPercentage: 18
   },
-
-  // Accessories & Electronics
   {
-    id: "prod-12",
-    name: "7D Diamond Quilted Custom Luxury Floor Liners",
+    id: "PRT-105",
+    name: "Laser Iridium Spark Plug (Pack of 4)",
+    partNumber: "NGK-SP-ILZKR",
+    brand: "NGK",
+    category: "Ignition & Electrical",
+    hsnCode: "85111000",
+    purchasePrice: 2400,
+    sellingPrice: 3800,
+    availableQuantity: 18,
+    minimumStockLevel: 8,
+    gstPercentage: 18
+  },
+  {
+    id: "PRT-106",
+    name: "Engine Air Intake Filter Element",
+    partNumber: "BOS-AF-5520",
+    brand: "Bosch",
+    category: "Filters",
+    hsnCode: "84213100",
+    purchasePrice: 750,
+    sellingPrice: 1400,
+    availableQuantity: 14,
+    minimumStockLevel: 6,
+    gstPercentage: 18
+  },
+  {
+    id: "PRT-107",
+    name: "Synthetic DOT 4 Brake Fluid (1L)",
+    partNumber: "MOB-BF-DOT4",
+    brand: "Mobil 1",
+    category: "Lubricants & Fluids",
+    hsnCode: "38190010",
+    purchasePrice: 420,
+    sellingPrice: 750,
+    availableQuantity: 24,
+    minimumStockLevel: 6,
+    gstPercentage: 18
+  },
+  {
+    id: "PRT-108",
+    name: "Aerotwin Performance Wiper Blade Pair 24/18",
+    partNumber: "BOS-WB-AERO",
+    brand: "Bosch",
     category: "Accessories",
-    sku: "ACC-MAT-7D-LUX",
-    price: 9500,
-    cost: 4200,
-    stock: 25,
-    warranty: "1 Year Warranty",
-    compatibility: "Tailored to Exact Floorpan",
-    description: "Waterproof, odor-free, non-slip dual layer detachable curly mat with brass clips"
+    hsnCode: "85124000",
+    purchasePrice: 1100,
+    sellingPrice: 1950,
+    availableQuantity: 15,
+    minimumStockLevel: 5,
+    gstPercentage: 18
   },
   {
-    id: "prod-13",
-    name: "VIOFO A229 Pro 4K HDR Dual Dashcam System",
-    category: "Accessories",
-    sku: "ACC-ELC-DASH4K",
-    price: 28500,
-    cost: 19000,
-    stock: 9,
-    warranty: "18 Months Replacement",
-    compatibility: "Universal 12V Hardwire",
-    description: "Dual Sony STARVIS 2 sensors, 4K front + 2K rear, 24/7 parking impact monitor, built-in GPS"
+    id: "PRT-109",
+    name: "Long-Life OAT Radiator Coolant Premix (5L)",
+    partNumber: "MOT-COOL-5L",
+    brand: "Motul",
+    category: "Lubricants & Fluids",
+    hsnCode: "38200000",
+    purchasePrice: 1250,
+    sellingPrice: 2100,
+    availableQuantity: 2, // LOW STOCK (min is 6)
+    minimumStockLevel: 6,
+    gstPercentage: 18
+  },
+  {
+    id: "PRT-110",
+    name: "High Carbon Front Brake Disc Rotor (Pair)",
+    partNumber: "BRM-DR-7801",
+    brand: "Brembo",
+    category: "Braking System",
+    hsnCode: "87083000",
+    purchasePrice: 9200,
+    sellingPrice: 14500,
+    availableQuantity: 8,
+    minimumStockLevel: 4,
+    gstPercentage: 18
   }
 ];
 
 export const initialInvoices = [
   {
-    id: "inv-101",
+    id: "inv-2026-001",
     invoiceNumber: "SRC-2026-001",
-    date: "2026-11-18",
-    dueDate: "2026-11-25",
-    status: "Paid",
-    paymentMethod: "Bank Transfer (NEFT/RTGS)",
-    customer: {
-      name: "Vikramaditya Singhania",
-      company: "Singhania Holdings & Infra",
-      phone: "+91 99887 76655",
-      email: "v.singhania@singhaniagroup.com",
-      address: "Villa 14, Palm Meadows, Whitefield, Bengaluru - 560066",
-      gstin: "29AAECS4592K1Z9"
-    },
-    vehicle: {
-      makeModel: "Porsche Macan GTS 2.9L",
-      regNumber: "KA 01 MJ 0007",
-      vin: "WP1ZZZ95ZPL120894",
-      year: "2024",
-      odometer: "14,800 KM",
-      color: "Crayon Grey"
-    },
-    items: [
-      {
-        id: "item-1",
-        productId: "prod-5",
-        name: "XPEL Ultimate Plus Paint Protection Film (Full Body)",
-        category: "Detailing",
-        qty: 1,
-        unitPrice: 185000,
-        taxPercent: 18,
-        total: 185000
-      },
-      {
-        id: "item-2",
-        productId: "prod-6",
-        name: "Interior Deep Spa & Leather Nourishment",
-        category: "Detailing",
-        qty: 1,
-        unitPrice: 12500,
-        taxPercent: 18,
-        total: 12500
-      },
-      {
-        id: "item-3",
-        productId: "prod-13",
-        name: "VIOFO A229 Pro 4K HDR Dual Dashcam System",
-        category: "Accessories",
-        qty: 1,
-        unitPrice: 28500,
-        taxPercent: 18,
-        total: 28500
-      }
-    ],
-    subtotal: 226000,
-    discountAmount: 11000, // 5% courtesy concession
-    taxableAmount: 215000,
-    taxAmount: 38700, // 18% GST (CGST 19350 + SGST 19350)
-    totalAmount: 253700,
-    notes: "Special treatment conducted for delivery inspection. Complimentary 1-month check-up included."
-  },
-  {
-    id: "inv-102",
-    invoiceNumber: "SRC-2026-002",
     date: "2026-11-20",
-    dueDate: "2026-11-27",
+    jobCardNumber: "JC-2026-1041",
+    invoiceType: "Tax Invoice",
+    
+    // Customer Info
+    customerId: "CUST-001",
+    customer: {
+      name: "Vikramaditya Reddy",
+      phone: "+91 98765 43210",
+      email: "vikram.reddy@hyderabadgroup.com",
+      address: "Villa 14, Palm Meadows, Jubilee Hills, Hyderabad - 500033",
+      gstin: "36AAECR4921K1ZN"
+    },
+    
+    // Vehicle Info
+    vehicleId: "VEH-101",
+    vehicle: {
+      regNumber: "TS 09 EA 4589",
+      brand: "Mercedes-Benz",
+      model: "E-Class E 220d AMG Line",
+      odometer: "34,500 km"
+    },
+    
+    // Services Rendered
+    services: [
+      {
+        id: "srv-row-1",
+        serviceId: "SRV-005",
+        name: "General Service",
+        quantity: 1,
+        rate: 4800,
+        discount: 0,
+        gst: 18,
+        amount: 5664
+      },
+      {
+        id: "srv-row-2",
+        serviceId: "SRV-007",
+        name: "Wheel Alignment",
+        quantity: 1,
+        rate: 1200,
+        discount: 200,
+        gst: 18,
+        amount: 1180
+      }
+    ],
+    
+    // Spare Parts Supplied
+    spareParts: [
+      {
+        id: "part-row-1",
+        partId: "PRT-101",
+        name: "Fully Synthetic Engine Oil 5W-40 (4L)",
+        partNumber: "CAS-EDG-5W40-4L",
+        quantity: 1,
+        unitPrice: 4200,
+        discount: 200,
+        gst: 18,
+        amount: 4720
+      },
+      {
+        id: "part-row-2",
+        partId: "PRT-102",
+        name: "High Flow Spin-On Oil Filter",
+        partNumber: "BOS-OF-8921",
+        quantity: 1,
+        unitPrice: 950,
+        discount: 0,
+        gst: 18,
+        amount: 1121
+      }
+    ],
+    
+    // Summary
+    serviceSubtotal: 5800,
+    sparePartsSubtotal: 4950,
+    grossTotal: 10750,
+    discountAmount: 400,
+    taxableAmount: 10750,
+    cgst: 967.5,
+    sgst: 967.5,
+    igst: 0,
+    roundOff: 0,
+    grandTotal: 12685,
+    totalAmount: 12685,
+    
+    // Payment Details
+    paymentMethod: "UPI",
+    amountPaid: 12685,
+    balanceAmount: 0,
     status: "Paid",
-    paymentMethod: "UPI Instant / IMPS",
-    customer: {
-      name: "Dr. Ananya Roy",
-      company: "Care Diagnostics Ltd",
-      phone: "+91 97654 32109",
-      email: "ananya.roy@carediag.in",
-      address: "Flat 9B, Horizon Towers, Gachibowli, Hyderabad - 500032",
-      gstin: "36ABCPR3321L1ZN"
-    },
-    vehicle: {
-      makeModel: "Mercedes-Benz E-Class E 220d",
-      regNumber: "TS 09 EU 4499",
-      vin: "WDD2130042A894102",
-      year: "2023",
-      odometer: "38,400 KM",
-      color: "Cavansite Blue"
-    },
-    items: [
-      {
-        id: "item-1",
-        productId: "prod-7",
-        name: "Major Annual Periodic Service Package",
-        category: "Services",
-        qty: 1,
-        unitPrice: 32000,
-        taxPercent: 18,
-        total: 32000
-      },
-      {
-        id: "item-2",
-        productId: "prod-8",
-        name: "Brembo High Performance Brake Overhaul",
-        category: "Services",
-        qty: 1,
-        unitPrice: 54000,
-        taxPercent: 18,
-        total: 54000
-      },
-      {
-        id: "item-3",
-        productId: "prod-9",
-        name: "AC Climate Control Overhaul & Anti-Bacterial Treatment",
-        category: "Services",
-        qty: 1,
-        unitPrice: 16500,
-        taxPercent: 18,
-        total: 16500
-      }
-    ],
-    subtotal: 102500,
-    discountAmount: 5000,
-    taxableAmount: 97500,
-    taxAmount: 17550,
-    totalAmount: 115050,
-    notes: "Front brake discs skimmed and bedded. 64-point scan reports clean."
+    paymentStatus: "Paid",
+    transactionId: "UPI/632190823410/HDFC",
+    notes: "Regular 35,000 KM scheduled service completed with OEM Mercedes specifications."
   },
   {
-    id: "inv-103",
-    invoiceNumber: "SRC-2026-003",
+    id: "inv-2026-002",
+    invoiceNumber: "SRC-2026-002",
     date: "2026-11-21",
-    dueDate: "2026-11-28",
-    status: "Pending",
-    paymentMethod: "Corporate Wire",
+    jobCardNumber: "JC-2026-1042",
+    invoiceType: "Tax Invoice",
+    
+    customerId: "CUST-002",
     customer: {
-      name: "Rajeshwar Rao",
-      company: "Apex Tech Ventures",
-      phone: "+91 98112 34567",
-      email: "r.rao@apexventures.io",
-      address: "Plot 89, Financial District, Nanakramguda, Hyderabad - 500075",
-      gstin: "36AAQCA8832M1ZP"
+      name: "Rajesh Sharma",
+      phone: "+91 98480 12345",
+      email: "rajesh.sharma@apexlogistics.in",
+      address: "Flat 9B, Horizon Towers, Gachibowli, Hyderabad - 500032",
+      gstin: "36AAACH7890P1ZQ"
     },
+    
+    vehicleId: "VEH-103",
     vehicle: {
-      makeModel: "BMW M340i xDrive",
-      regNumber: "TS 07 HK 0340",
-      vin: "WBA5U7102NFM39210",
-      year: "2024",
-      odometer: "19,200 KM",
-      color: "Tanzanite Blue II"
+      regNumber: "TS 07 HK 9081",
+      brand: "BMW",
+      model: "M340i xDrive 3.0L",
+      odometer: "26,800 km"
     },
-    items: [
+    
+    services: [
       {
-        id: "item-1",
-        productId: "prod-10",
-        name: "Michelin Pilot Sport 5 (245/45 R19) Tyre",
-        category: "Spare Parts",
-        qty: 4,
-        unitPrice: 24500,
-        taxPercent: 18,
-        total: 98000
-      },
-      {
-        id: "item-2",
-        productId: "prod-11",
-        name: "Bilstein B6 Performance Shock Absorber Set",
-        category: "Spare Parts",
-        qty: 1,
-        unitPrice: 88000,
-        taxPercent: 18,
-        total: 88000
-      },
-      {
-        id: "item-3",
-        productId: "prod-4",
-        name: "Kavaca 9H Ceramic Shield Pro Coating",
-        category: "Detailing",
-        qty: 1,
-        unitPrice: 45000,
-        taxPercent: 18,
-        total: 45000
+        id: "srv-row-3",
+        serviceId: "SRV-012",
+        name: "Brake System Overhaul",
+        quantity: 1,
+        rate: 3200,
+        discount: 0,
+        gst: 18,
+        amount: 3776
       }
     ],
-    subtotal: 231000,
-    discountAmount: 12000,
-    taxableAmount: 219000,
-    taxAmount: 39420,
-    totalAmount: 258420,
-    notes: "Dynamic wheel alignment and 3D laser road-force balancing completed. Payment expected within terms."
+    
+    spareParts: [
+      {
+        id: "part-row-3",
+        partId: "PRT-103",
+        name: "Front Ceramic Brake Pad Set",
+        partNumber: "BRM-BP-4412",
+        quantity: 1,
+        unitPrice: 8500,
+        discount: 500,
+        gst: 18,
+        amount: 9440
+      },
+      {
+        id: "part-row-4",
+        partId: "PRT-107",
+        name: "Synthetic DOT 4 Brake Fluid (1L)",
+        partNumber: "MOB-BF-DOT4",
+        quantity: 1,
+        unitPrice: 750,
+        discount: 0,
+        gst: 18,
+        amount: 885
+      }
+    ],
+    
+    serviceSubtotal: 3200,
+    sparePartsSubtotal: 8750,
+    grossTotal: 11950,
+    discountAmount: 500,
+    taxableAmount: 11950,
+    cgst: 1075.5,
+    sgst: 1075.5,
+    igst: 0,
+    roundOff: 0,
+    grandTotal: 14101,
+    totalAmount: 14101,
+    
+    paymentMethod: "Card",
+    amountPaid: 14101,
+    balanceAmount: 0,
+    status: "Paid",
+    paymentStatus: "Paid",
+    transactionId: "POS-HDFC-991204",
+    notes: "High performance Brembo ceramic brake pads installed. 500 KM bed-in required."
   },
   {
-    id: "inv-104",
-    invoiceNumber: "SRC-2026-004",
+    id: "inv-2026-003",
+    invoiceNumber: "SRC-2026-003",
     date: "2026-11-22",
-    dueDate: "2026-11-24",
-    status: "Overdue",
-    paymentMethod: "Credit Card",
+    jobCardNumber: "JC-2026-1043",
+    invoiceType: "Tax Invoice",
+    
+    customerId: "CUST-003",
     customer: {
-      name: "Sanjay Reddy",
-      company: "Reddy Real Estate & Infra",
-      phone: "+91 90000 12345",
-      email: "sanjay@reddyestates.co.in",
-      address: "Road No 10, Banjara Hills, Hyderabad - 500034",
-      gstin: "36AABCR1290K1ZX"
+      name: "Sneha Rao",
+      phone: "+91 99890 67890",
+      email: "sneha.rao@zenithtech.io",
+      address: "Plot 89, Financial District, Nanakramguda, Hyderabad - 500075",
+      gstin: ""
     },
+    
+    vehicleId: "VEH-104",
     vehicle: {
-      makeModel: "Range Rover Sport HSE Dynamic",
-      regNumber: "TS 10 AB 9999",
-      vin: "SALWR2V42KA718902",
-      year: "2022",
-      odometer: "42,000 KM",
-      color: "Santorini Black"
+      regNumber: "TS 08 EM 3344",
+      brand: "Audi",
+      model: "A6 45 TFSI Technology",
+      odometer: "42,100 km"
     },
-    items: [
+    
+    services: [
       {
-        id: "item-1",
-        productId: "prod-7",
-        name: "Major Annual Periodic Service Package",
-        category: "Services",
-        qty: 1,
-        unitPrice: 32000,
-        taxPercent: 18,
-        total: 32000
+        id: "srv-row-4",
+        serviceId: "SRV-006",
+        name: "AC Service",
+        quantity: 1,
+        rate: 3800,
+        discount: 0,
+        gst: 18,
+        amount: 4484
       },
       {
-        id: "item-2",
-        productId: "prod-12",
-        name: "7D Diamond Quilted Custom Luxury Floor Liners",
-        category: "Accessories",
-        qty: 1,
-        unitPrice: 9500,
-        taxPercent: 18,
-        total: 9500
+        id: "srv-row-5",
+        serviceId: "SRV-002",
+        name: "Interior Cleaning",
+        quantity: 1,
+        rate: 3500,
+        discount: 300,
+        gst: 18,
+        amount: 3776
       }
     ],
-    subtotal: 41500,
-    discountAmount: 1500,
-    taxableAmount: 40000,
-    taxAmount: 7200,
-    totalAmount: 47200,
-    notes: "Payment reminder sent on Nov 22. Awaiting finance clearance."
+    
+    spareParts: [
+      {
+        id: "part-row-5",
+        partId: "PRT-104",
+        name: "Activated Charcoal Cabin Pollen Filter",
+        partNumber: "MAN-CF-3301",
+        quantity: 1,
+        unitPrice: 1750,
+        discount: 0,
+        gst: 18,
+        amount: 2065
+      }
+    ],
+    
+    serviceSubtotal: 7000,
+    sparePartsSubtotal: 1750,
+    grossTotal: 8750,
+    discountAmount: 300,
+    taxableAmount: 8750,
+    cgst: 787.5,
+    sgst: 787.5,
+    igst: 0,
+    roundOff: 0,
+    grandTotal: 10325,
+    totalAmount: 10325,
+    
+    paymentMethod: "Bank Transfer",
+    amountPaid: 5000,
+    balanceAmount: 5325,
+    status: "Partial",
+    paymentStatus: "Partial",
+    transactionId: "NEFT-HDFC26112290",
+    notes: "Balance ₹5,325 scheduled for NEFT settlement on Monday."
   },
   {
-    id: "inv-105",
+    id: "inv-2026-004",
+    invoiceNumber: "SRC-2026-004",
+    date: "2026-11-23",
+    jobCardNumber: "JC-2026-1044",
+    invoiceType: "Tax Invoice",
+    
+    customerId: "CUST-004",
+    customer: {
+      name: "Arvind Kumar",
+      phone: "+91 94400 98765",
+      email: "arvind.kumar@kumbuilders.com",
+      address: "Road No 10, Banjara Hills, Hyderabad - 500034",
+      gstin: "36ABCPK5432R1ZF"
+    },
+    
+    vehicleId: "VEH-105",
+    vehicle: {
+      regNumber: "TS 10 AB 1234",
+      brand: "Land Rover",
+      model: "Range Rover Velar R-Dynamic",
+      odometer: "51,200 km"
+    },
+    
+    services: [
+      {
+        id: "srv-row-6",
+        serviceId: "SRV-010",
+        name: "Denting and Painting",
+        quantity: 2,
+        rate: 8500,
+        discount: 1000,
+        gst: 18,
+        amount: 18880
+      },
+      {
+        id: "srv-row-7",
+        serviceId: "SRV-003",
+        name: "Exterior Polishing",
+        quantity: 1,
+        rate: 6500,
+        discount: 500,
+        gst: 18,
+        amount: 7080
+      }
+    ],
+    
+    spareParts: [],
+    
+    serviceSubtotal: 22000,
+    sparePartsSubtotal: 0,
+    grossTotal: 22000,
+    discountAmount: 1500,
+    taxableAmount: 22000,
+    cgst: 1980,
+    sgst: 1980,
+    igst: 0,
+    roundOff: 0,
+    grandTotal: 25960,
+    totalAmount: 25960,
+    
+    paymentMethod: "Bank Transfer",
+    amountPaid: 0,
+    balanceAmount: 25960,
+    status: "Unpaid",
+    paymentStatus: "Unpaid",
+    transactionId: "",
+    notes: "Door panel and rear quarter dent repair and ceramic gloss buffing completed."
+  },
+  {
+    id: "inv-2026-005",
     invoiceNumber: "SRC-2026-005",
     date: "2026-11-23",
-    dueDate: "2026-11-30",
-    status: "Paid",
-    paymentMethod: "Online Banking",
+    jobCardNumber: "JC-2026-1045",
+    invoiceType: "Tax Invoice",
+    
+    customerId: "CUST-005",
     customer: {
-      name: "Karan Johar Mehra",
-      company: "Mehra Entertainment Network",
-      phone: "+91 98200 45678",
-      email: "karan@mehranet.com",
-      address: "Bungalow 7, Bandra West, Mumbai - 400050",
-      gstin: "27AABCM6743P1ZQ"
+      name: "Meera Nambiar",
+      phone: "+91 91234 56789",
+      email: "meera.nambiar@nambiardesign.com",
+      address: "402 Royal Palms, Madhapur, Hyderabad - 500081",
+      gstin: ""
     },
+    
+    vehicleId: "VEH-107",
     vehicle: {
-      makeModel: "Mercedes-Benz E-Class E 220d AMG Line",
-      regNumber: "MH 02 FJ 0001",
-      vin: "WDD2130042A991204",
-      year: "2024",
-      odometer: "1,200 KM",
-      color: "Obsidian Black"
+      regNumber: "TS 09 EQ 7788",
+      brand: "Volvo",
+      model: "XC60 B5 Inscription",
+      odometer: "19,400 km"
     },
-    items: [
+    
+    services: [
       {
-        id: "item-1",
-        productId: "prod-1",
-        name: "Mercedes-Benz E-Class E 220d AMG Line (Vehicle Sale)",
-        category: "Vehicles",
-        qty: 1,
-        unitPrice: 7850000,
-        taxPercent: 18,
-        total: 7850000
+        id: "srv-row-8",
+        serviceId: "SRV-001",
+        name: "Car Water Wash",
+        quantity: 1,
+        rate: 1200,
+        discount: 0,
+        gst: 18,
+        amount: 1416
       },
       {
-        id: "item-2",
-        productId: "prod-5",
-        name: "XPEL Ultimate Plus Paint Protection Film (Full Body)",
-        category: "Detailing",
-        qty: 1,
-        unitPrice: 185000,
-        taxPercent: 18,
-        total: 185000
+        id: "srv-row-9",
+        serviceId: "SRV-007",
+        name: "Wheel Alignment",
+        quantity: 1,
+        rate: 1200,
+        discount: 0,
+        gst: 18,
+        amount: 1416
+      },
+      {
+        id: "srv-row-10",
+        serviceId: "SRV-008",
+        name: "Wheel Balancing",
+        quantity: 1,
+        rate: 1400,
+        discount: 0,
+        gst: 18,
+        amount: 1652
       }
     ],
-    subtotal: 8035000,
-    discountAmount: 135000,
-    taxableAmount: 7900000,
-    taxAmount: 1422000,
-    totalAmount: 9322000,
-    notes: "Prestige Luxury Delivery with keys ceremony. Full RTO registration and 2-year warranty kit handed over."
+    
+    spareParts: [
+      {
+        id: "part-row-6",
+        partId: "PRT-108",
+        name: "Aerotwin Performance Wiper Blade Pair 24/18",
+        partNumber: "BOS-WB-AERO",
+        quantity: 1,
+        unitPrice: 1950,
+        discount: 0,
+        gst: 18,
+        amount: 2301
+      }
+    ],
+    
+    serviceSubtotal: 3800,
+    sparePartsSubtotal: 1950,
+    grossTotal: 5750,
+    discountAmount: 0,
+    taxableAmount: 5750,
+    cgst: 517.5,
+    sgst: 517.5,
+    igst: 0,
+    roundOff: 0,
+    grandTotal: 6785,
+    totalAmount: 6785,
+    
+    paymentMethod: "Cash",
+    amountPaid: 6785,
+    balanceAmount: 0,
+    status: "Paid",
+    paymentStatus: "Paid",
+    transactionId: "CASH-REC-231105",
+    notes: "Front wiper pair replacement and seasonal monsoon inspection."
+  }
+];
+
+export const initialCustomerActivities = [
+  {
+    id: "ACT-001",
+    customerName: "Vikramaditya Reddy",
+    vehicle: "Mercedes-Benz E-Class (TS 09 EA 4589)",
+    serviceSummary: "General Service & Synthetic Oil Change",
+    time: "35 mins ago",
+    amount: 12685,
+    status: "Completed",
+    advisor: "Rahul Deshmukh"
+  },
+  {
+    id: "ACT-002",
+    customerName: "Rajesh Sharma",
+    vehicle: "BMW M340i (TS 07 HK 9081)",
+    serviceSummary: "Brembo Ceramic Front Brake Pads Replacement",
+    time: "2 hours ago",
+    amount: 14101,
+    status: "Completed",
+    advisor: "Rahul Deshmukh"
+  },
+  {
+    id: "ACT-003",
+    customerName: "Sneha Rao",
+    vehicle: "Audi A6 (TS 08 EM 3344)",
+    serviceSummary: "AC Sanitization & Cabin Charcoal Filter Replacement",
+    time: "3.5 hours ago",
+    amount: 10325,
+    status: "Partial Payment",
+    advisor: "Mohammed Irfan"
+  },
+  {
+    id: "ACT-004",
+    customerName: "Arvind Kumar",
+    vehicle: "Range Rover Velar (TS 10 AB 1234)",
+    serviceSummary: "Panel Denting, Paint Booth Curing & High-Gloss Buff",
+    time: "5 hours ago",
+    amount: 25960,
+    status: "In Progress / Pending Payment",
+    advisor: "Vikram Singhania"
+  },
+  {
+    id: "ACT-005",
+    customerName: "Meera Nambiar",
+    vehicle: "Volvo XC60 (TS 09 EQ 7788)",
+    serviceSummary: "Foam Wash, 3D Wheel Alignment & Wiper Replacement",
+    time: "6 hours ago",
+    amount: 6785,
+    status: "Completed",
+    advisor: "Rahul Deshmukh"
   }
 ];

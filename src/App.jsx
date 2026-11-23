@@ -6,11 +6,16 @@ import Sidebar from './components/layout/Sidebar';
 import ToastContainer from './components/common/ToastContainer';
 import InvoiceModal from './components/invoices/InvoiceModal';
 import InvoiceViewModal from './components/invoices/InvoiceViewModal';
+
+// 7 Dedicated Application Pages
 import Dashboard from './pages/Dashboard';
+import CustomersPage from './pages/CustomersPage';
+import ServicesPage from './pages/ServicesPage';
+import SparePartsPage from './pages/SparePartsPage';
 import InvoicesPage from './pages/InvoicesPage';
-import ProductsPage from './pages/ProductsPage';
 import ReportsPage from './pages/ReportsPage';
 import SettingsPage from './pages/SettingsPage';
+
 import './App.css';
 
 function MainApp() {
@@ -31,8 +36,10 @@ function MainApp() {
 
         <main className="main-content">
           {activeTab === 'dashboard' && <Dashboard />}
+          {activeTab === 'customers' && <CustomersPage />}
+          {activeTab === 'services' && <ServicesPage />}
+          {(activeTab === 'parts' || activeTab === 'products') && <SparePartsPage />}
           {activeTab === 'invoices' && <InvoicesPage />}
-          {activeTab === 'products' && <ProductsPage />}
           {activeTab === 'reports' && <ReportsPage />}
           {activeTab === 'settings' && <SettingsPage />}
         </main>
