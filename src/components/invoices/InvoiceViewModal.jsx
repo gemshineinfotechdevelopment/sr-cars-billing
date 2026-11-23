@@ -378,11 +378,11 @@ export default function InvoiceViewModal() {
             </div>
           )}
 
-          {/* TABLE 2: SPARE PARTS SUPPLIED */}
+          {/* TABLE 2: PRODUCTS SUPPLIED */}
           {inv.spareParts && inv.spareParts.length > 0 && (
             <div style={{ marginBottom: '22px' }}>
               <div style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', color: '#b8860b', letterSpacing: '1px', marginBottom: '8px' }}>
-                Spare Parts & Materials Supplied
+                Products & Materials Supplied
               </div>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
                 <thead>
@@ -418,7 +418,7 @@ export default function InvoiceViewModal() {
                   ))}
                   <tr style={{ backgroundColor: '#fdfbf7', fontWeight: 700 }}>
                     <td colSpan={7} style={{ padding: '8px 10px', textAlign: 'right' }}>
-                      Spare Parts Subtotal:
+                      Products Subtotal:
                     </td>
                     <td style={{ padding: '8px 10px', textAlign: 'right' }}>
                       ₹{Number(inv.sparePartsSubtotal || 0).toLocaleString('en-IN')}
@@ -518,7 +518,7 @@ export default function InvoiceViewModal() {
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0', color: '#574f41' }}>
-                <span>Spare Parts Subtotal:</span>
+                <span>Products Subtotal:</span>
                 <strong>₹{Number(inv.sparePartsSubtotal || 0).toLocaleString('en-IN')}</strong>
               </div>
 

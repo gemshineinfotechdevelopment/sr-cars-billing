@@ -153,7 +153,7 @@ export default function Navbar({ onToggleSidebar }) {
           <input
             type="text"
             className="form-input"
-            placeholder="Search customers, vehicles, services, spare parts, invoices..."
+            placeholder="Search customers, vehicles, services, products, invoices..."
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
@@ -288,17 +288,17 @@ export default function Navbar({ onToggleSidebar }) {
                 </div>
               )}
 
-              {/* Spare Parts match */}
+              {/* Products match */}
               {searchResults.spareParts.length > 0 && (
                 <div style={{ marginBottom: '10px' }}>
                   <div style={{ fontSize: '0.74rem', color: 'var(--gold-600)', fontWeight: 700, padding: '4px 8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <Package size={14} /> Spare Parts ({searchResults.spareParts.length})
+                    <Package size={14} /> Products ({searchResults.spareParts.length})
                   </div>
                   {searchResults.spareParts.map((p) => (
                     <div
                       key={p.id}
                       onClick={() => {
-                        setActiveTab('parts');
+                        setActiveTab('products');
                         setIsSearchOpen(false);
                         setSearchQuery('');
                       }}
@@ -378,7 +378,7 @@ export default function Navbar({ onToggleSidebar }) {
       <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
         {lowStockCount > 0 && (
           <button
-            onClick={() => setActiveTab('parts')}
+            onClick={() => setActiveTab('products')}
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -394,7 +394,7 @@ export default function Navbar({ onToggleSidebar }) {
             }}
           >
             <AlertTriangle size={15} />
-            <span>{lowStockCount} Parts Low in Stock</span>
+            <span>{lowStockCount} Products Low in Stock</span>
           </button>
         )}
 

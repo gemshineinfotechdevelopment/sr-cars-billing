@@ -194,7 +194,7 @@ export default function SettingsPage() {
     'Invoices & Billing',
     'Customer Management',
     'Services Catalog',
-    'Spare Parts Inventory',
+    'Products Inventory',
     'Reports & Analytics',
     'System Settings'
   ];
@@ -1110,7 +1110,7 @@ export default function SettingsPage() {
                 </h4>
               </div>
               <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '16px' }}>
-                Export full offline JSON database backup (clients, vehicles, services, spare parts and historic invoices) or restore safely.
+                Export full offline JSON database backup (clients, vehicles, services, products and historic invoices) or restore safely.
               </p>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>

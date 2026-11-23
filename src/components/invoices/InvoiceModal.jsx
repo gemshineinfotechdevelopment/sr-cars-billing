@@ -844,13 +844,13 @@ export default function InvoiceModal() {
             </div>
           </div>
 
-          {/* SECTION E: SPARE PARTS DETAILS (Dynamic Multi-Row) */}
+          {/* SECTION E: PRODUCT DETAILS (Dynamic Multi-Row) */}
           <div style={{ marginBottom: '24px', borderTop: '1.5px solid var(--border-subtle)', paddingTop: '18px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Package size={18} color="var(--gold-500)" />
                 <span style={{ fontSize: '0.85rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--gold-600)', letterSpacing: '1px' }}>
-                  E. Spare Parts Details (Inventory Deducted Upon Confirmation)
+                  E. Products & Materials Details
                 </span>
               </div>
 
@@ -872,7 +872,7 @@ export default function InvoiceModal() {
                 }}
               >
                 <Plus size={14} />
-                <span>Add Spare Part Row</span>
+                <span>Add Product Row</span>
               </button>
             </div>
 
@@ -1021,7 +1021,7 @@ export default function InvoiceModal() {
                 </div>
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-secondary)' }}>
-                  <span>Spare Parts Subtotal:</span>
+                  <span>Products Subtotal:</span>
                   <strong>{formatCurrency(formData.sparePartsSubtotal)}</strong>
                 </div>
 

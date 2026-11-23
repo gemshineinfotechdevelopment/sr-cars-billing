@@ -11,7 +11,7 @@ import InvoiceViewModal from './components/invoices/InvoiceViewModal';
 import Dashboard from './pages/Dashboard';
 import CustomersPage from './pages/CustomersPage';
 import ServicesPage from './pages/ServicesPage';
-import SparePartsPage from './pages/SparePartsPage';
+import ProductsPage from './pages/ProductsPage';
 import InvoicesPage from './pages/InvoicesPage';
 import ReportsPage from './pages/ReportsPage';
 import SettingsPage from './pages/SettingsPage';
@@ -38,7 +38,7 @@ function MainApp() {
           {activeTab === 'dashboard' && <Dashboard />}
           {activeTab === 'customers' && <CustomersPage />}
           {activeTab === 'services' && <ServicesPage />}
-          {(activeTab === 'parts' || activeTab === 'products') && <SparePartsPage />}
+          {(activeTab === 'products' || activeTab === 'parts') && <ProductsPage />}
           {activeTab === 'invoices' && <InvoicesPage />}
           {activeTab === 'reports' && <ReportsPage />}
           {activeTab === 'settings' && <SettingsPage />}

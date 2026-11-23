@@ -157,7 +157,7 @@ export default function InvoicesPage() {
                 borderRadius: '999px'
               }}
             >
-              GST Compliant Tax Invoicing
+              Invoices & Work Orders
             </span>
           </div>
           <h1
@@ -443,7 +443,7 @@ export default function InvoicesPage() {
                     {/* Items */}
                     <td style={{ padding: '14px', fontSize: '0.76rem', color: 'var(--text-secondary)' }}>
                       <div>{inv.services?.length || 0} Services</div>
-                      <div>{inv.spareParts?.length || 0} Spare Parts</div>
+                      <div>{inv.spareParts?.length || 0} Products</div>
                     </td>
 
                     {/* Grand Total */}

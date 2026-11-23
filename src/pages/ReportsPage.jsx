@@ -25,7 +25,7 @@ export default function ReportsPage() {
     { id: 'MONTHLY', label: '3. Monthly Sales' },
     { id: 'YEARLY', label: '4. Yearly Revenue' },
     { id: 'SERVICE_WISE', label: '5. Service-wise' },
-    { id: 'PARTS_SALES', label: '6. Spare Parts Sales' },
+    { id: 'PARTS_SALES', label: '6. Products Sales' },
     { id: 'CUSTOMER_REPORT', label: '7. Customer Report' },
     { id: 'PENDING_PAYMENT', label: '8. Pending Payments' },
     { id: 'GST_REPORT', label: '9. GST Report' },
@@ -84,7 +84,7 @@ export default function ReportsPage() {
     let filename = `SR_CARS_${activeReport}_Report_${new Date().toISOString().split('T')[0]}.csv`;
 
     if (activeReport === 'DAILY' || activeReport === 'WEEKLY' || activeReport === 'MONTHLY' || activeReport === 'YEARLY') {
-      headers = ['Period / Date', 'Invoice Count', 'Labor (Services)', 'Spare Parts', 'Gross Amount', 'Taxable', 'GST (CGST+SGST)', 'Grand Total'];
+      headers = ['Period / Date', 'Invoice Count', 'Labor (Services)', 'Products', 'Gross Amount', 'Taxable', 'GST (CGST+SGST)', 'Grand Total'];
       // Group by date
       const groupMap = {};
       filteredInvoices.forEach((inv) => {
@@ -259,7 +259,7 @@ export default function ReportsPage() {
             Reports & Analytics
           </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.86rem' }}>
-            Comprehensive revenue statements, GST filing breakdowns, spare parts velocity & customer analytics.
+            Comprehensive revenue statements, GST filing breakdowns, product sales velocity & customer analytics.
           </p>
         </div>
 
@@ -502,7 +502,7 @@ export default function ReportsPage() {
                   <th style={{ padding: '10px 12px' }}>Date</th>
                   <th style={{ padding: '10px 12px' }}>Job Orders</th>
                   <th style={{ padding: '10px 12px' }}>Services (Labor)</th>
-                  <th style={{ padding: '10px 12px' }}>Spare Parts</th>
+                  <th style={{ padding: '10px 12px' }}>Products</th>
                   <th style={{ padding: '10px 12px' }}>Taxable</th>
                   <th style={{ padding: '10px 12px' }}>Total GST</th>
                   <th style={{ padding: '10px 12px', textAlign: 'right' }}>Grand Total</th>
@@ -720,12 +720,12 @@ export default function ReportsPage() {
           </div>
         )}
 
-        {/* REPORT 6: SPARE PARTS SALES REPORT */}
+        {/* REPORT 6: PRODUCTS SALES REPORT */}
         {activeReport === 'PARTS_SALES' && (
           <div>
             <div style={{ marginBottom: '18px' }}>
               <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-primary)' }}>
-                Spare Parts Sales & Consumption Report
+                Products Sales & Consumption Report
               </h3>
               <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
                 Track inventory turnover, units sold, and parts revenue

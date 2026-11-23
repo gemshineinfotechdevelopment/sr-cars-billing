@@ -10,9 +10,7 @@ import {
   Settings as SettingsIcon,
   Crown,
   ChevronRight,
-  ShieldCheck,
-  Sparkles,
-  AlertTriangle
+  ShieldCheck
 } from 'lucide-react';
 
 export default function Sidebar({ isOpen, onClose }) {
@@ -25,10 +23,6 @@ export default function Sidebar({ isOpen, onClose }) {
     invoices, 
     settings 
   } = useBilling();
-
-  const lowStockCount = spareParts.filter(
-    (p) => (p.availableQuantity || 0) <= (p.minimumStockLevel || 5)
-  ).length;
 
   const pendingInvoicesCount = invoices.filter(
     (i) => i.status === 'Pending' || i.status === 'Unpaid' || i.status === 'Partial'
@@ -54,11 +48,10 @@ export default function Sidebar({ isOpen, onClose }) {
       badge: services.filter((s) => s.status === 'Active').length
     },
     {
-      id: 'parts',
-      label: 'Spare Parts',
+      id: 'products',
+      label: 'Products',
       icon: Package,
-      badge: lowStockCount > 0 ? `${lowStockCount} Low` : spareParts.length,
-      badgeWarning: lowStockCount > 0
+      badge: spareParts.length
     },
     {
       id: 'invoices',
@@ -261,28 +254,6 @@ export default function Sidebar({ isOpen, onClose }) {
               );
             })}
           </nav>
-
-          {/* Quick Info Badge */}
-          <div
-            style={{
-              marginTop: '28px',
-              padding: '14px 16px',
-              borderRadius: 'var(--radius-md)',
-              background: 'linear-gradient(145deg, #ffffff 0%, #fbf8f1 100%)',
-              border: '1px solid var(--border-gold)',
-              boxShadow: 'var(--shadow-sm)'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-              <Sparkles size={16} color="var(--gold-500)" />
-              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--gold-600)' }}>
-                GST Compliant Billing
-              </span>
-            </div>
-            <p style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
-              Automatic CGST/SGST/IGST computation with instant inventory deductions.
-            </p>
-          </div>
         </div>
 
         {/* Footer Info */}

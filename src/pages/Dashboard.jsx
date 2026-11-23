@@ -30,8 +30,7 @@ export default function Dashboard() {
     setSelectedInvoiceForView, 
     setIsInvoiceModalOpen, 
     setInvoiceToEdit,
-    setActiveTab,
-    stockIn
+    setActiveTab
   } = useBilling();
 
   const [hoveredPoint, setHoveredPoint] = useState(null);
@@ -421,7 +420,7 @@ export default function Dashboard() {
 
         {/* Card 6: Low Stock Items */}
         <div
-          onClick={() => setActiveTab('parts')}
+          onClick={() => setActiveTab('products')}
           style={{
             backgroundColor: lowStockCount > 0 ? '#fffbeb' : '#ffffff',
             border: lowStockCount > 0 ? '1.5px solid #fde68a' : '1px solid var(--border-subtle)',
@@ -449,7 +448,7 @@ export default function Dashboard() {
             </div>
           </div>
           <div style={{ fontSize: '1.8rem', fontWeight: 900, color: lowStockCount > 0 ? '#dc2626' : 'var(--text-primary)', marginTop: '8px', fontFamily: 'var(--font-display)' }}>
-            {lowStockCount} Parts
+            {lowStockCount} Products
           </div>
           <div style={{ fontSize: '0.75rem', color: lowStockCount > 0 ? '#b45309' : 'var(--text-muted)', marginTop: '4px', fontWeight: 600 }}>
             {lowStockCount > 0 ? 'Action required: Restock needed' : 'All inventory levels optimal'}
@@ -488,16 +487,16 @@ export default function Dashboard() {
               </div>
               <div>
                 <h3 style={{ fontSize: '0.96rem', fontWeight: 800, color: '#92400e' }}>
-                  Low Stock Inventory Warning ({lowStockParts.length} critical spare parts)
+                  Low Stock Products Warning ({lowStockParts.length} items)
                 </h3>
                 <p style={{ fontSize: '0.8rem', color: '#78350f', marginTop: '2px' }}>
-                  The parts below have fallen below their minimum safety thresholds. Restock immediately to prevent service bay delays.
+                  The products below have fallen below their minimum threshold.
                 </p>
               </div>
             </div>
 
             <button
-              onClick={() => setActiveTab('parts')}
+              onClick={() => setActiveTab('products')}
               style={{
                 padding: '7px 16px',
                 borderRadius: 'var(--radius-full)',
@@ -509,7 +508,7 @@ export default function Dashboard() {
                 cursor: 'pointer'
               }}
             >
-              Open Inventory & Restock
+              Open Products Catalog
             </button>
           </div>
 
@@ -559,7 +558,7 @@ export default function Dashboard() {
                   </span>
                   <div style={{ marginTop: '4px' }}>
                     <button
-                      onClick={() => stockIn(part.id, 10)}
+                      onClick={() => setActiveTab('products')}
                       style={{
                         background: 'none',
                         border: 'none',
@@ -570,7 +569,7 @@ export default function Dashboard() {
                         textDecoration: 'underline'
                       }}
                     >
-                      + Quick Restock 10
+                      View Product
                     </button>
                   </div>
                 </div>
