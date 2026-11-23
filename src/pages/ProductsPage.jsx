@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useBilling } from '../context/BillingContext';
+import { useBilling } from '../context/useBilling';
 import { 
   Plus, 
   Search, 
@@ -124,7 +124,7 @@ export default function ProductsPage() {
 
   return (
     <div style={{ padding: '32px 32px 64px', maxWidth: '1440px', margin: '0 auto', width: '100%' }}>
-      {/* Page Header */}
+      {/* Page Header in White & Gold */}
       <div
         style={{
           display: 'flex',
@@ -139,8 +139,8 @@ export default function ProductsPage() {
           <h1
             style={{
               fontFamily: 'var(--font-display)',
-              fontSize: '1.65rem',
-              fontWeight: 800,
+              fontSize: '1.75rem',
+              fontWeight: 900,
               letterSpacing: '1px',
               color: 'var(--text-primary)',
               margin: '0 0 4px'
@@ -159,7 +159,7 @@ export default function ProductsPage() {
         </button>
       </div>
 
-      {/* KPI 4-Card Inventory Metrics */}
+      {/* KPI 4-Card Inventory Metrics in White & Gold */}
       <div
         style={{
           display: 'grid',
@@ -169,43 +169,43 @@ export default function ProductsPage() {
         }}
       >
         <div className="luxury-card" style={{ padding: '18px 20px' }}>
-          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 600 }}>
+          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 700 }}>
             Total Catalog Offerings
           </div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '4px' }}>
+          <div style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--text-primary)', marginTop: '4px' }}>
             {totalItemsCount} <span style={{ fontSize: '0.8rem', fontWeight: 500, color: 'var(--text-secondary)' }}>items</span>
           </div>
         </div>
 
         <div className="luxury-card luxury-card-gold" style={{ padding: '18px 20px' }}>
-          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 600 }}>
+          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--gold-600)', fontWeight: 800 }}>
             Stock Asset Valuation
           </div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--gold-400)', marginTop: '4px' }}>
+          <div style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--gold-600)', marginTop: '4px' }}>
             {formatCurrency(totalValuation)}
           </div>
         </div>
 
         <div className="luxury-card" style={{ padding: '18px 20px' }}>
-          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 600 }}>
+          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 700 }}>
             Showroom Vehicle Fleet
           </div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--accent-blue)', marginTop: '4px' }}>
+          <div style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--accent-blue)', marginTop: '4px' }}>
             {vehiclesCount} <span style={{ fontSize: '0.8rem', fontWeight: 500, color: 'var(--text-secondary)' }}>Luxury Cars</span>
           </div>
         </div>
 
         <div className="luxury-card" style={{ padding: '18px 20px' }}>
-          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 600 }}>
+          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 700 }}>
             Restock Alerts
           </div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: lowStockCount > 0 ? 'var(--status-pending)' : 'var(--status-paid)', marginTop: '4px' }}>
+          <div style={{ fontSize: '1.5rem', fontWeight: 900, color: lowStockCount > 0 ? 'var(--status-pending)' : 'var(--status-paid)', marginTop: '4px' }}>
             {lowStockCount} <span style={{ fontSize: '0.8rem', fontWeight: 500, color: 'var(--text-secondary)' }}>Low stock items</span>
           </div>
         </div>
       </div>
 
-      {/* Filter and Category Pills Toolbar */}
+      {/* Filter and Category Pills Toolbar in White & Gold */}
       <div
         className="luxury-card"
         style={{
@@ -226,11 +226,11 @@ export default function ProductsPage() {
               style={{
                 padding: '7px 16px',
                 borderRadius: 'var(--radius-full)',
-                border: selectedCategory === cat ? '1px solid var(--gold-400)' : '1px solid var(--border-subtle)',
-                background: selectedCategory === cat ? 'var(--gold-subtle)' : 'transparent',
-                color: selectedCategory === cat ? 'var(--gold-400)' : 'var(--text-secondary)',
+                border: selectedCategory === cat ? '1.5px solid var(--gold-500)' : '1px solid var(--border-subtle)',
+                background: selectedCategory === cat ? 'var(--gold-subtle)' : '#ffffff',
+                color: selectedCategory === cat ? 'var(--gold-600)' : 'var(--text-secondary)',
                 fontSize: '0.82rem',
-                fontWeight: 600,
+                fontWeight: 700,
                 cursor: 'pointer',
                 transition: 'all 0.15s ease'
               }}
@@ -244,7 +244,7 @@ export default function ProductsPage() {
           <div style={{ position: 'relative', width: '260px' }}>
             <Search
               size={15}
-              color="var(--text-muted)"
+              color="var(--gold-500)"
               style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)' }}
             />
             <input
@@ -272,7 +272,7 @@ export default function ProductsPage() {
           <div
             style={{
               display: 'flex',
-              border: '1px solid var(--border-subtle)',
+              border: '1px solid var(--border-medium)',
               borderRadius: 'var(--radius-md)',
               overflow: 'hidden'
             }}
@@ -282,8 +282,8 @@ export default function ProductsPage() {
               style={{
                 padding: '6px 10px',
                 border: 'none',
-                background: viewMode === 'grid' ? 'var(--gold-subtle)' : 'transparent',
-                color: viewMode === 'grid' ? 'var(--gold-400)' : 'var(--text-muted)',
+                background: viewMode === 'grid' ? 'var(--gold-subtle)' : '#ffffff',
+                color: viewMode === 'grid' ? 'var(--gold-600)' : 'var(--text-muted)',
                 cursor: 'pointer'
               }}
               title="Card Grid View"
@@ -295,8 +295,8 @@ export default function ProductsPage() {
               style={{
                 padding: '6px 10px',
                 border: 'none',
-                background: viewMode === 'table' ? 'var(--gold-subtle)' : 'transparent',
-                color: viewMode === 'table' ? 'var(--gold-400)' : 'var(--text-muted)',
+                background: viewMode === 'table' ? 'var(--gold-subtle)' : '#ffffff',
+                color: viewMode === 'table' ? 'var(--gold-600)' : 'var(--text-muted)',
                 cursor: 'pointer'
               }}
               title="Data Table View"
@@ -310,8 +310,8 @@ export default function ProductsPage() {
       {/* Main Content */}
       {filteredProducts.length === 0 ? (
         <div className="luxury-card" style={{ padding: '60px 20px', textAlign: 'center', color: 'var(--text-muted)' }}>
-          <Boxes size={48} style={{ margin: '0 auto 12px', opacity: 0.4 }} />
-          <h3 style={{ fontSize: '1.1rem', color: 'var(--text-primary)', marginBottom: '6px' }}>
+          <Boxes size={48} style={{ margin: '0 auto 12px', opacity: 0.5, color: 'var(--gold-500)' }} />
+          <h3 style={{ fontSize: '1.1rem', color: 'var(--text-primary)', marginBottom: '6px', fontWeight: 800 }}>
             No Matching Products or Services
           </h3>
           <p style={{ fontSize: '0.85rem' }}>
@@ -340,10 +340,10 @@ export default function ProductsPage() {
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  border: isVehicle ? '1px solid var(--border-gold)' : '1px solid var(--border-subtle)',
+                  border: isVehicle ? '1.5px solid var(--gold-500)' : '1px solid var(--border-subtle)',
                   background: isVehicle
-                    ? 'linear-gradient(160deg, rgba(212,175,55,0.06) 0%, var(--bg-card) 60%)'
-                    : 'var(--bg-card)'
+                    ? 'linear-gradient(160deg, #fdfbf7 0%, #ffffff 60%)'
+                    : '#ffffff'
                 }}
               >
                 <div>
@@ -351,12 +351,13 @@ export default function ProductsPage() {
                     <span
                       style={{
                         fontSize: '0.72rem',
-                        fontWeight: 700,
+                        fontWeight: 800,
                         textTransform: 'uppercase',
                         padding: '3px 8px',
                         borderRadius: '4px',
-                        backgroundColor: isVehicle ? 'var(--gold-subtle)' : 'rgba(255,255,255,0.06)',
-                        color: isVehicle ? 'var(--gold-400)' : 'var(--text-secondary)',
+                        backgroundColor: '#fbf7ee',
+                        color: '#85580a',
+                        border: '1px solid rgba(212, 175, 55, 0.3)',
                         letterSpacing: '0.5px'
                       }}
                     >
@@ -366,8 +367,9 @@ export default function ProductsPage() {
                     <span
                       style={{
                         fontFamily: 'var(--font-mono)',
-                        fontSize: '0.72rem',
-                        color: 'var(--text-muted)'
+                        fontSize: '0.74rem',
+                        color: 'var(--gold-600)',
+                        fontWeight: 700
                       }}
                     >
                       {p.sku}
@@ -376,8 +378,8 @@ export default function ProductsPage() {
 
                   <h3
                     style={{
-                      fontSize: '1.05rem',
-                      fontWeight: 700,
+                      fontSize: '1.08rem',
+                      fontWeight: 800,
                       color: 'var(--text-primary)',
                       marginBottom: '8px',
                       lineHeight: 1.3
@@ -388,7 +390,7 @@ export default function ProductsPage() {
 
                   <p
                     style={{
-                      fontSize: '0.8rem',
+                      fontSize: '0.82rem',
                       color: 'var(--text-secondary)',
                       lineHeight: 1.5,
                       marginBottom: '16px',
@@ -402,12 +404,13 @@ export default function ProductsPage() {
                     {p.compatibility && (
                       <span
                         style={{
-                          fontSize: '0.7rem',
+                          fontSize: '0.72rem',
                           padding: '2px 8px',
-                          background: 'rgba(59, 130, 246, 0.1)',
+                          background: 'rgba(37, 99, 235, 0.08)',
                           color: 'var(--accent-blue)',
                           borderRadius: '4px',
-                          border: '1px solid rgba(59, 130, 246, 0.2)'
+                          border: '1px solid rgba(37, 99, 235, 0.2)',
+                          fontWeight: 600
                         }}
                       >
                         {p.compatibility}
@@ -417,12 +420,13 @@ export default function ProductsPage() {
                     {p.warranty && (
                       <span
                         style={{
-                          fontSize: '0.7rem',
+                          fontSize: '0.72rem',
                           padding: '2px 8px',
-                          background: 'rgba(16, 185, 129, 0.1)',
+                          background: 'rgba(5, 150, 105, 0.08)',
                           color: 'var(--status-paid)',
                           borderRadius: '4px',
-                          border: '1px solid rgba(16, 185, 129, 0.2)'
+                          border: '1px solid rgba(5, 150, 105, 0.2)',
+                          fontWeight: 600
                         }}
                       >
                         {p.warranty}
@@ -441,26 +445,26 @@ export default function ProductsPage() {
                   }}
                 >
                   <div>
-                    <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>
                       Showroom Price
                     </div>
                     <div
                       style={{
-                        fontSize: '1.25rem',
-                        fontWeight: 800,
-                        color: 'var(--gold-400)',
+                        fontSize: '1.3rem',
+                        fontWeight: 900,
+                        color: 'var(--gold-600)',
                         fontFamily: 'var(--font-sans)'
                       }}
                     >
                       {formatCurrency(p.price)}
                     </div>
-                    <div style={{ fontSize: '0.72rem', marginTop: '2px' }}>
+                    <div style={{ fontSize: '0.74rem', marginTop: '2px' }}>
                       {isOutOfStock ? (
-                        <span style={{ color: 'var(--status-overdue)', fontWeight: 600 }}>Out of Stock</span>
+                        <span style={{ color: 'var(--status-overdue)', fontWeight: 700 }}>Out of Stock</span>
                       ) : isLowStock ? (
-                        <span style={{ color: 'var(--status-pending)', fontWeight: 600 }}>Only {p.stock} units left!</span>
+                        <span style={{ color: 'var(--status-pending)', fontWeight: 700 }}>Only {p.stock} units left!</span>
                       ) : (
-                        <span style={{ color: 'var(--status-paid)', fontWeight: 600 }}>{p.stock} in stock</span>
+                        <span style={{ color: 'var(--status-paid)', fontWeight: 700 }}>{p.stock} in stock</span>
                       )}
                     </div>
                   </div>
@@ -512,7 +516,7 @@ export default function ProductsPage() {
             <tbody>
               {filteredProducts.map((p) => (
                 <tr key={p.id}>
-                  <td style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                  <td style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--gold-600)', fontWeight: 700 }}>
                     {p.sku}
                   </td>
                   <td>
@@ -536,7 +540,7 @@ export default function ProductsPage() {
                     </span>
                   </td>
                   <td>
-                    <strong style={{ color: 'var(--gold-400)', fontFamily: 'var(--font-sans)', fontSize: '0.92rem' }}>
+                    <strong style={{ color: 'var(--gold-600)', fontFamily: 'var(--font-sans)', fontSize: '0.95rem' }}>
                       {formatCurrency(p.price)}
                     </strong>
                   </td>
@@ -583,16 +587,16 @@ export default function ProductsPage() {
           <div 
             className="modal-content" 
             onClick={(e) => e.stopPropagation()}
-            style={{ maxWidth: '680px', width: '95%' }}
+            style={{ maxWidth: '680px', width: '95%', backgroundColor: '#ffffff' }}
           >
             <div
               style={{
                 padding: '22px 26px',
-                borderBottom: '1px solid var(--border-medium)',
+                borderBottom: '1.5px solid var(--border-gold)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                background: 'linear-gradient(180deg, rgba(212,175,55,0.06) 0%, transparent 100%)'
+                background: 'linear-gradient(180deg, #fdfbf7 0%, #ffffff 100%)'
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -602,17 +606,17 @@ export default function ProductsPage() {
                     height: '36px',
                     borderRadius: '8px',
                     background: 'var(--gold-subtle)',
-                    border: '1px solid var(--border-gold)',
+                    border: '1.5px solid var(--border-gold)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: 'var(--gold-400)'
+                    color: 'var(--gold-600)'
                   }}
                 >
                   <Boxes size={18} />
                 </div>
                 <div>
-                  <h3 style={{ fontSize: '1.15rem', fontWeight: 700, margin: 0 }}>
+                  <h3 style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
                     {editingItem ? 'Edit Showroom Offering' : 'Add New Product / Vehicle Offering'}
                   </h3>
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>

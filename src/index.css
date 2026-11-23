@@ -1,96 +1,70 @@
-/* SR CARS - Luxury Automotive Theme & Design System */
+/* SR CARS - Royal White & Golden Luxury Automotive Theme */
 
 :root {
-  /* Default: Majestic Dark Imperial Gold */
-  --bg-primary: #0a0d14;
-  --bg-secondary: #0f1422;
-  --bg-card: rgba(18, 24, 38, 0.85);
-  --bg-card-hover: rgba(26, 35, 54, 0.95);
-  --bg-card-solid: #131a29;
-  --bg-input: #0b0f1a;
-  --bg-dropdown: #131a2c;
+  /* Majestic Imperial White & Gold Palette */
+  --bg-primary: #fbf9f5;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #fdfbf7;
+  --bg-card-solid: #ffffff;
+  --bg-input: #fdfbf7;
+  --bg-dropdown: #ffffff;
   
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-medium: rgba(255, 255, 255, 0.14);
-  --border-gold: rgba(212, 175, 55, 0.35);
-  --border-focus: #e5b869;
+  --border-subtle: rgba(212, 175, 55, 0.2);
+  --border-medium: rgba(212, 175, 55, 0.38);
+  --border-gold: rgba(184, 134, 11, 0.45);
+  --border-focus: #b8860b;
 
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --text-inverse: #0a0d14;
+  --text-primary: #1a1610;
+  --text-secondary: #574f41;
+  --text-muted: #8c8270;
+  --text-inverse: #ffffff;
 
-  /* Accent Colors - Majestic Gold & Automotive Racing Shades */
-  --gold-300: #f5d78e;
-  --gold-400: #e5b869;
-  --gold-500: #d4af37;
-  --gold-600: #b89228;
-  --gold-glow: rgba(212, 175, 55, 0.25);
+  /* Radiant Gold Accents */
+  --gold-100: #fbf7ee;
+  --gold-200: #f5eccf;
+  --gold-300: #e8d197;
+  --gold-400: #d4af37;
+  --gold-500: #b8860b;
+  --gold-600: #996515;
+  --gold-glow: rgba(212, 175, 55, 0.28);
   --gold-subtle: rgba(212, 175, 55, 0.12);
+  --gold-shimmer: linear-gradient(135deg, #e5ba53 0%, #c59b27 50%, #a67509 100%);
 
-  --accent-blue: #3b82f6;
-  --accent-blue-subtle: rgba(59, 130, 246, 0.15);
-  --accent-cyan: #06b6d4;
+  --accent-blue: #2563eb;
+  --accent-blue-subtle: rgba(37, 99, 235, 0.1);
+  --accent-cyan: #0891b2;
 
-  --status-paid: #10b981;
-  --status-paid-bg: rgba(16, 185, 129, 0.15);
-  --status-paid-border: rgba(16, 185, 129, 0.3);
+  --status-paid: #059669;
+  --status-paid-bg: rgba(5, 150, 105, 0.1);
+  --status-paid-border: rgba(5, 150, 105, 0.28);
 
-  --status-pending: #f59e0b;
-  --status-pending-bg: rgba(245, 158, 11, 0.15);
-  --status-pending-border: rgba(245, 158, 11, 0.3);
+  --status-pending: #d97706;
+  --status-pending-bg: rgba(217, 119, 6, 0.1);
+  --status-pending-border: rgba(217, 119, 6, 0.28);
 
-  --status-overdue: #ef4444;
-  --status-overdue-bg: rgba(239, 68, 68, 0.15);
-  --status-overdue-border: rgba(239, 68, 68, 0.3);
+  --status-overdue: #dc2626;
+  --status-overdue-bg: rgba(220, 38, 38, 0.1);
+  --status-overdue-border: rgba(220, 38, 38, 0.28);
 
-  --status-draft: #8b5cf6;
-  --status-draft-bg: rgba(139, 92, 246, 0.15);
-  --status-draft-border: rgba(139, 92, 246, 0.3);
+  --status-draft: #7c3aed;
+  --status-draft-bg: rgba(124, 58, 237, 0.1);
+  --status-draft-border: rgba(124, 58, 237, 0.28);
 
   --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-display: 'Cinzel', serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.6);
-  --shadow-gold: 0 0 25px rgba(212, 175, 55, 0.2);
+  --shadow-sm: 0 2px 8px rgba(184, 134, 11, 0.06);
+  --shadow-md: 0 6px 22px rgba(184, 134, 11, 0.08);
+  --shadow-lg: 0 14px 38px rgba(184, 134, 11, 0.14);
+  --shadow-gold: 0 4px 24px rgba(212, 175, 55, 0.28);
 
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-xl: 22px;
   --radius-full: 9999px;
-}
-
-/* Light Mode Overrides */
-[data-theme="light"] {
-  --bg-primary: #f4f6fa;
-  --bg-secondary: #ffffff;
-  --bg-card: rgba(255, 255, 255, 0.95);
-  --bg-card-hover: #ffffff;
-  --bg-card-solid: #ffffff;
-  --bg-input: #f8fafc;
-  --bg-dropdown: #ffffff;
-
-  --border-subtle: #e2e8f0;
-  --border-medium: #cbd5e1;
-  --border-gold: rgba(184, 146, 40, 0.4);
-  --border-focus: #b89228;
-
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
-  --text-inverse: #ffffff;
-
-  --gold-glow: rgba(184, 146, 40, 0.15);
-  --gold-subtle: rgba(184, 146, 40, 0.08);
-
-  --shadow-sm: 0 2px 6px rgba(15, 23, 42, 0.05);
-  --shadow-md: 0 8px 20px rgba(15, 23, 42, 0.08);
-  --shadow-lg: 0 16px 36px rgba(15, 23, 42, 0.12);
-  --shadow-gold: 0 4px 20px rgba(212, 175, 55, 0.2);
 }
 
 /* Base resets & typography */
@@ -116,16 +90,16 @@ html, body {
   flex-direction: column;
 }
 
-/* Custom Scrollbar */
+/* Custom Gold Scrollbar */
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
   background: var(--bg-primary);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(212, 175, 55, 0.25);
+  background: rgba(212, 175, 55, 0.35);
   border-radius: var(--radius-full);
 }
 ::-webkit-scrollbar-thumb:hover {
@@ -135,8 +109,6 @@ html, body {
 /* Common luxury card */
 .luxury-card {
   background: var(--bg-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
@@ -147,14 +119,16 @@ html, body {
 
 .luxury-card:hover {
   border-color: var(--border-medium);
+  box-shadow: var(--shadow-lg);
 }
 
 .luxury-card-gold {
   border-color: var(--border-gold);
+  background: linear-gradient(180deg, #ffffff 0%, #fdfbf7 100%);
 }
 
 .luxury-card-gold:hover {
-  border-color: var(--gold-400);
+  border-color: var(--gold-500);
   box-shadow: var(--shadow-gold);
 }
 
@@ -164,8 +138,8 @@ html, body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: linear-gradient(135deg, var(--gold-400) 0%, var(--gold-600) 100%);
-  color: #0b0d14;
+  background: linear-gradient(135deg, #e5ba53 0%, #c59b27 50%, #a67509 100%);
+  color: #ffffff;
   font-family: var(--font-sans);
   font-weight: 600;
   font-size: 0.9rem;
@@ -173,15 +147,16 @@ html, body {
   border-radius: var(--radius-md);
   border: none;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+  box-shadow: 0 4px 18px rgba(197, 155, 39, 0.35);
   transition: all 0.2s ease;
   white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
 .btn-gold:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 22px rgba(212, 175, 55, 0.45);
-  filter: brightness(1.05);
+  box-shadow: 0 6px 24px rgba(197, 155, 39, 0.5);
+  filter: brightness(1.06);
 }
 
 .btn-gold:active {
@@ -193,7 +168,7 @@ html, body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: transparent;
+  background: #ffffff;
   color: var(--text-primary);
   border: 1px solid var(--border-medium);
   font-family: var(--font-sans);
@@ -202,25 +177,27 @@ html, body {
   padding: 9px 18px;
   border-radius: var(--radius-md);
   cursor: pointer;
+  box-shadow: var(--shadow-sm);
   transition: all 0.2s ease;
 }
 
 .btn-outline:hover {
   background: var(--bg-card-hover);
-  border-color: var(--gold-400);
-  color: var(--gold-400);
+  border-color: var(--gold-500);
+  color: var(--gold-600);
 }
 
 .btn-outline-gold {
   border-color: var(--border-gold);
-  color: var(--gold-400);
+  color: var(--gold-600);
   background: var(--gold-subtle);
+  font-weight: 600;
 }
 
 .btn-outline-gold:hover {
   background: rgba(212, 175, 55, 0.2);
-  border-color: var(--gold-400);
-  color: var(--gold-300);
+  border-color: var(--gold-500);
+  color: var(--gold-600);
 }
 
 .btn-icon {
@@ -230,16 +207,17 @@ html, body {
   width: 38px;
   height: 38px;
   border-radius: var(--radius-md);
-  background: var(--bg-card);
+  background: #ffffff;
   border: 1px solid var(--border-subtle);
   color: var(--text-secondary);
   cursor: pointer;
+  box-shadow: var(--shadow-sm);
   transition: all 0.2s ease;
 }
 
 .btn-icon:hover {
-  color: var(--gold-400);
-  border-color: var(--gold-400);
+  color: var(--gold-600);
+  border-color: var(--gold-500);
   background: var(--gold-subtle);
 }
 
@@ -251,7 +229,7 @@ html, body {
   padding: 3px 10px;
   border-radius: var(--radius-full);
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.3px;
   text-transform: uppercase;
 }
@@ -281,9 +259,9 @@ html, body {
 }
 
 .badge-gold {
-  background: var(--gold-subtle);
-  color: var(--gold-400);
-  border: 1px solid var(--border-gold);
+  background: rgba(212, 175, 55, 0.12);
+  color: #996515;
+  border: 1px solid rgba(184, 134, 11, 0.35);
 }
 
 /* Form Inputs */
@@ -302,13 +280,14 @@ html, body {
 
 .form-input:focus, .form-select:focus, .form-textarea:focus {
   border-color: var(--border-focus);
-  box-shadow: 0 0 0 2px var(--gold-glow);
+  box-shadow: 0 0 0 3px var(--gold-glow);
+  background: #ffffff;
 }
 
 .form-label {
   display: block;
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   color: var(--text-secondary);
@@ -324,18 +303,14 @@ html, body {
 }
 
 .luxury-table th {
-  background: rgba(15, 20, 34, 0.6);
+  background: #fbf8f1;
   padding: 14px 18px;
   font-size: 0.78rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.8px;
   text-transform: uppercase;
-  color: var(--text-muted);
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-[data-theme="light"] .luxury-table th {
-  background: #f1f5f9;
+  color: #7a6b4e;
+  border-bottom: 1px solid var(--border-medium);
 }
 
 .luxury-table td {
@@ -347,22 +322,19 @@ html, body {
 }
 
 .luxury-table tbody tr {
+  background: #ffffff;
   transition: background 0.15s ease;
 }
 
 .luxury-table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.02);
-}
-
-[data-theme="light"] .luxury-table tbody tr:hover {
-  background: #f8fafc;
+  background: #fdfbf7;
 }
 
 /* Modal overlay */
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(4, 6, 12, 0.8);
+  background: rgba(26, 22, 16, 0.45);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   display: flex;
@@ -386,7 +358,7 @@ html, body {
 
 .modal-content {
   background: var(--bg-card-solid);
-  border: 1px solid var(--border-medium);
+  border: 1.5px solid var(--border-gold);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
   max-width: 900px;

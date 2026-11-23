@@ -1,5 +1,5 @@
 import React from 'react';
-import { useBilling } from '../../context/BillingContext';
+import { useBilling } from '../../context/useBilling';
 import { 
   LayoutDashboard, 
   ReceiptText, 
@@ -63,25 +63,27 @@ export default function Sidebar({ isOpen, onClose }) {
         className={`sidebar no-print ${isOpen ? 'open' : ''}`}
         style={{
           width: '280px',
-          backgroundColor: 'var(--bg-secondary)',
-          borderRight: '1px solid var(--border-subtle)',
+          backgroundColor: '#ffffff',
+          borderRight: '1.5px solid var(--border-subtle)',
           display: 'flex',
           flexDirection: 'column',
           height: '100vh',
           position: 'sticky',
           top: 0,
           zIndex: 50,
+          boxShadow: 'var(--shadow-sm)',
           transition: 'transform 0.3s ease'
         }}
       >
-        {/* Majestic Brand Header */}
+        {/* Majestic Brand Header in White & Gold */}
         <div
           style={{
             padding: '26px 24px 20px',
             borderBottom: '1px solid var(--border-subtle)',
             display: 'flex',
             alignItems: 'center',
-            gap: '14px'
+            gap: '14px',
+            background: 'linear-gradient(180deg, #fdfcf9 0%, #ffffff 100%)'
           }}
         >
           <div
@@ -89,16 +91,16 @@ export default function Sidebar({ isOpen, onClose }) {
               width: '46px',
               height: '46px',
               borderRadius: '12px',
-              background: 'linear-gradient(135deg, #1e293b 0%, #0b0f19 100%)',
-              border: '1.5px solid var(--gold-400)',
-              boxShadow: '0 0 16px var(--gold-glow)',
+              background: 'linear-gradient(135deg, #ffffff 0%, #fbf7ee 100%)',
+              border: '2px solid var(--gold-500)',
+              boxShadow: '0 4px 16px var(--gold-glow)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               position: 'relative'
             }}
           >
-            <Crown size={22} color="var(--gold-400)" />
+            <Crown size={22} color="var(--gold-500)" />
           </div>
 
           <div>
@@ -106,10 +108,10 @@ export default function Sidebar({ isOpen, onClose }) {
               <span
                 style={{
                   fontFamily: 'var(--font-display)',
-                  fontWeight: 800,
-                  fontSize: '1.35rem',
+                  fontWeight: 900,
+                  fontSize: '1.38rem',
                   letterSpacing: '2.5px',
-                  background: 'linear-gradient(135deg, #ffffff 30%, var(--gold-300) 100%)',
+                  background: 'linear-gradient(135deg, #1a1610 30%, #b8860b 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent'
                 }}
@@ -122,8 +124,8 @@ export default function Sidebar({ isOpen, onClose }) {
                 fontSize: '0.68rem',
                 textTransform: 'uppercase',
                 letterSpacing: '1.5px',
-                color: 'var(--gold-400)',
-                fontWeight: 600,
+                color: 'var(--gold-600)',
+                fontWeight: 700,
                 marginTop: '1px'
               }}
             >
@@ -137,10 +139,10 @@ export default function Sidebar({ isOpen, onClose }) {
           <div
             style={{
               fontSize: '0.7rem',
-              fontWeight: 700,
+              fontWeight: 800,
               textTransform: 'uppercase',
               letterSpacing: '1.2px',
-              color: 'var(--text-muted)',
+              color: 'var(--gold-600)',
               marginBottom: '12px',
               paddingLeft: '12px'
             }}
@@ -168,13 +170,13 @@ export default function Sidebar({ isOpen, onClose }) {
                     padding: '12px 14px',
                     borderRadius: 'var(--radius-md)',
                     border: isActive
-                      ? '1px solid var(--border-gold)'
+                      ? '1px solid var(--gold-500)'
                       : '1px solid transparent',
                     background: isActive
-                      ? 'linear-gradient(90deg, var(--gold-subtle) 0%, rgba(212,175,55,0.03) 100%)'
+                      ? 'linear-gradient(90deg, rgba(212,175,55,0.14) 0%, rgba(212,175,55,0.03) 100%)'
                       : 'transparent',
-                    color: isActive ? 'var(--gold-400)' : 'var(--text-secondary)',
-                    fontWeight: isActive ? 600 : 500,
+                    color: isActive ? 'var(--gold-600)' : 'var(--text-secondary)',
+                    fontWeight: isActive ? 700 : 500,
                     fontSize: '0.92rem',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
@@ -183,7 +185,7 @@ export default function Sidebar({ isOpen, onClose }) {
                   onMouseEnter={(e) => {
                     if (!isActive) {
                       e.currentTarget.style.color = 'var(--text-primary)';
-                      e.currentTarget.style.background = 'var(--bg-card)';
+                      e.currentTarget.style.background = '#fdfbf7';
                     }
                   }}
                   onMouseLeave={(e) => {
@@ -195,7 +197,7 @@ export default function Sidebar({ isOpen, onClose }) {
                 >
                   <Icon
                     size={20}
-                    color={isActive ? 'var(--gold-400)' : 'currentColor'}
+                    color={isActive ? 'var(--gold-500)' : 'currentColor'}
                   />
                   <span style={{ flex: 1 }}>{item.label}</span>
 
@@ -206,32 +208,33 @@ export default function Sidebar({ isOpen, onClose }) {
                         borderRadius: '999px',
                         fontSize: '0.72rem',
                         fontWeight: 700,
-                        background: isActive ? 'var(--gold-400)' : 'var(--border-subtle)',
-                        color: isActive ? '#0a0d14' : 'var(--text-secondary)'
+                        background: isActive ? 'var(--gold-500)' : 'rgba(212,175,55,0.15)',
+                        color: isActive ? '#ffffff' : 'var(--gold-600)'
                       }}
                     >
                       {item.badge}
                     </span>
                   )}
-                  {isActive && <ChevronRight size={15} color="var(--gold-400)" />}
+                  {isActive && <ChevronRight size={15} color="var(--gold-500)" />}
                 </button>
               );
             })}
           </nav>
 
-          {/* Luxury Showcase Callout */}
+          {/* Luxury Showcase Callout in White & Gold */}
           <div
             style={{
               marginTop: '32px',
               padding: '16px',
               borderRadius: 'var(--radius-md)',
-              background: 'linear-gradient(145deg, rgba(212,175,55,0.08) 0%, rgba(15,20,34,0.6) 100%)',
-              border: '1px solid var(--border-gold)'
+              background: 'linear-gradient(145deg, #ffffff 0%, #fbf8f1 100%)',
+              border: '1px solid var(--border-gold)',
+              boxShadow: 'var(--shadow-sm)'
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-              <Sparkles size={16} color="var(--gold-400)" />
-              <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--gold-300)' }}>
+              <Sparkles size={16} color="var(--gold-500)" />
+              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--gold-600)' }}>
                 Certified Studio
               </span>
             </div>
@@ -241,26 +244,26 @@ export default function Sidebar({ isOpen, onClose }) {
           </div>
         </div>
 
-        {/* Footer info */}
+        {/* Footer info in clean White & Gold */}
         <div
           style={{
             padding: '16px 20px',
             borderTop: '1px solid var(--border-subtle)',
-            backgroundColor: 'rgba(0,0,0,0.1)',
+            backgroundColor: '#fdfbf7',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between'
           }}
         >
           <div>
-            <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+            <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-primary)' }}>
               GST: {settings.gstin?.slice(0, 8)}...
             </div>
             <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
               {settings.phone}
             </div>
           </div>
-          <ShieldCheck size={20} color="var(--status-paid)" title="Verified Dealership System" />
+          <ShieldCheck size={20} color="var(--gold-500)" title="Verified Dealership System" />
         </div>
       </aside>
     </>

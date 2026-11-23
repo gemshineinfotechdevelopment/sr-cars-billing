@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useBilling } from '../context/BillingContext';
+import { useBilling } from '../context/useBilling';
 import { 
   Receipt, 
   CreditCard, 
@@ -10,8 +10,7 @@ import {
   Download, 
   Upload, 
   Crown,
-  Sun,
-  Moon,
+  Sparkles,
   Check
 } from 'lucide-react';
 
@@ -20,8 +19,6 @@ export default function SettingsPage() {
     settings, 
     updateSettings, 
     resetToDefaults, 
-    theme, 
-    toggleTheme, 
     invoices, 
     products, 
     showToast 
@@ -107,7 +104,7 @@ export default function SettingsPage() {
 
   return (
     <div style={{ padding: '32px 32px 64px', maxWidth: '1440px', margin: '0 auto', width: '100%' }}>
-      {/* Page Header */}
+      {/* Page Header in White & Gold */}
       <div
         style={{
           display: 'flex',
@@ -122,8 +119,8 @@ export default function SettingsPage() {
           <h1
             style={{
               fontFamily: 'var(--font-display)',
-              fontSize: '1.65rem',
-              fontWeight: 800,
+              fontSize: '1.75rem',
+              fontWeight: 900,
               letterSpacing: '1px',
               color: 'var(--text-primary)',
               margin: '0 0 4px'
@@ -153,17 +150,17 @@ export default function SettingsPage() {
                   height: '38px',
                   borderRadius: '10px',
                   background: 'var(--gold-subtle)',
-                  border: '1px solid var(--border-gold)',
+                  border: '1.5px solid var(--border-gold)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: 'var(--gold-400)'
+                  color: 'var(--gold-600)'
                 }}
               >
                 <Crown size={20} />
               </div>
               <div>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0 }}>
+                <h3 style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
                   Showroom & Corporate Identity
                 </h3>
                 <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
@@ -255,18 +252,18 @@ export default function SettingsPage() {
                   width: '38px',
                   height: '38px',
                   borderRadius: '10px',
-                  background: 'rgba(59,130,246,0.15)',
-                  border: '1px solid rgba(59,130,246,0.3)',
+                  background: 'rgba(212, 175, 55, 0.15)',
+                  border: '1.5px solid var(--border-gold)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: 'var(--accent-blue)'
+                  color: 'var(--gold-600)'
                 }}
               >
                 <Receipt size={20} />
               </div>
               <div>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0 }}>
+                <h3 style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
                   Billing & Taxation Configuration
                 </h3>
                 <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
@@ -360,7 +357,7 @@ export default function SettingsPage() {
                 <CreditCard size={20} />
               </div>
               <div>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0 }}>
+                <h3 style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
                   Banking & QR Wire Transfer Settings
                 </h3>
                 <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
@@ -429,13 +426,13 @@ export default function SettingsPage() {
                   className="form-input"
                   value={formData.bankDetails.upiId}
                   onChange={(e) => handleBankChange('upiId', e.target.value)}
-                  style={{ color: 'var(--accent-blue)', fontWeight: 600 }}
+                  style={{ color: 'var(--accent-blue)', fontWeight: 700 }}
                 />
               </div>
             </div>
           </div>
 
-          {/* Section 4: Theme & Appearance */}
+          {/* Section 4: Theme & Appearance in White & Gold */}
           <div className="luxury-card" style={{ padding: '28px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
               <div
@@ -443,73 +440,64 @@ export default function SettingsPage() {
                   width: '38px',
                   height: '38px',
                   borderRadius: '10px',
-                  background: 'rgba(236, 72, 153, 0.15)',
-                  border: '1px solid rgba(236, 72, 153, 0.3)',
+                  background: 'rgba(212, 175, 55, 0.15)',
+                  border: '1.5px solid var(--border-gold)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: '#ec4899'
+                  color: 'var(--gold-600)'
                 }}
               >
                 <Palette size={20} />
               </div>
               <div>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0 }}>
-                  Showroom Theme & Display
+                <h3 style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
+                  Showroom Theme & Palette
                 </h3>
                 <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-                  Select high-contrast luxury styling preference
+                  Majestic Imperial White & Champagne Golden aesthetic
                 </span>
               </div>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
               <div
-                onClick={() => {
-                  if (theme !== 'dark') toggleTheme();
-                }}
                 style={{
-                  padding: '16px 24px',
+                  padding: '18px 26px',
                   borderRadius: 'var(--radius-md)',
-                  border: theme === 'dark' ? '2px solid var(--gold-400)' : '1px solid var(--border-subtle)',
-                  background: '#0b0f19',
-                  color: '#f8fafc',
-                  cursor: 'pointer',
+                  border: '2px solid var(--gold-500)',
+                  background: 'linear-gradient(135deg, #ffffff 0%, #fdfbf7 100%)',
+                  boxShadow: 'var(--shadow-gold)',
+                  color: '#1a1610',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '12px'
+                  gap: '14px',
+                  minWidth: '320px'
                 }}
               >
-                <Moon size={20} color="#e5b869" />
-                <div>
-                  <div style={{ fontWeight: 700, fontSize: '0.9rem' }}>Majestic Obsidian Dark</div>
-                  <div style={{ fontSize: '0.72rem', color: '#94a3b8' }}>Luxury automotive showroom ambiance</div>
+                <div
+                  style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #e5ba53 0%, #b8860b 100%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#ffffff'
+                  }}
+                >
+                  <Sparkles size={18} />
                 </div>
-                {theme === 'dark' && <Check size={18} color="var(--gold-400)" />}
-              </div>
-
-              <div
-                onClick={() => {
-                  if (theme !== 'light') toggleTheme();
-                }}
-                style={{
-                  padding: '16px 24px',
-                  borderRadius: 'var(--radius-md)',
-                  border: theme === 'light' ? '2px solid var(--gold-400)' : '1px solid var(--border-subtle)',
-                  background: '#ffffff',
-                  color: '#0f172a',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px'
-                }}
-              >
-                <Sun size={20} color="#b89228" />
-                <div>
-                  <div style={{ fontWeight: 700, fontSize: '0.9rem' }}>Imperial Crisp Light</div>
-                  <div style={{ fontSize: '0.72rem', color: '#64748b' }}>High daylight visibility & clean lines</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--gold-600)' }}>
+                    Imperial White & Golden Theme
+                  </div>
+                  <div style={{ fontSize: '0.74rem', color: '#574f41' }}>
+                    Active showroom theme • Clean ivory marble & radiant gold accents
+                  </div>
                 </div>
-                {theme === 'light' && <Check size={18} color="var(--gold-400)" />}
+                <Check size={20} color="var(--gold-500)" />
               </div>
             </div>
           </div>
@@ -522,18 +510,18 @@ export default function SettingsPage() {
                   width: '38px',
                   height: '38px',
                   borderRadius: '10px',
-                  background: 'rgba(139, 92, 246, 0.15)',
-                  border: '1px solid rgba(139, 92, 246, 0.3)',
+                  background: 'rgba(124, 58, 237, 0.1)',
+                  border: '1px solid rgba(124, 58, 237, 0.25)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: '#8b5cf6'
+                  color: '#7c3aed'
                 }}
               >
                 <Database size={20} />
               </div>
               <div>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0 }}>
+                <h3 style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
                   Showroom Database & Persistence
                 </h3>
                 <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>

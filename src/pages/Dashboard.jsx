@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useBilling } from '../context/BillingContext';
+import { useBilling } from '../context/useBilling';
 import { 
   Clock, 
   Car, 
@@ -95,7 +95,7 @@ export default function Dashboard() {
 
   return (
     <div style={{ padding: '32px 32px 64px', maxWidth: '1440px', margin: '0 auto', width: '100%' }}>
-      {/* Top Welcome & Quick Action Bar */}
+      {/* Top Welcome & Quick Action Bar in White & Gold */}
       <div
         style={{
           display: 'flex',
@@ -107,12 +107,12 @@ export default function Dashboard() {
         }}
       >
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
             <span
               style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: '1.65rem',
-                fontWeight: 800,
+                fontSize: '1.75rem',
+                fontWeight: 900,
                 letterSpacing: '1px',
                 color: 'var(--text-primary)'
               }}
@@ -120,7 +120,7 @@ export default function Dashboard() {
               Dealership Command Center
             </span>
             <span className="badge badge-gold">
-              <Sparkles size={12} /> Live Showroom
+              <Sparkles size={13} color="var(--gold-600)" /> Live Showroom
             </span>
           </div>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
@@ -151,7 +151,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* KPI 4-Card Luxury Grid */}
+      {/* KPI 4-Card Luxury White & Gold Grid */}
       <div
         style={{
           display: 'grid',
@@ -163,30 +163,30 @@ export default function Dashboard() {
         {/* Metric 1: Total Billed Revenue */}
         <div className="luxury-card luxury-card-gold" style={{ padding: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-            <span style={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
+            <span style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--gold-600)', letterSpacing: '0.5px' }}>
               Total Gross Billed
             </span>
             <div
               style={{
-                width: '40px',
-                height: '40px',
+                width: '42px',
+                height: '42px',
                 borderRadius: '10px',
-                background: 'var(--gold-subtle)',
-                border: '1px solid var(--border-gold)',
+                background: 'rgba(212, 175, 55, 0.15)',
+                border: '1.5px solid var(--border-gold)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: 'var(--gold-400)'
+                color: 'var(--gold-600)'
               }}
             >
-              <TrendingUp size={20} />
+              <TrendingUp size={22} />
             </div>
           </div>
-          <div style={{ fontSize: '1.85rem', fontWeight: 800, fontFamily: 'var(--font-sans)', color: 'var(--text-primary)', marginBottom: '8px' }}>
+          <div style={{ fontSize: '1.95rem', fontWeight: 900, fontFamily: 'var(--font-sans)', color: 'var(--text-primary)', marginBottom: '8px' }}>
             {formatCurrency(totalRevenue)}
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', color: 'var(--status-paid)' }}>
-            <ArrowUpRight size={15} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: 'var(--status-paid)', fontWeight: 600 }}>
+            <ArrowUpRight size={16} />
             <span>+24.6% vs previous quarter</span>
           </div>
         </div>
@@ -194,13 +194,13 @@ export default function Dashboard() {
         {/* Metric 2: Settled / Paid Invoices */}
         <div className="luxury-card" style={{ padding: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-            <span style={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
+            <span style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
               Collected Cashflow
             </span>
             <div
               style={{
-                width: '40px',
-                height: '40px',
+                width: '42px',
+                height: '42px',
                 borderRadius: '10px',
                 background: 'var(--status-paid-bg)',
                 border: '1px solid var(--status-paid-border)',
@@ -210,13 +210,13 @@ export default function Dashboard() {
                 color: 'var(--status-paid)'
               }}
             >
-              <CheckCircle2 size={20} />
+              <CheckCircle2 size={22} />
             </div>
           </div>
-          <div style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px' }}>
+          <div style={{ fontSize: '1.95rem', fontWeight: 900, color: 'var(--text-primary)', marginBottom: '8px' }}>
             {formatCurrency(paidAmount)}
           </div>
-          <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
             <strong style={{ color: 'var(--status-paid)' }}>{paidInvoices.length} invoices</strong> settled in full
           </div>
         </div>
@@ -224,13 +224,13 @@ export default function Dashboard() {
         {/* Metric 3: Pending & Overdue */}
         <div className="luxury-card" style={{ padding: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-            <span style={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
+            <span style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
               Outstanding Balance
             </span>
             <div
               style={{
-                width: '40px',
-                height: '40px',
+                width: '42px',
+                height: '42px',
                 borderRadius: '10px',
                 background: overdueInvoices.length > 0 ? 'var(--status-overdue-bg)' : 'var(--status-pending-bg)',
                 border: overdueInvoices.length > 0 ? '1px solid var(--status-overdue-border)' : '1px solid var(--status-pending-border)',
@@ -240,14 +240,14 @@ export default function Dashboard() {
                 color: overdueInvoices.length > 0 ? 'var(--status-overdue)' : 'var(--status-pending)'
               }}
             >
-              <Clock size={20} />
+              <Clock size={22} />
             </div>
           </div>
-          <div style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px' }}>
+          <div style={{ fontSize: '1.95rem', fontWeight: 900, color: 'var(--text-primary)', marginBottom: '8px' }}>
             {formatCurrency(pendingAmount + overdueAmount)}
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.78rem' }}>
-            <span style={{ color: 'var(--status-pending)' }}>{pendingInvoices.length} Pending</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem' }}>
+            <span style={{ color: 'var(--status-pending)', fontWeight: 600 }}>{pendingInvoices.length} Pending</span>
             {overdueInvoices.length > 0 && (
               <span className="badge badge-overdue" style={{ fontSize: '0.68rem', padding: '1px 6px' }}>
                 {overdueInvoices.length} Overdue
@@ -259,35 +259,35 @@ export default function Dashboard() {
         {/* Metric 4: Showroom & Service Inventory */}
         <div className="luxury-card" style={{ padding: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-            <span style={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
+            <span style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
               Inventory Valuation
             </span>
             <div
               style={{
-                width: '40px',
-                height: '40px',
+                width: '42px',
+                height: '42px',
                 borderRadius: '10px',
-                background: 'rgba(59, 130, 246, 0.15)',
-                border: '1px solid rgba(59, 130, 246, 0.3)',
+                background: 'rgba(37, 99, 235, 0.1)',
+                border: '1px solid rgba(37, 99, 235, 0.25)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 color: 'var(--accent-blue)'
               }}
             >
-              <Car size={20} />
+              <Car size={22} />
             </div>
           </div>
-          <div style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px' }}>
+          <div style={{ fontSize: '1.95rem', fontWeight: 900, color: 'var(--text-primary)', marginBottom: '8px' }}>
             {formatCurrency(totalInventoryValue)}
           </div>
-          <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
             <strong>{luxuryCarsInStock} Luxury Vehicles</strong> & {products.length} catalog items
           </div>
         </div>
       </div>
 
-      {/* Main Analytics Row: Interactive SVG Revenue Curve & Category Breakdown */}
+      {/* Main Analytics Row: Interactive SVG Revenue Curve & Category Breakdown in White & Gold */}
       <div
         style={{
           display: 'grid',
@@ -300,17 +300,17 @@ export default function Dashboard() {
         <div className="luxury-card" style={{ padding: '24px', display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <div>
-              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 Revenue Trajectory
               </h3>
-              <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
                 Monthly sales volume & invoice settlements (in {settings.currency})
               </p>
             </div>
             <span className="badge badge-gold">Fiscal 2026</span>
           </div>
 
-          {/* SVG Chart */}
+          {/* SVG Chart in White & Gold */}
           <div style={{ position: 'relative', width: '100%', flex: 1, minHeight: '220px' }}>
             <svg
               viewBox={`0 0 ${svgWidth} ${svgHeight}`}
@@ -318,14 +318,14 @@ export default function Dashboard() {
             >
               <defs>
                 <linearGradient id="goldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#d4af37" stopOpacity="0.45" />
-                  <stop offset="60%" stopColor="#d4af37" stopOpacity="0.1" />
+                  <stop offset="0%" stopColor="#d4af37" stopOpacity="0.28" />
+                  <stop offset="70%" stopColor="#d4af37" stopOpacity="0.05" />
                   <stop offset="100%" stopColor="#d4af37" stopOpacity="0" />
                 </linearGradient>
                 <linearGradient id="strokeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#e5b869" />
-                  <stop offset="50%" stopColor="#d4af37" />
-                  <stop offset="100%" stopColor="#f5d78e" />
+                  <stop offset="0%" stopColor="#c59b27" />
+                  <stop offset="50%" stopColor="#b8860b" />
+                  <stop offset="100%" stopColor="#d4af37" />
                 </linearGradient>
               </defs>
 
@@ -339,7 +339,7 @@ export default function Dashboard() {
                       y1={y}
                       x2={svgWidth - paddingX}
                       y2={y}
-                      stroke="var(--border-subtle)"
+                      stroke="rgba(212, 175, 55, 0.18)"
                       strokeDasharray="4 4"
                     />
                   </g>
@@ -365,8 +365,8 @@ export default function Dashboard() {
                     cx={pt.x}
                     cy={pt.y}
                     r={hoveredPoint === i ? 7 : 5}
-                    fill="#0b0f19"
-                    stroke="#e5b869"
+                    fill="#ffffff"
+                    stroke="#b8860b"
                     strokeWidth={hoveredPoint === i ? 3 : 2}
                     style={{ cursor: 'pointer', transition: 'all 0.2s' }}
                     onMouseEnter={() => setHoveredPoint(i)}
@@ -377,9 +377,9 @@ export default function Dashboard() {
                     x={pt.x}
                     y={svgHeight - 8}
                     textAnchor="middle"
-                    fill="var(--text-muted)"
+                    fill="var(--text-secondary)"
                     fontSize="11"
-                    fontWeight="500"
+                    fontWeight="700"
                   >
                     {pt.month}
                   </text>
@@ -395,22 +395,22 @@ export default function Dashboard() {
                   left: `${(points[hoveredPoint].x / svgWidth) * 100}%`,
                   top: `${(points[hoveredPoint].y / svgHeight) * 100}%`,
                   transform: 'translate(-50%, -120%)',
-                  background: 'var(--bg-card-solid)',
-                  border: '1px solid var(--border-gold)',
+                  background: '#ffffff',
+                  border: '1.5px solid var(--border-gold)',
                   boxShadow: 'var(--shadow-md)',
-                  padding: '6px 12px',
-                  borderRadius: '6px',
+                  padding: '8px 14px',
+                  borderRadius: '8px',
                   pointerEvents: 'none',
                   whiteSpace: 'nowrap',
-                  fontSize: '0.78rem',
+                  fontSize: '0.8rem',
                   color: 'var(--text-primary)',
                   zIndex: 10
                 }}
               >
-                <div style={{ color: 'var(--gold-400)', fontWeight: 700 }}>
+                <div style={{ color: 'var(--gold-600)', fontWeight: 800 }}>
                   {chartData[hoveredPoint].month} 2026
                 </div>
-                <div>{formatCurrency(chartData[hoveredPoint].amount)}</div>
+                <div style={{ fontWeight: 700 }}>{formatCurrency(chartData[hoveredPoint].amount)}</div>
               </div>
             )}
           </div>
@@ -419,21 +419,21 @@ export default function Dashboard() {
         {/* Revenue By Category */}
         <div className="luxury-card" style={{ padding: '24px', display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
-            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-primary)' }}>
               Revenue by Segment
             </h3>
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Top streams</span>
+            <span style={{ fontSize: '0.78rem', color: 'var(--gold-600)', fontWeight: 700 }}>Top streams</span>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', flex: 1, justifyContent: 'center' }}>
             {categoryList.map((cat, idx) => {
-              const colors = ['#d4af37', '#3b82f6', '#10b981', '#8b5cf6', '#ec4899'];
+              const colors = ['#b8860b', '#2563eb', '#059669', '#7c3aed', '#db2777'];
               const color = colors[idx % colors.length];
 
               return (
                 <div key={cat.name}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.84rem', marginBottom: '6px' }}>
-                    <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{cat.name}</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: '6px' }}>
+                    <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{cat.name}</span>
                     <span style={{ color: 'var(--text-secondary)' }}>
                       {formatCurrency(cat.amount)} <strong style={{ color }}>({cat.percent}%)</strong>
                     </span>
@@ -441,8 +441,8 @@ export default function Dashboard() {
                   <div
                     style={{
                       width: '100%',
-                      height: '7px',
-                      background: 'var(--border-subtle)',
+                      height: '8px',
+                      background: 'rgba(212, 175, 55, 0.15)',
                       borderRadius: '999px',
                       overflow: 'hidden'
                     }}
@@ -473,7 +473,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Recent Invoices Table */}
+      {/* Recent Invoices Table in White & Gold */}
       <div className="luxury-card" style={{ padding: '24px' }}>
         <div
           style={{
@@ -486,10 +486,10 @@ export default function Dashboard() {
           }}
         >
           <div>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+            <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-primary)' }}>
               Recent Luxury Invoices
             </h3>
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
               Latest transactions, vehicle servicing orders, and sales receipts
             </p>
           </div>
@@ -497,7 +497,7 @@ export default function Dashboard() {
           <button
             className="btn-outline"
             onClick={() => setActiveTab('invoices')}
-            style={{ fontSize: '0.82rem' }}
+            style={{ fontSize: '0.84rem' }}
           >
             <span>View All ({invoices.length}) Invoices</span>
             <ChevronRight size={15} />
@@ -526,9 +526,9 @@ export default function Dashboard() {
                     <div
                       style={{
                         fontFamily: 'var(--font-mono)',
-                        fontWeight: 600,
-                        color: 'var(--gold-400)',
-                        fontSize: '0.88rem'
+                        fontWeight: 700,
+                        color: 'var(--gold-600)',
+                        fontSize: '0.9rem'
                       }}
                     >
                       {inv.invoiceNumber}
@@ -537,7 +537,7 @@ export default function Dashboard() {
 
                   {/* Customer */}
                   <td>
-                    <div style={{ fontWeight: 600 }}>{inv.customer.name}</div>
+                    <div style={{ fontWeight: 700 }}>{inv.customer.name}</div>
                     <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                       {inv.customer.company || inv.customer.phone}
                     </div>
@@ -545,15 +545,17 @@ export default function Dashboard() {
 
                   {/* Vehicle */}
                   <td>
-                    <div style={{ fontWeight: 500 }}>{inv.vehicle.makeModel}</div>
+                    <div style={{ fontWeight: 600 }}>{inv.vehicle.makeModel}</div>
                     <span
                       style={{
                         fontSize: '0.72rem',
                         fontFamily: 'var(--font-mono)',
                         padding: '1px 6px',
-                        background: 'rgba(255,255,255,0.06)',
+                        background: '#fbf7ee',
+                        border: '1px solid rgba(212, 175, 55, 0.35)',
                         borderRadius: '4px',
-                        color: 'var(--text-secondary)'
+                        color: '#85580a',
+                        fontWeight: 700
                       }}
                     >
                       {inv.vehicle.regNumber}
@@ -561,7 +563,7 @@ export default function Dashboard() {
                   </td>
 
                   {/* Date */}
-                  <td style={{ color: 'var(--text-secondary)', fontSize: '0.82rem' }}>
+                  <td style={{ color: 'var(--text-secondary)', fontSize: '0.84rem' }}>
                     {inv.date}
                   </td>
 
@@ -569,10 +571,10 @@ export default function Dashboard() {
                   <td>
                     <span
                       style={{
-                        fontWeight: 700,
+                        fontWeight: 800,
                         fontFamily: 'var(--font-sans)',
                         color: 'var(--text-primary)',
-                        fontSize: '0.95rem'
+                        fontSize: '0.98rem'
                       }}
                     >
                       {formatCurrency(inv.totalAmount)}

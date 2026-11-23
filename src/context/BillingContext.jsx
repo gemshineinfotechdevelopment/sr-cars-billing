@@ -5,9 +5,14 @@ export const BillingContext = createContext();
 export { useBilling } from './useBilling';
 
 export function BillingProvider({ children }) {
-  // Theme state
+  // Theme state defaults to majestic white-gold
   const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('sr_cars_theme') || 'dark';
+    const saved = localStorage.getItem('sr_cars_theme');
+    if (saved === 'dark') {
+      localStorage.setItem('sr_cars_theme', 'white-gold');
+      return 'white-gold';
+    }
+    return saved || 'white-gold';
   });
 
   // Active page state: 'dashboard' | 'invoices' | 'products' | 'reports' | 'settings'
@@ -169,7 +174,7 @@ export function BillingProvider({ children }) {
   };
 
   const toggleTheme = () => {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+    setTheme((prev) => (prev === 'white-gold' ? 'ivory-gold' : 'white-gold'));
   };
 
   return (

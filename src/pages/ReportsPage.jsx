@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useBilling } from '../context/BillingContext';
+import { useBilling } from '../context/useBilling';
 import { 
   Download, 
   ShieldCheck 
@@ -147,7 +147,7 @@ export default function ReportsPage() {
 
   return (
     <div style={{ padding: '32px 32px 64px', maxWidth: '1440px', margin: '0 auto', width: '100%' }}>
-      {/* Page Header */}
+      {/* Page Header in White & Gold */}
       <div
         style={{
           display: 'flex',
@@ -162,8 +162,8 @@ export default function ReportsPage() {
           <h1
             style={{
               fontFamily: 'var(--font-display)',
-              fontSize: '1.65rem',
-              fontWeight: 800,
+              fontSize: '1.75rem',
+              fontWeight: 900,
               letterSpacing: '1px',
               color: 'var(--text-primary)',
               margin: '0 0 4px'
@@ -196,7 +196,7 @@ export default function ReportsPage() {
         </div>
       </div>
 
-      {/* 6-Card Financial Metrics */}
+      {/* 6-Card Financial Metrics in White & Gold */}
       <div
         style={{
           display: 'grid',
@@ -206,106 +206,107 @@ export default function ReportsPage() {
         }}
       >
         <div className="luxury-card luxury-card-gold" style={{ padding: '20px' }}>
-          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 600 }}>
+          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--gold-600)', fontWeight: 800 }}>
             Gross Billing Turnover
           </div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--gold-400)', marginTop: '4px' }}>
+          <div style={{ fontSize: '1.55rem', fontWeight: 900, color: 'var(--gold-600)', marginTop: '4px' }}>
             {formatCurrency(totalGrossRevenue)}
           </div>
-          <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+          <div style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
             Across {filteredInvoices.length} transactions
           </div>
         </div>
 
         <div className="luxury-card" style={{ padding: '20px' }}>
-          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 600 }}>
+          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 700 }}>
             Taxable Net Base
           </div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '4px' }}>
+          <div style={{ fontSize: '1.55rem', fontWeight: 900, color: 'var(--text-primary)', marginTop: '4px' }}>
             {formatCurrency(totalTaxable)}
           </div>
-          <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+          <div style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
             Excluding GST & taxes
           </div>
         </div>
 
         <div className="luxury-card" style={{ padding: '20px' }}>
-          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 600 }}>
+          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 700 }}>
             Total GST Collected
           </div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--accent-blue)', marginTop: '4px' }}>
+          <div style={{ fontSize: '1.55rem', fontWeight: 900, color: 'var(--accent-blue)', marginTop: '4px' }}>
             {formatCurrency(totalTaxCollected)}
           </div>
-          <div style={{ fontSize: '0.72rem', color: 'var(--accent-blue)', marginTop: '4px' }}>
+          <div style={{ fontSize: '0.74rem', color: 'var(--accent-blue)', marginTop: '4px', fontWeight: 600 }}>
             CGST (9%) + SGST (9%)
           </div>
         </div>
 
         <div className="luxury-card" style={{ padding: '20px' }}>
-          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 600 }}>
+          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 700 }}>
             Collected Cash Inflow
           </div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--status-paid)', marginTop: '4px' }}>
+          <div style={{ fontSize: '1.55rem', fontWeight: 900, color: 'var(--status-paid)', marginTop: '4px' }}>
             {formatCurrency(paidTurnover)}
           </div>
-          <div style={{ fontSize: '0.72rem', color: 'var(--status-paid)', marginTop: '4px' }}>
+          <div style={{ fontSize: '0.74rem', color: 'var(--status-paid)', marginTop: '4px', fontWeight: 600 }}>
             Settled bank funds
           </div>
         </div>
 
         <div className="luxury-card" style={{ padding: '20px' }}>
-          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 600 }}>
+          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 700 }}>
             Receivables Pending
           </div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: pendingTurnover > 0 ? 'var(--status-pending)' : 'var(--text-muted)', marginTop: '4px' }}>
+          <div style={{ fontSize: '1.55rem', fontWeight: 900, color: pendingTurnover > 0 ? 'var(--status-pending)' : 'var(--text-muted)', marginTop: '4px' }}>
             {formatCurrency(pendingTurnover)}
           </div>
-          <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+          <div style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
             Outstanding invoices
           </div>
         </div>
 
         <div className="luxury-card" style={{ padding: '20px' }}>
-          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 600 }}>
+          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 700 }}>
             Average Invoice Ticket
           </div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '4px' }}>
+          <div style={{ fontSize: '1.55rem', fontWeight: 900, color: 'var(--text-primary)', marginTop: '4px' }}>
             {formatCurrency(averageInvoiceValue)}
           </div>
-          <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+          <div style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
             Per automotive client
           </div>
         </div>
       </div>
 
-      {/* Statutory GST Tax Box */}
+      {/* Statutory GST Tax Box in White & Gold */}
       <div
         className="luxury-card"
         style={{
           padding: '26px',
           marginBottom: '28px',
-          background: 'linear-gradient(145deg, rgba(37,99,235,0.06) 0%, var(--bg-card) 100%)',
-          border: '1px solid rgba(59,130,246,0.3)'
+          background: 'linear-gradient(145deg, #ffffff 0%, #fbf8f1 100%)',
+          border: '1.5px solid var(--border-gold)'
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div
               style={{
-                width: '36px',
-                height: '36px',
+                width: '38px',
+                height: '38px',
                 borderRadius: '8px',
-                background: 'rgba(59,130,246,0.15)',
+                background: 'rgba(212, 175, 55, 0.15)',
+                border: '1px solid var(--border-gold)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: 'var(--accent-blue)'
+                color: 'var(--gold-600)'
               }}
             >
-              <ShieldCheck size={20} />
+              <ShieldCheck size={22} />
             </div>
             <div>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0 }}>
+              <h3 style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
                 Statutory GST Filing Schedule (GSTR-1 Summary)
               </h3>
               <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -321,51 +322,52 @@ export default function ReportsPage() {
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
             gap: '16px',
-            backgroundColor: 'var(--bg-input)',
+            backgroundColor: '#ffffff',
             borderRadius: 'var(--radius-md)',
-            padding: '16px',
-            border: '1px solid var(--border-subtle)'
+            padding: '18px',
+            border: '1px solid var(--border-subtle)',
+            boxShadow: 'var(--shadow-sm)'
           }}
         >
           <div>
-            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>
               Total Taxable Value
             </div>
-            <div style={{ fontSize: '1.25rem', fontWeight: 800, fontFamily: 'var(--font-sans)', marginTop: '2px' }}>
+            <div style={{ fontSize: '1.3rem', fontWeight: 900, fontFamily: 'var(--font-sans)', marginTop: '2px', color: 'var(--text-primary)' }}>
               {formatCurrency(totalTaxable)}
             </div>
           </div>
 
           <div>
-            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>
               Central GST (CGST 9%)
             </div>
-            <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--accent-blue)', marginTop: '2px' }}>
+            <div style={{ fontSize: '1.3rem', fontWeight: 900, color: 'var(--accent-blue)', marginTop: '2px' }}>
               {formatCurrency(Math.round(totalTaxCollected / 2))}
             </div>
           </div>
 
           <div>
-            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>
               State GST (SGST 9%)
             </div>
-            <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--accent-blue)', marginTop: '2px' }}>
+            <div style={{ fontSize: '1.3rem', fontWeight: 900, color: 'var(--accent-blue)', marginTop: '2px' }}>
               {formatCurrency(Math.round(totalTaxCollected / 2))}
             </div>
           </div>
 
           <div>
-            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>
               Total Tax Liability
             </div>
-            <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--gold-400)', marginTop: '2px' }}>
+            <div style={{ fontSize: '1.3rem', fontWeight: 900, color: 'var(--gold-600)', marginTop: '2px' }}>
               {formatCurrency(totalTaxCollected)}
             </div>
           </div>
         </div>
       </div>
 
-      {/* 2-Column Split: Revenue by Segment & Payment Methods */}
+      {/* 2-Column Split: Revenue by Segment & Payment Methods in White & Gold */}
       <div
         style={{
           display: 'grid',
@@ -376,27 +378,27 @@ export default function ReportsPage() {
       >
         {/* Category Share */}
         <div className="luxury-card" style={{ padding: '24px' }}>
-          <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '4px' }}>
+          <h3 style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '4px' }}>
             Revenue by Automotive Category
           </h3>
-          <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '20px' }}>
+          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '20px' }}>
             Contribution across vehicle sales, workshop services and detailing
           </p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {categoryArray.map((c, i) => {
-              const colors = ['#d4af37', '#3b82f6', '#10b981', '#8b5cf6', '#ec4899'];
+              const colors = ['#b8860b', '#2563eb', '#059669', '#7c3aed', '#db2777'];
               const color = colors[i % colors.length];
 
               return (
                 <div key={c.category}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: '6px' }}>
-                    <span style={{ fontWeight: 600 }}>{c.category}</span>
+                    <span style={{ fontWeight: 700 }}>{c.category}</span>
                     <span style={{ color: 'var(--text-secondary)' }}>
                       {formatCurrency(c.amount)} <strong style={{ color }}>({c.percentage}%)</strong>
                     </span>
                   </div>
-                  <div style={{ width: '100%', height: '8px', background: 'var(--border-subtle)', borderRadius: '999px', overflow: 'hidden' }}>
+                  <div style={{ width: '100%', height: '8px', background: 'rgba(212, 175, 55, 0.15)', borderRadius: '999px', overflow: 'hidden' }}>
                     <div style={{ width: `${c.percentage}%`, height: '100%', backgroundColor: color, borderRadius: '999px' }} />
                   </div>
                 </div>
@@ -407,27 +409,27 @@ export default function ReportsPage() {
 
         {/* Payment Methods */}
         <div className="luxury-card" style={{ padding: '24px' }}>
-          <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '4px' }}>
+          <h3 style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '4px' }}>
             Payment Channels & Settlement Breakdown
           </h3>
-          <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '20px' }}>
+          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '20px' }}>
             Distribution between digital UPI, RTGS/NEFT wire and corporate financing
           </p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {paymentArray.map((p, i) => {
-              const colors = ['#10b981', '#3b82f6', '#d4af37', '#ec4899', '#8b5cf6'];
+              const colors = ['#059669', '#2563eb', '#b8860b', '#db2777', '#7c3aed'];
               const color = colors[i % colors.length];
 
               return (
                 <div key={p.method}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: '6px' }}>
-                    <span style={{ fontWeight: 600 }}>{p.method}</span>
+                    <span style={{ fontWeight: 700 }}>{p.method}</span>
                     <span style={{ color: 'var(--text-secondary)' }}>
                       {formatCurrency(p.amount)} <strong style={{ color }}>({p.percentage}%)</strong>
                     </span>
                   </div>
-                  <div style={{ width: '100%', height: '8px', background: 'var(--border-subtle)', borderRadius: '999px', overflow: 'hidden' }}>
+                  <div style={{ width: '100%', height: '8px', background: 'rgba(212, 175, 55, 0.15)', borderRadius: '999px', overflow: 'hidden' }}>
                     <div style={{ width: `${p.percentage}%`, height: '100%', backgroundColor: color, borderRadius: '999px' }} />
                   </div>
                 </div>
@@ -437,12 +439,12 @@ export default function ReportsPage() {
         </div>
       </div>
 
-      {/* Top 5 Premium Accounts / VIP Customers */}
+      {/* Top 5 Premium Accounts / VIP Customers in White & Gold */}
       <div className="luxury-card" style={{ padding: '24px' }}>
-        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '4px' }}>
+        <h3 style={{ fontSize: '1.15rem', fontWeight: 800, marginBottom: '4px' }}>
           Top VIP Automotive Accounts by Turnover
         </h3>
-        <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '20px' }}>
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: '20px' }}>
           Key luxury patrons and corporate fleet accounts
         </p>
 
@@ -467,7 +469,7 @@ export default function ReportsPage() {
                     {cust.company || 'Private Patron'}
                   </td>
                   <td>
-                    <span style={{ fontSize: '0.85rem', fontWeight: 500 }}>{cust.vehicle}</span>
+                    <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>{cust.vehicle}</span>
                   </td>
                   <td>
                     <span className="badge badge-gold" style={{ fontSize: '0.72rem' }}>
@@ -475,7 +477,7 @@ export default function ReportsPage() {
                     </span>
                   </td>
                   <td style={{ textAlign: 'right' }}>
-                    <strong style={{ fontSize: '1rem', color: 'var(--gold-400)', fontFamily: 'var(--font-sans)' }}>
+                    <strong style={{ fontSize: '1.05rem', color: 'var(--gold-600)', fontFamily: 'var(--font-sans)' }}>
                       {formatCurrency(cust.totalSpent)}
                     </strong>
                   </td>

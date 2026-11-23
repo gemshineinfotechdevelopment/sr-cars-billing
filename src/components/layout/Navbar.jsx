@@ -1,18 +1,15 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useBilling } from '../../context/BillingContext';
+import { useBilling } from '../../context/useBilling';
 import { 
   Plus, 
-  Sun, 
-  Moon, 
   Search, 
   Menu,
-  ShieldAlert
+  ShieldAlert,
+  Sparkles
 } from 'lucide-react';
 
 export default function Navbar({ onToggleSidebar }) {
   const { 
-    theme, 
-    toggleTheme, 
     setIsInvoiceModalOpen, 
     setInvoiceToEdit, 
     invoices, 
@@ -42,14 +39,13 @@ export default function Navbar({ onToggleSidebar }) {
     return () => clearInterval(interval);
   }, []);
 
-  // Quick universal search derived via useMemo
+  // Quick universal search
   const searchResults = useMemo(() => {
     if (!searchQuery.trim()) {
       return { invoices: [], products: [] };
     }
     const q = searchQuery.toLowerCase();
     
-    // Search Invoices
     const matchedInvoices = invoices.filter(
       (inv) =>
         inv.invoiceNumber.toLowerCase().includes(q) ||
@@ -58,7 +54,6 @@ export default function Navbar({ onToggleSidebar }) {
         inv.vehicle.makeModel.toLowerCase().includes(q)
     ).slice(0, 4);
 
-    // Search Products
     const matchedProducts = products.filter(
       (p) =>
         p.name.toLowerCase().includes(q) ||
@@ -84,15 +79,16 @@ export default function Navbar({ onToggleSidebar }) {
       className="top-navbar no-print"
       style={{
         height: '70px',
-        backgroundColor: 'var(--bg-secondary)',
-        borderBottom: '1px solid var(--border-subtle)',
+        backgroundColor: '#ffffff',
+        borderBottom: '1.5px solid var(--border-subtle)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '0 28px',
         position: 'sticky',
         top: 0,
-        zIndex: 35
+        zIndex: 35,
+        boxShadow: 'var(--shadow-sm)'
       }}
     >
       {/* Left: Mobile Toggle & Quick Universal Search */}
@@ -110,7 +106,7 @@ export default function Navbar({ onToggleSidebar }) {
         <div style={{ position: 'relative', width: '100%' }}>
           <Search
             size={17}
-            color="var(--text-muted)"
+            color="var(--gold-500)"
             style={{
               position: 'absolute',
               left: '14px',
@@ -122,7 +118,7 @@ export default function Navbar({ onToggleSidebar }) {
           <input
             type="text"
             className="form-input"
-            placeholder="Search invoices, customers, vehicles (VIN/Reg), products..."
+            placeholder="Search invoices, clients, vehicles (VIN/Reg), products..."
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
@@ -134,7 +130,8 @@ export default function Navbar({ onToggleSidebar }) {
               height: '40px',
               fontSize: '0.85rem',
               borderRadius: 'var(--radius-full)',
-              background: 'var(--bg-input)'
+              background: '#fdfbf7',
+              borderColor: 'var(--border-subtle)'
             }}
           />
 
@@ -146,8 +143,8 @@ export default function Navbar({ onToggleSidebar }) {
                 top: '48px',
                 left: 0,
                 right: 0,
-                backgroundColor: 'var(--bg-card-solid)',
-                border: '1px solid var(--border-medium)',
+                backgroundColor: '#ffffff',
+                border: '1.5px solid var(--border-gold)',
                 borderRadius: 'var(--radius-md)',
                 boxShadow: 'var(--shadow-lg)',
                 padding: '12px',
@@ -157,7 +154,7 @@ export default function Navbar({ onToggleSidebar }) {
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 700 }}>
+                <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: 'var(--gold-600)', fontWeight: 800 }}>
                   Search Results
                 </span>
                 <button
@@ -171,7 +168,7 @@ export default function Navbar({ onToggleSidebar }) {
               {/* Invoices match */}
               {searchResults.invoices.length > 0 && (
                 <div style={{ marginBottom: '10px' }}>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--gold-400)', fontWeight: 600, padding: '4px 8px' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--gold-600)', fontWeight: 700, padding: '4px 8px' }}>
                     Invoices & Vehicles
                   </div>
                   {searchResults.invoices.map((inv) => (
@@ -192,7 +189,7 @@ export default function Navbar({ onToggleSidebar }) {
                         transition: 'background 0.2s',
                         fontSize: '0.84rem'
                       }}
-                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--bg-card-hover)')}
+                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#fdfbf7')}
                       onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                     >
                       <div>
@@ -210,7 +207,7 @@ export default function Navbar({ onToggleSidebar }) {
               {/* Products match */}
               {searchResults.products.length > 0 && (
                 <div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--accent-blue)', fontWeight: 600, padding: '4px 8px' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--gold-600)', fontWeight: 700, padding: '4px 8px' }}>
                     Catalog & Parts
                   </div>
                   {searchResults.products.map((p) => (
@@ -231,7 +228,7 @@ export default function Navbar({ onToggleSidebar }) {
                         transition: 'background 0.2s',
                         fontSize: '0.84rem'
                       }}
-                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--bg-card-hover)')}
+                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#fdfbf7')}
                       onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                     >
                       <div>
@@ -240,7 +237,7 @@ export default function Navbar({ onToggleSidebar }) {
                           {p.sku} • {p.category}
                         </div>
                       </div>
-                      <span style={{ color: 'var(--gold-400)', fontWeight: 600, fontSize: '0.82rem' }}>
+                      <span style={{ color: 'var(--gold-600)', fontWeight: 700, fontSize: '0.82rem' }}>
                         ₹ {p.price.toLocaleString('en-IN')}
                       </span>
                     </div>
@@ -258,32 +255,25 @@ export default function Navbar({ onToggleSidebar }) {
         </div>
       </div>
 
-      {/* Right Actions: Clock, Overdue Notification, Theme Toggle, New Invoice */}
+      {/* Right Actions: Clock, Overdue Notification, Create Invoice */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
         {/* Dealership Clock */}
         <div
           style={{
             fontSize: '0.8rem',
             color: 'var(--text-secondary)',
-            fontWeight: 500,
+            fontWeight: 600,
             padding: '6px 14px',
             borderRadius: 'var(--radius-full)',
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border-subtle)',
+            background: '#ffffff',
+            border: '1px solid var(--border-gold)',
+            boxShadow: 'var(--shadow-sm)',
             display: 'flex',
             alignItems: 'center',
             gap: '8px'
           }}
         >
-          <span
-            style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              backgroundColor: '#10b981',
-              boxShadow: '0 0 8px #10b981'
-            }}
-          />
+          <Sparkles size={14} color="var(--gold-500)" />
           {currentTime || 'SR Live'}
         </div>
 
@@ -318,20 +308,11 @@ export default function Navbar({ onToggleSidebar }) {
           </button>
         )}
 
-        {/* Theme Toggle Button */}
-        <button
-          onClick={toggleTheme}
-          className="btn-icon"
-          title={`Switch to ${theme === 'dark' ? 'Light' : 'Majestic Dark'} Mode`}
-        >
-          {theme === 'dark' ? <Sun size={19} color="var(--gold-300)" /> : <Moon size={19} />}
-        </button>
-
         {/* Main Action: Create Invoice Button */}
         <button
           onClick={handleOpenNewInvoice}
           className="btn-gold"
-          style={{ padding: '8px 18px', fontSize: '0.86rem' }}
+          style={{ padding: '8px 20px', fontSize: '0.88rem' }}
         >
           <Plus size={18} />
           <span>Create Invoice</span>
