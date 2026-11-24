@@ -19,8 +19,6 @@ export default function ProductsPage() {
   } = useBilling();
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('ALL');
-  const [brandFilter, setBrandFilter] = useState('ALL');
 
   // Add / Edit Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -39,9 +37,8 @@ export default function ProductsPage() {
 
   const [formData, setFormData] = useState(initialForm);
 
-  // Distinct categories & brands
-  const categories = ['ALL', ...Array.from(new Set(spareParts.map((p) => p.category)))];
-  const brands = ['ALL', ...Array.from(new Set(spareParts.map((p) => p.brand)))];
+  // Distinct brands count
+  const totalBrandsCount = new Set(spareParts.map((p) => p.brand).filter(Boolean)).size;
 
   const openAddModal = () => {
     setEditingProduct(null);
@@ -80,10 +77,16 @@ export default function ProductsPage() {
       return;
     }
 
+    const productPayload = {
+      ...formData,
+      brand: formData.brand || 'OEM',
+      partNumber: formData.partNumber || ''
+    };
+
     if (editingProduct) {
-      updateSparePart(editingProduct.id, formData);
+      updateSparePart(editingProduct.id, productPayload);
     } else {
-      addSparePart(formData);
+      addSparePart(productPayload);
     }
     setIsModalOpen(false);
   };
@@ -91,23 +94,17 @@ export default function ProductsPage() {
   // Filtered Products
   const filteredProducts = spareParts.filter((p) => {
     const q = searchQuery.toLowerCase();
-    const matchSearch =
+    return (
       p.name.toLowerCase().includes(q) ||
       (p.partNumber && p.partNumber.toLowerCase().includes(q)) ||
       (p.brand && p.brand.toLowerCase().includes(q)) ||
       (p.category && p.category.toLowerCase().includes(q)) ||
-      p.id.toLowerCase().includes(q);
-
-    if (!matchSearch) return false;
-
-    const matchCategory = categoryFilter === 'ALL' || p.category === categoryFilter;
-    const matchBrand = brandFilter === 'ALL' || p.brand === brandFilter;
-
-    return matchCategory && matchBrand;
+      p.id.toLowerCase().includes(q)
+    );
   });
 
   return (
-    <div style={{ padding: '28px 32px 64px', maxWidth: '1440px', margin: '0 auto', width: '100%' }}>
+    <div className="page-container">
       {/* Header Banner */}
       <div
         style={{
@@ -128,7 +125,7 @@ export default function ProductsPage() {
                 letterSpacing: '1.2px',
                 textTransform: 'uppercase',
                 color: 'var(--gold-600)',
-                background: 'rgba(212, 175, 55, 0.12)',
+                background: 'rgba(37, 99, 235, 0.12)',
                 padding: '2px 8px',
                 borderRadius: '999px'
               }}
@@ -184,11 +181,11 @@ export default function ProductsPage() {
 
         <div style={{ padding: '8px 16px', borderRadius: '8px', backgroundColor: '#ffffff', border: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.84rem' }}>
           <span style={{ color: 'var(--text-muted)' }}>Total Brands:</span>
-          <strong>{brands.length - 1} Brands</strong>
+          <strong>{totalBrandsCount} Brands</strong>
         </div>
       </div>
 
-      {/* Search & Filter Bar */}
+      {/* Search Bar */}
       <div
         style={{
           backgroundColor: '#ffffff',
@@ -196,15 +193,10 @@ export default function ProductsPage() {
           borderRadius: 'var(--radius-md)',
           padding: '16px 20px',
           marginBottom: '22px',
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '14px',
           boxShadow: 'var(--shadow-sm)'
         }}
       >
-        <div style={{ position: 'relative', flex: 1, minWidth: '280px' }}>
+        <div style={{ position: 'relative', width: '100%' }}>
           <Search
             size={16}
             color="var(--gold-500)"
@@ -221,40 +213,11 @@ export default function ProductsPage() {
               height: '38px',
               fontSize: '0.84rem',
               borderRadius: 'var(--radius-md)',
-              background: '#fdfbf7',
+              background: '#ffffff',
               borderColor: 'var(--border-subtle)',
               width: '100%'
             }}
           />
-        </div>
-
-        {/* Dropdown Filters */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-          <select
-            className="form-input"
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            style={{ height: '38px', fontSize: '0.82rem', padding: '0 10px', minWidth: '150px' }}
-          >
-            {categories.map((c) => (
-              <option key={c} value={c}>
-                {c === 'ALL' ? 'All Categories' : c}
-              </option>
-            ))}
-          </select>
-
-          <select
-            className="form-input"
-            value={brandFilter}
-            onChange={(e) => setBrandFilter(e.target.value)}
-            style={{ height: '38px', fontSize: '0.82rem', padding: '0 10px', minWidth: '130px' }}
-          >
-            {brands.map((b) => (
-              <option key={b} value={b}>
-                {b === 'ALL' ? 'All Brands' : b}
-              </option>
-            ))}
-          </select>
         </div>
       </div>
 
@@ -273,7 +236,7 @@ export default function ProductsPage() {
             <thead>
               <tr
                 style={{
-                  backgroundColor: '#fbf9f5',
+                  backgroundColor: '#f8fafc',
                   borderBottom: '1.5px solid var(--border-subtle)',
                   color: 'var(--text-muted)',
                   fontSize: '0.74rem',
@@ -300,8 +263,8 @@ export default function ProductsPage() {
                 filteredProducts.map((prod) => (
                   <tr
                     key={prod.id}
-                    style={{ borderBottom: '1px solid #f5f3ed', transition: 'background-color 0.15s' }}
-                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#fdfcf9')}
+                    style={{ borderBottom: '1px solid #e2e8f0', transition: 'background-color 0.15s' }}
+                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f8fafc')}
                     onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                   >
                     {/* ID */}
@@ -328,7 +291,7 @@ export default function ProductsPage() {
                           display: 'inline-block',
                           padding: '3px 8px',
                           borderRadius: '6px',
-                          backgroundColor: '#fbf7ee',
+                          backgroundColor: '#eff6ff',
                           border: '1px solid var(--border-gold)',
                           color: 'var(--gold-600)',
                           fontSize: '0.76rem',
@@ -438,7 +401,7 @@ export default function ProductsPage() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                background: 'linear-gradient(135deg, #ffffff 0%, #fdfbf7 100%)'
+                background: '#ffffff'
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -481,35 +444,6 @@ export default function ProductsPage() {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="e.g. Fully Synthetic Engine Oil 5W-40"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '14px' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, marginBottom: '6px' }}>
-                    Product Code / SKU
-                  </label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    value={formData.partNumber}
-                    onChange={(e) => setFormData({ ...formData, partNumber: e.target.value.toUpperCase() })}
-                    placeholder="e.g. CAS-5W40-4L"
-                  />
-                </div>
-
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, marginBottom: '6px' }}>
-                    Brand *
-                  </label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    value={formData.brand}
-                    onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
-                    placeholder="e.g. Castrol, Bosch, Mobil 1..."
                     required
                   />
                 </div>

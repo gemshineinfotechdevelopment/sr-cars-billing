@@ -26,29 +26,23 @@ export default function InvoicesPage() {
     setSelectedInvoiceForView, 
     setIsInvoiceModalOpen, 
     setInvoiceToEdit, 
-    deleteInvoice, 
-    markPayment 
+    deleteInvoice 
   } = useBilling();
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('ALL');
   const [sortBy, setSortBy] = useState('newest');
 
   // Filtered & Sorted Invoices
   const filteredInvoices = invoices.filter((inv) => {
     const q = searchQuery.toLowerCase();
-    const matchSearch =
+    return (
       inv.invoiceNumber?.toLowerCase().includes(q) ||
       inv.customer?.name?.toLowerCase().includes(q) ||
       inv.customer?.phone?.includes(q) ||
       inv.vehicle?.regNumber?.toLowerCase().includes(q) ||
       inv.vehicle?.model?.toLowerCase().includes(q) ||
-      inv.jobCardNumber?.toLowerCase().includes(q);
-
-    if (!matchSearch) return false;
-
-    if (statusFilter === 'ALL') return true;
-    return (inv.paymentStatus || inv.status) === statusFilter;
+      inv.jobCardNumber?.toLowerCase().includes(q)
+    );
   }).sort((a, b) => {
     if (sortBy === 'newest') return new Date(b.date) - new Date(a.date);
     if (sortBy === 'oldest') return new Date(a.date) - new Date(b.date);
@@ -58,12 +52,8 @@ export default function InvoicesPage() {
   });
 
   const totalBilled = filteredInvoices.reduce((sum, i) => sum + (i.grandTotal || i.totalAmount || 0), 0);
-  const totalCollected = filteredInvoices.reduce((sum, i) => sum + (i.amountPaid || (i.status === 'Paid' ? (i.grandTotal || i.totalAmount || 0) : 0)), 0);
-  const totalPending = Math.max(0, totalBilled - totalCollected);
-
-  const paidCount = filteredInvoices.filter((i) => i.status === 'Paid').length;
-  const partialCount = filteredInvoices.filter((i) => i.status === 'Partial').length;
-  const unpaidCount = filteredInvoices.filter((i) => i.status === 'Unpaid' || i.status === 'Pending').length;
+  const totalInvoicesCount = filteredInvoices.length;
+  const avgInvoiceValue = totalInvoicesCount > 0 ? totalBilled / totalInvoicesCount : 0;
 
   const handleExportCSV = () => {
     if (filteredInvoices.length === 0) return;
@@ -84,9 +74,6 @@ export default function InvoicesPage() {
       'CGST',
       'SGST',
       'Grand Total',
-      'Amount Paid',
-      'Balance Due',
-      'Payment Status',
       'Payment Method',
       'Transaction Ref'
     ];
@@ -108,9 +95,6 @@ export default function InvoicesPage() {
       inv.cgst || 0,
       inv.sgst || 0,
       inv.grandTotal || inv.totalAmount || 0,
-      inv.amountPaid || 0,
-      inv.balanceAmount || 0,
-      `"${inv.paymentStatus || inv.status}"`,
       `"${inv.paymentMethod || ''}"`,
       `"${inv.transactionId || ''}"`
     ]);
@@ -131,7 +115,7 @@ export default function InvoicesPage() {
   };
 
   return (
-    <div style={{ padding: '28px 32px 64px', maxWidth: '1440px', margin: '0 auto', width: '100%' }}>
+    <div className="page-container">
       {/* Header Banner */}
       <div
         style={{
@@ -152,7 +136,7 @@ export default function InvoicesPage() {
                 letterSpacing: '1.2px',
                 textTransform: 'uppercase',
                 color: 'var(--gold-600)',
-                background: 'rgba(212, 175, 55, 0.12)',
+                background: 'rgba(37, 99, 235, 0.12)',
                 padding: '2px 8px',
                 borderRadius: '999px'
               }}
@@ -242,27 +226,27 @@ export default function InvoicesPage() {
           </div>
         </div>
 
-        <div style={{ padding: '16px 20px', borderRadius: '10px', backgroundColor: '#ffffff', border: '1px solid #a7f3d0', boxShadow: 'var(--shadow-sm)' }}>
-          <span style={{ fontSize: '0.74rem', fontWeight: 700, color: '#059669', textTransform: 'uppercase' }}>
-            Total Payments Realized
+        <div style={{ padding: '16px 20px', borderRadius: '10px', backgroundColor: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: 'var(--shadow-sm)' }}>
+          <span style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+            Total Invoices
           </span>
-          <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#059669', marginTop: '4px', fontFamily: 'var(--font-display)' }}>
-            {formatCurrency(totalCollected)}
+          <div style={{ fontSize: '1.6rem', fontWeight: 900, color: 'var(--gold-600)', marginTop: '4px', fontFamily: 'var(--font-display)' }}>
+            {totalInvoicesCount}
           </div>
-          <div style={{ fontSize: '0.74rem', color: '#059669', marginTop: '2px', fontWeight: 600 }}>
-            {paidCount} Paid Invoices
+          <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+            Generated billing records
           </div>
         </div>
 
-        <div style={{ padding: '16px 20px', borderRadius: '10px', backgroundColor: '#ffffff', border: '1px solid #fed7aa', boxShadow: 'var(--shadow-sm)' }}>
-          <span style={{ fontSize: '0.74rem', fontWeight: 700, color: '#d97706', textTransform: 'uppercase' }}>
-            Outstanding Balance Due
+        <div style={{ padding: '16px 20px', borderRadius: '10px', backgroundColor: '#ffffff', border: '1px solid var(--border-subtle)', boxShadow: 'var(--shadow-sm)' }}>
+          <span style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+            Average Invoice Value
           </span>
-          <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#d97706', marginTop: '4px', fontFamily: 'var(--font-display)' }}>
-            {formatCurrency(totalPending)}
+          <div style={{ fontSize: '1.6rem', fontWeight: 900, color: 'var(--text-primary)', marginTop: '4px', fontFamily: 'var(--font-display)' }}>
+            {formatCurrency(avgInvoiceValue)}
           </div>
           <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-            {partialCount} Partial, {unpaidCount} Unpaid
+            Per invoice average
           </div>
         </div>
       </div>
@@ -300,41 +284,20 @@ export default function InvoicesPage() {
               height: '38px',
               fontSize: '0.84rem',
               borderRadius: 'var(--radius-md)',
-              background: '#fdfbf7',
+              background: '#ffffff',
               borderColor: 'var(--border-subtle)',
               width: '100%'
             }}
           />
         </div>
 
-        {/* Status Filter Buttons */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '0.76rem', fontWeight: 700, color: 'var(--text-muted)' }}>Status:</span>
-          {['ALL', 'Paid', 'Partial', 'Unpaid'].map((status) => (
-            <button
-              key={status}
-              onClick={() => setStatusFilter(status)}
-              style={{
-                padding: '6px 12px',
-                borderRadius: '6px',
-                fontSize: '0.76rem',
-                fontWeight: 700,
-                border: statusFilter === status ? '1px solid var(--gold-500)' : '1px solid #e7e5e0',
-                backgroundColor: statusFilter === status ? 'var(--gold-100)' : '#ffffff',
-                color: statusFilter === status ? 'var(--gold-600)' : 'var(--text-secondary)',
-                cursor: 'pointer'
-              }}
-            >
-              {status === 'ALL' ? 'All Invoices' : status}
-            </button>
-          ))}
-
-          {/* Sort Selector */}
+        {/* Sort Selector */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <select
             className="form-input"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            style={{ height: '36px', fontSize: '0.78rem', padding: '0 8px', marginLeft: '6px' }}
+            style={{ height: '38px', fontSize: '0.84rem', padding: '0 12px' }}
           >
             <option value="newest">Sort: Newest First</option>
             <option value="oldest">Sort: Oldest First</option>
@@ -359,7 +322,7 @@ export default function InvoicesPage() {
             <thead>
               <tr
                 style={{
-                  backgroundColor: '#fbf9f5',
+                  backgroundColor: '#f8fafc',
                   borderBottom: '1.5px solid var(--border-subtle)',
                   color: 'var(--text-muted)',
                   fontSize: '0.74rem',
@@ -372,14 +335,13 @@ export default function InvoicesPage() {
                 <th style={{ padding: '12px 14px' }}>Vehicle Details</th>
                 <th style={{ padding: '12px 14px' }}>Items Summary</th>
                 <th style={{ padding: '12px 14px' }}>Grand Total</th>
-                <th style={{ padding: '12px 14px' }}>Payment Status</th>
                 <th style={{ padding: '12px 14px', textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredInvoices.length === 0 ? (
                 <tr>
-                  <td colSpan={8} style={{ padding: '36px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                  <td colSpan={7} style={{ padding: '36px', textAlign: 'center', color: 'var(--text-muted)' }}>
                     No invoices found matching your search and filter criteria.
                   </td>
                 </tr>
@@ -387,8 +349,8 @@ export default function InvoicesPage() {
                 filteredInvoices.map((inv) => (
                   <tr
                     key={inv.id}
-                    style={{ borderBottom: '1px solid #f5f3ed', transition: 'background-color 0.15s' }}
-                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#fdfcf9')}
+                    style={{ borderBottom: '1px solid #e2e8f0', transition: 'background-color 0.15s' }}
+                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f8fafc')}
                     onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                   >
                     {/* Invoice No */}
@@ -400,7 +362,7 @@ export default function InvoicesPage() {
                         style={{
                           fontSize: '0.7rem',
                           color: 'var(--gold-600)',
-                          background: 'rgba(212,175,55,0.12)',
+                          background: 'rgba(37,99,235,0.12)',
                           padding: '1px 6px',
                           borderRadius: '4px',
                           fontWeight: 700
@@ -450,41 +412,6 @@ export default function InvoicesPage() {
                     <td style={{ padding: '14px', whiteSpace: 'nowrap' }}>
                       <div style={{ fontWeight: 800, fontSize: '0.94rem', color: 'var(--gold-600)' }}>
                         {formatCurrency(inv.grandTotal || inv.totalAmount || 0)}
-                      </div>
-                      {inv.balanceAmount > 0 && (
-                        <div style={{ fontSize: '0.72rem', color: '#dc2626', fontWeight: 600 }}>
-                          Due: {formatCurrency(inv.balanceAmount)}
-                        </div>
-                      )}
-                    </td>
-
-                    {/* Payment Status */}
-                    <td style={{ padding: '14px' }}>
-                      <span
-                        style={{
-                          display: 'inline-block',
-                          padding: '3px 9px',
-                          borderRadius: '999px',
-                          fontSize: '0.72rem',
-                          fontWeight: 700,
-                          backgroundColor:
-                            inv.status === 'Paid'
-                              ? '#d1fae5'
-                              : inv.status === 'Partial'
-                              ? '#fef3c7'
-                              : '#fee2e2',
-                          color:
-                            inv.status === 'Paid'
-                              ? '#065f46'
-                              : inv.status === 'Partial'
-                              ? '#92400e'
-                              : '#b91c1c'
-                        }}
-                      >
-                        {inv.status}
-                      </span>
-                      <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-                        {inv.paymentMethod}
                       </div>
                     </td>
 

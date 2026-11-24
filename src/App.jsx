@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BillingProvider } from './context/BillingContext';
 import { useBilling } from './context/useBilling';
-import Navbar from './components/layout/Navbar';
+import { Menu } from 'lucide-react';
 import Sidebar from './components/layout/Sidebar';
 import ToastContainer from './components/common/ToastContainer';
 import InvoiceModal from './components/invoices/InvoiceModal';
@@ -22,6 +22,26 @@ function MainApp() {
   const { activeTab, invoiceToEdit, isInvoiceModalOpen } = useBilling();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  // When creating or editing an invoice, cover the whole tab including the side navbar
+  if (isInvoiceModalOpen) {
+    return (
+      <div
+        className="invoice-fullpage-wrapper"
+        style={{
+          width: '100%',
+          minHeight: '100vh',
+          backgroundColor: 'var(--bg-primary, #ffffff)',
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+      >
+        <InvoiceModal key={invoiceToEdit ? invoiceToEdit.id : 'new-invoice'} />
+        <InvoiceViewModal />
+        <ToastContainer />
+      </div>
+    );
+  }
+
   return (
     <div className="app-container">
       {/* Sidebar navigation */}
@@ -32,7 +52,14 @@ function MainApp() {
 
       {/* Main Content Area */}
       <div className="main-wrapper">
-        <Navbar onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+        {/* Mobile Toggle Button */}
+        <button
+          className="mobile-floating-menu-btn"
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          aria-label="Toggle Navigation"
+        >
+          <Menu size={20} />
+        </button>
 
         <main className="main-content">
           {activeTab === 'dashboard' && <Dashboard />}
@@ -46,9 +73,6 @@ function MainApp() {
       </div>
 
       {/* Global Modals & Notifications */}
-      {isInvoiceModalOpen && (
-        <InvoiceModal key={invoiceToEdit ? invoiceToEdit.id : 'new-invoice'} />
-      )}
       <InvoiceViewModal />
       <ToastContainer />
     </div>

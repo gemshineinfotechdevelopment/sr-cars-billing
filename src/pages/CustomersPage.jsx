@@ -76,6 +76,10 @@ export default function CustomersPage() {
       alert('Please enter Customer Name and Mobile Number.');
       return;
     }
+    if (formData.phone.trim().length !== 10) {
+      alert('Please enter a valid 10-digit mobile number.');
+      return;
+    }
 
     const customerPayload = {
       ...formData,
@@ -114,7 +118,7 @@ export default function CustomersPage() {
   };
 
   return (
-    <div style={{ padding: '28px 32px 64px', maxWidth: '1440px', margin: '0 auto', width: '100%' }}>
+    <div className="page-container">
       {/* Header Banner */}
       <div
         style={{
@@ -135,12 +139,12 @@ export default function CustomersPage() {
                 letterSpacing: '1.2px',
                 textTransform: 'uppercase',
                 color: 'var(--gold-600)',
-                background: 'rgba(212, 175, 55, 0.12)',
+                background: 'rgba(37, 99, 235, 0.12)',
                 padding: '2px 8px',
                 borderRadius: '999px'
               }}
             >
-              Client Fleet Database
+              Customer & Vehicle Records
             </span>
           </div>
           <h1
@@ -151,7 +155,7 @@ export default function CustomersPage() {
               color: 'var(--text-primary)'
             }}
           >
-            Customer & Fleet Management
+            Customer & Vehicle Management
           </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.86rem' }}>
             Maintain customer records, multi-vehicle profiles, odometer readings and historic service bills.
@@ -209,7 +213,7 @@ export default function CustomersPage() {
               height: '38px',
               fontSize: '0.85rem',
               borderRadius: 'var(--radius-md)',
-              background: '#fdfbf7',
+              background: '#ffffff',
               borderColor: 'var(--border-subtle)',
               width: '100%'
             }}
@@ -232,7 +236,7 @@ export default function CustomersPage() {
             <thead>
               <tr
                 style={{
-                  backgroundColor: '#fbf9f5',
+                  backgroundColor: '#f8fafc',
                   borderBottom: '1.5px solid var(--border-subtle)',
                   color: 'var(--text-muted)',
                   fontSize: '0.74rem',
@@ -261,8 +265,8 @@ export default function CustomersPage() {
                   return (
                     <tr
                       key={cust.id}
-                      style={{ borderBottom: '1px solid #f5f3ed', transition: 'background-color 0.15s' }}
-                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#fdfcf9')}
+                      style={{ borderBottom: '1px solid #e2e8f0', transition: 'background-color 0.15s' }}
+                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f8fafc')}
                       onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                     >
                       {/* Customer ID */}
@@ -418,7 +422,7 @@ export default function CustomersPage() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                background: 'linear-gradient(135deg, #ffffff 0%, #fdfbf7 100%)'
+                background: '#ffffff'
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -477,25 +481,29 @@ export default function CustomersPage() {
                       Mobile Number *
                     </label>
                     <input
-                      type="text"
+                      type="tel"
                       className="form-input"
                       value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      placeholder="+91 98765 43210"
+                      maxLength={10}
+                      onChange={(e) => {
+                        const cleaned = e.target.value.replace(/\D/g, '').slice(0, 10);
+                        setFormData({ ...formData, phone: cleaned });
+                      }}
+                      placeholder="e.g. 9876543210"
                       required
                     />
                   </div>
 
                   <div>
                     <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, marginBottom: '6px' }}>
-                      Email Address
+                      Email Address <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(Optional)</span>
                     </label>
                     <input
-                      type="email"
+                      type="text"
                       className="form-input"
-                      value={formData.email}
+                      value={formData.email || ''}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      placeholder="client@domain.com"
+                      placeholder="client@domain.com (optional)"
                     />
                   </div>
 
@@ -593,19 +601,19 @@ export default function CustomersPage() {
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px', marginBottom: '22px' }}>
-              <div style={{ padding: '12px', backgroundColor: '#fdfbf7', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
+              <div style={{ padding: '12px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
                 <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block' }}>Mobile Number</span>
                 <strong style={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}>{viewingCustomer.phone}</strong>
               </div>
-              <div style={{ padding: '12px', backgroundColor: '#fdfbf7', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
+              <div style={{ padding: '12px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
                 <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block' }}>Email Address</span>
                 <strong style={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}>{viewingCustomer.email || '—'}</strong>
               </div>
-              <div style={{ padding: '12px', backgroundColor: '#fdfbf7', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
+              <div style={{ padding: '12px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
                 <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block' }}>GSTIN</span>
                 <strong style={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}>{viewingCustomer.gstin || 'None'}</strong>
               </div>
-              <div style={{ padding: '12px', backgroundColor: '#fdfbf7', borderRadius: '8px', border: '1px solid var(--border-subtle)', gridColumn: '1 / -1' }}>
+              <div style={{ padding: '12px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid var(--border-subtle)', gridColumn: '1 / -1' }}>
                 <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block' }}>Billing Address</span>
                 <span style={{ fontSize: '0.86rem', color: 'var(--text-secondary)' }}>{viewingCustomer.address || '—'}</span>
               </div>
@@ -687,7 +695,7 @@ export default function CustomersPage() {
                       style={{
                         padding: '14px 16px',
                         borderRadius: '8px',
-                        backgroundColor: '#fdfbf7',
+                        backgroundColor: '#f8fafc',
                         border: '1px solid var(--border-subtle)',
                         display: 'flex',
                         alignItems: 'center',
@@ -722,20 +730,6 @@ export default function CustomersPage() {
                         <div style={{ fontWeight: 800, fontSize: '0.94rem', color: 'var(--gold-600)' }}>
                           {formatCurrency(inv.grandTotal || inv.totalAmount || 0)}
                         </div>
-                        <span
-                          style={{
-                            display: 'inline-block',
-                            padding: '2px 8px',
-                            borderRadius: '999px',
-                            fontSize: '0.7rem',
-                            fontWeight: 700,
-                            backgroundColor: inv.status === 'Paid' ? '#d1fae5' : '#fef3c7',
-                            color: inv.status === 'Paid' ? '#065f46' : '#92400e',
-                            marginTop: '4px'
-                          }}
-                        >
-                          {inv.status}
-                        </span>
                         <div style={{ marginTop: '6px' }}>
                           <button
                             onClick={() => {

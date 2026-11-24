@@ -19,7 +19,7 @@ export function BillingProvider({ children }) {
   });
 
   // Active page tab: 'dashboard' | 'customers' | 'services' | 'parts' | 'invoices' | 'reports' | 'settings'
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTabState] = useState('dashboard');
 
   // Customers state
   const [customers, setCustomers] = useState(() => {
@@ -68,6 +68,13 @@ export function BillingProvider({ children }) {
   const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
   const [invoiceToEdit, setInvoiceToEdit] = useState(null);
   const [toasts, setToasts] = useState([]);
+
+  // Wrapped tab switcher that automatically closes full-page invoice modal upon navigation
+  const setActiveTab = (tab) => {
+    setActiveTabState(tab);
+    setIsInvoiceModalOpen(false);
+    setInvoiceToEdit(null);
+  };
 
   // Sync theme
   useEffect(() => {

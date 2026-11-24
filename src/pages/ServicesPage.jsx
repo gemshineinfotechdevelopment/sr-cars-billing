@@ -102,7 +102,7 @@ export default function ServicesPage() {
   const inactiveCount = services.length - activeCount;
 
   return (
-    <div style={{ padding: '28px 32px 64px', maxWidth: '1440px', margin: '0 auto', width: '100%' }}>
+    <div className="page-container">
       {/* Header Banner */}
       <div
         style={{
@@ -123,7 +123,7 @@ export default function ServicesPage() {
                 letterSpacing: '1.2px',
                 textTransform: 'uppercase',
                 color: 'var(--gold-600)',
-                background: 'rgba(212, 175, 55, 0.12)',
+                background: 'rgba(37, 99, 235, 0.12)',
                 padding: '2px 8px',
                 borderRadius: '999px'
               }}
@@ -220,7 +220,7 @@ export default function ServicesPage() {
               height: '38px',
               fontSize: '0.85rem',
               borderRadius: 'var(--radius-md)',
-              background: '#fdfbf7',
+              background: '#ffffff',
               borderColor: 'var(--border-subtle)',
               width: '100%'
             }}
@@ -243,7 +243,7 @@ export default function ServicesPage() {
             <thead>
               <tr
                 style={{
-                  backgroundColor: '#fbf9f5',
+                  backgroundColor: '#f8fafc',
                   borderBottom: '1.5px solid var(--border-subtle)',
                   color: 'var(--text-muted)',
                   fontSize: '0.74rem',
@@ -276,11 +276,11 @@ export default function ServicesPage() {
                     <tr
                       key={srv.id}
                       style={{
-                        borderBottom: '1px solid #f5f3ed',
+                        borderBottom: '1px solid #e2e8f0',
                         opacity: srv.status === 'Inactive' ? 0.65 : 1,
                         transition: 'background-color 0.15s'
                       }}
-                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#fdfcf9')}
+                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f8fafc')}
                       onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                     >
                       {/* Service ID */}
@@ -305,7 +305,7 @@ export default function ServicesPage() {
                             display: 'inline-block',
                             padding: '3px 9px',
                             borderRadius: '6px',
-                            backgroundColor: '#fbf7ee',
+                            backgroundColor: '#eff6ff',
                             border: '1px solid var(--border-gold)',
                             color: 'var(--gold-600)',
                             fontSize: '0.76rem',
@@ -428,7 +428,7 @@ export default function ServicesPage() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                background: 'linear-gradient(135deg, #ffffff 0%, #fdfbf7 100%)'
+                background: '#ffffff'
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -475,20 +475,6 @@ export default function ServicesPage() {
                       required
                     />
                   </div>
-                </div>
-
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, marginBottom: '6px' }}>
-                    Service Description
-                  </label>
-                  <textarea
-                    className="form-input"
-                    rows={3}
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    placeholder="Describe tasks included in this service..."
-                    style={{ resize: 'vertical' }}
-                  />
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px' }}>
@@ -571,6 +557,20 @@ export default function ServicesPage() {
                       <option value="Inactive">Inactive</option>
                     </select>
                   </div>
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, marginBottom: '6px' }}>
+                    Service Description
+                  </label>
+                  <textarea
+                    className="form-input"
+                    rows={3}
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    placeholder="Describe tasks included in this service..."
+                    style={{ resize: 'vertical' }}
+                  />
                 </div>
               </div>
 

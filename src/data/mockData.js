@@ -7,7 +7,7 @@ export const initialSettings = {
   address: "Plot 42, Luxury Motor Boulevard, Jubilee Hills, Hyderabad - 500033, Telangana",
   phone: "+91 98490 87654",
   email: "billing@srcarsluxury.com",
-  website: "www.srcarsluxury.com",
+  workingHours: "Mon – Sat: 9:00 AM – 8:00 PM",
   gstin: "36AABCU9603R1ZM",
   pan: "AABCU9603R",
   

@@ -4,7 +4,6 @@ import {
   X, 
   Printer, 
   Download, 
-  CheckCircle2, 
   Edit3, 
   Crown
 } from 'lucide-react';
@@ -14,7 +13,6 @@ export default function InvoiceViewModal() {
     selectedInvoiceForView, 
     setSelectedInvoiceForView, 
     settings, 
-    markPayment,
     setInvoiceToEdit,
     setIsInvoiceModalOpen
   } = useBilling();
@@ -78,7 +76,7 @@ export default function InvoiceViewModal() {
           flexDirection: 'column',
           backgroundColor: '#ffffff', 
           color: '#1a1610',
-          boxShadow: '0 20px 60px rgba(184, 134, 11, 0.22)',
+          boxShadow: '0 20px 60px rgba(37, 99, 235, 0.16)',
           borderRadius: '16px',
           border: '2px solid var(--border-gold)',
           overflow: 'hidden'
@@ -105,7 +103,7 @@ export default function InvoiceViewModal() {
                 width: '32px',
                 height: '32px',
                 borderRadius: '8px',
-                background: 'rgba(212, 175, 55, 0.14)',
+                background: 'rgba(37, 99, 235, 0.12)',
                 border: '1px solid var(--border-gold)',
                 display: 'flex',
                 alignItems: 'center',
@@ -122,17 +120,6 @@ export default function InvoiceViewModal() {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            {inv.status !== 'Paid' && (
-              <button
-                onClick={() => markPayment(inv.id, inv.balanceAmount || inv.grandTotal || inv.totalAmount)}
-                className="btn-outline"
-                style={{ color: '#059669', borderColor: 'rgba(5, 150, 105, 0.4)', padding: '6px 14px', fontSize: '0.8rem', cursor: 'pointer' }}
-              >
-                <CheckCircle2 size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} />
-                <span>Mark Paid</span>
-              </button>
-            )}
-
             <button
               onClick={handleEditThis}
               className="btn-outline"
@@ -199,7 +186,7 @@ export default function InvoiceViewModal() {
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'flex-start',
-              borderBottom: '2.5px solid #b8860b',
+              borderBottom: '2.5px solid #2563eb',
               paddingBottom: '20px',
               marginBottom: '22px'
             }}
@@ -207,7 +194,7 @@ export default function InvoiceViewModal() {
             {/* Dealership Branding */}
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Crown size={28} color="#b8860b" />
+                <Crown size={28} color="#2563eb" />
                 <h1
                   style={{
                     fontFamily: 'var(--font-display)',
@@ -220,7 +207,7 @@ export default function InvoiceViewModal() {
                   {settings.dealershipName || 'SR CARS'}
                 </h1>
               </div>
-              <div style={{ fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1.5px', color: '#b8860b', marginTop: '2px' }}>
+              <div style={{ fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1.5px', color: '#2563eb', marginTop: '2px' }}>
                 {settings.tagline || 'Prestige Automobiles & Performance Service Center'}
               </div>
               <div style={{ fontSize: '0.78rem', color: '#574f41', marginTop: '6px', maxWidth: '420px', lineHeight: 1.35 }}>
@@ -239,9 +226,9 @@ export default function InvoiceViewModal() {
               <div
                 style={{
                   display: 'inline-block',
-                  backgroundColor: '#fbf7ee',
-                  border: '1.5px solid #b8860b',
-                  color: '#b8860b',
+                  backgroundColor: '#eff6ff',
+                  border: '1.5px solid #2563eb',
+                  color: '#2563eb',
                   fontWeight: 900,
                   fontSize: '1rem',
                   letterSpacing: '2px',
@@ -255,7 +242,7 @@ export default function InvoiceViewModal() {
               </div>
 
               <div style={{ fontSize: '0.86rem', fontWeight: 800 }}>
-                Invoice No: <span style={{ color: '#b8860b', fontSize: '0.98rem' }}>{inv.invoiceNumber}</span>
+                Invoice No: <span style={{ color: '#2563eb', fontSize: '0.98rem' }}>{inv.invoiceNumber}</span>
               </div>
               <div style={{ fontSize: '0.82rem', color: '#574f41', marginTop: '2px' }}>
                 Date: <strong>{inv.date}</strong>
@@ -281,13 +268,13 @@ export default function InvoiceViewModal() {
             {/* Box 1: Billed To / Customer */}
             <div
               style={{
-                backgroundColor: '#fdfbf7',
-                border: '1px solid rgba(184, 134, 11, 0.35)',
+                backgroundColor: '#ffffff',
+                border: '1px solid rgba(37, 99, 235, 0.25)',
                 borderRadius: '8px',
                 padding: '14px 16px'
               }}
             >
-              <div style={{ fontSize: '0.74rem', fontWeight: 800, textTransform: 'uppercase', color: '#b8860b', letterSpacing: '1px', marginBottom: '6px' }}>
+              <div style={{ fontSize: '0.74rem', fontWeight: 800, textTransform: 'uppercase', color: '#2563eb', letterSpacing: '1px', marginBottom: '6px' }}>
                 Billed To (Customer Details)
               </div>
               <div style={{ fontSize: '1rem', fontWeight: 800, color: '#1a1610' }}>
@@ -312,13 +299,13 @@ export default function InvoiceViewModal() {
             {/* Box 2: Vehicle Details */}
             <div
               style={{
-                backgroundColor: '#fdfbf7',
-                border: '1px solid rgba(184, 134, 11, 0.35)',
+                backgroundColor: '#ffffff',
+                border: '1px solid rgba(37, 99, 235, 0.25)',
                 borderRadius: '8px',
                 padding: '14px 16px'
               }}
             >
-              <div style={{ fontSize: '0.74rem', fontWeight: 800, textTransform: 'uppercase', color: '#b8860b', letterSpacing: '1px', marginBottom: '6px' }}>
+              <div style={{ fontSize: '0.74rem', fontWeight: 800, textTransform: 'uppercase', color: '#2563eb', letterSpacing: '1px', marginBottom: '6px' }}>
                 Vehicle & Work Order Details
               </div>
               <div style={{ fontSize: '1rem', fontWeight: 800, color: '#1a1610' }}>
@@ -342,12 +329,12 @@ export default function InvoiceViewModal() {
           {/* TABLE 1: SERVICES RENDERED */}
           {inv.services && inv.services.length > 0 && (
             <div style={{ marginBottom: '22px' }}>
-              <div style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', color: '#b8860b', letterSpacing: '1px', marginBottom: '8px' }}>
+              <div style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', color: '#2563eb', letterSpacing: '1px', marginBottom: '8px' }}>
                 Services Rendered (Labor & Workmanship)
               </div>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
                 <thead>
-                  <tr style={{ backgroundColor: '#f5eccf', borderBottom: '1.5px solid #b8860b', color: '#1a1610' }}>
+                  <tr style={{ backgroundColor: '#eff6ff', borderBottom: '1.5px solid #2563eb', color: '#1a1610' }}>
                     <th style={{ padding: '8px 10px', textAlign: 'left', width: '35px' }}>#</th>
                     <th style={{ padding: '8px 10px', textAlign: 'left' }}>Service Description</th>
                     <th style={{ padding: '8px 10px', textAlign: 'center', width: '50px' }}>Qty</th>
@@ -359,7 +346,7 @@ export default function InvoiceViewModal() {
                 </thead>
                 <tbody>
                   {inv.services.map((s, idx) => (
-                    <tr key={idx} style={{ borderBottom: '1px solid #e7e3d8' }}>
+                    <tr key={idx} style={{ borderBottom: '1px solid #e2e8f0' }}>
                       <td style={{ padding: '8px 10px', color: '#574f41' }}>{idx + 1}</td>
                       <td style={{ padding: '8px 10px', fontWeight: 700 }}>{s.name}</td>
                       <td style={{ padding: '8px 10px', textAlign: 'center' }}>{s.quantity || 1}</td>
@@ -373,7 +360,7 @@ export default function InvoiceViewModal() {
                       </td>
                     </tr>
                   ))}
-                  <tr style={{ backgroundColor: '#fdfbf7', fontWeight: 700 }}>
+                  <tr style={{ backgroundColor: '#ffffff', fontWeight: 700 }}>
                     <td colSpan={6} style={{ padding: '8px 10px', textAlign: 'right' }}>
                       Service Subtotal:
                     </td>
@@ -389,12 +376,12 @@ export default function InvoiceViewModal() {
           {/* TABLE 2: PRODUCTS SUPPLIED */}
           {inv.spareParts && inv.spareParts.length > 0 && (
             <div style={{ marginBottom: '22px' }}>
-              <div style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', color: '#b8860b', letterSpacing: '1px', marginBottom: '8px' }}>
+              <div style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', color: '#2563eb', letterSpacing: '1px', marginBottom: '8px' }}>
                 Products & Materials Supplied
               </div>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
                 <thead>
-                  <tr style={{ backgroundColor: '#f5eccf', borderBottom: '1.5px solid #b8860b', color: '#1a1610' }}>
+                  <tr style={{ backgroundColor: '#eff6ff', borderBottom: '1.5px solid #2563eb', color: '#1a1610' }}>
                     <th style={{ padding: '8px 10px', textAlign: 'left', width: '35px' }}>#</th>
                     <th style={{ padding: '8px 10px', textAlign: 'left' }}>Part Name & Code</th>
                     <th style={{ padding: '8px 10px', textAlign: 'center', width: '90px' }}>Part No</th>
@@ -407,7 +394,7 @@ export default function InvoiceViewModal() {
                 </thead>
                 <tbody>
                   {inv.spareParts.map((p, idx) => (
-                    <tr key={idx} style={{ borderBottom: '1px solid #e7e3d8' }}>
+                    <tr key={idx} style={{ borderBottom: '1px solid #e2e8f0' }}>
                       <td style={{ padding: '8px 10px', color: '#574f41' }}>{idx + 1}</td>
                       <td style={{ padding: '8px 10px', fontWeight: 700 }}>{p.name}</td>
                       <td style={{ padding: '8px 10px', textAlign: 'center', fontFamily: 'var(--font-mono)', fontSize: '0.76rem' }}>
@@ -424,7 +411,7 @@ export default function InvoiceViewModal() {
                       </td>
                     </tr>
                   ))}
-                  <tr style={{ backgroundColor: '#fdfbf7', fontWeight: 700 }}>
+                  <tr style={{ backgroundColor: '#ffffff', fontWeight: 700 }}>
                     <td colSpan={7} style={{ padding: '8px 10px', textAlign: 'right' }}>
                       Products Subtotal:
                     </td>
@@ -443,7 +430,7 @@ export default function InvoiceViewModal() {
               display: 'grid',
               gridTemplateColumns: '1.2fr 1fr',
               gap: '24px',
-              borderTop: '2px solid #b8860b',
+              borderTop: '2px solid #2563eb',
               paddingTop: '18px',
               marginBottom: '20px'
             }}
@@ -454,27 +441,15 @@ export default function InvoiceViewModal() {
               <div
                 style={{
                   padding: '12px 14px',
-                  backgroundColor: '#fbf7ee',
-                  border: '1.5px solid #b8860b',
+                  backgroundColor: '#eff6ff',
+                  border: '1.5px solid #2563eb',
                   borderRadius: '8px',
                   marginBottom: '14px'
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-                  <span style={{ fontSize: '0.74rem', fontWeight: 800, textTransform: 'uppercase', color: '#b8860b', letterSpacing: '1px' }}>
+                <div style={{ marginBottom: '6px' }}>
+                  <span style={{ fontSize: '0.74rem', fontWeight: 800, textTransform: 'uppercase', color: '#2563eb', letterSpacing: '1px' }}>
                     Payment Information
-                  </span>
-                  <span
-                    style={{
-                      padding: '2px 8px',
-                      borderRadius: '999px',
-                      fontSize: '0.72rem',
-                      fontWeight: 800,
-                      backgroundColor: inv.status === 'Paid' ? '#d1fae5' : '#fef3c7',
-                      color: inv.status === 'Paid' ? '#065f46' : '#92400e'
-                    }}
-                  >
-                    STATUS: {inv.status?.toUpperCase()}
                   </span>
                 </div>
                 <div style={{ fontSize: '0.8rem', color: '#574f41' }}>
@@ -482,12 +457,7 @@ export default function InvoiceViewModal() {
                   {inv.transactionId && ` • Ref: ${inv.transactionId}`}
                 </div>
                 <div style={{ fontSize: '0.8rem', color: '#574f41', marginTop: '2px' }}>
-                  Amount Paid: <strong>₹{Number(inv.amountPaid || inv.grandTotal || 0).toLocaleString('en-IN')}</strong>
-                  {inv.balanceAmount > 0 && (
-                    <span style={{ color: '#dc2626', fontWeight: 800, marginLeft: '8px' }}>
-                      • Balance Due: ₹{Number(inv.balanceAmount).toLocaleString('en-IN')}
-                    </span>
-                  )}
+                  Amount: <strong>₹{Number(inv.grandTotal || inv.totalAmount || 0).toLocaleString('en-IN')}</strong>
                 </div>
               </div>
 
@@ -513,8 +483,8 @@ export default function InvoiceViewModal() {
             {/* Right Column: Detailed Financial Breakup */}
             <div
               style={{
-                backgroundColor: '#fdfbf7',
-                border: '1px solid rgba(184, 134, 11, 0.35)',
+                backgroundColor: '#ffffff',
+                border: '1px solid rgba(37, 99, 235, 0.25)',
                 borderRadius: '8px',
                 padding: '14px 18px',
                 fontSize: '0.84rem'
@@ -530,7 +500,7 @@ export default function InvoiceViewModal() {
                 <strong>₹{Number(inv.sparePartsSubtotal || 0).toLocaleString('en-IN')}</strong>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', borderTop: '1px dashed #d5d0c3', color: '#1a1610' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', borderTop: '1px dashed #cbd5e1', color: '#1a1610' }}>
                 <span>Gross Total:</span>
                 <strong>₹{Number(inv.grossTotal || 0).toLocaleString('en-IN')}</strong>
               </div>
@@ -540,7 +510,7 @@ export default function InvoiceViewModal() {
                 <strong>- ₹{Number(inv.discountAmount || 0).toLocaleString('en-IN')}</strong>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', borderTop: '1px dashed #d5d0c3', color: '#1a1610' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', borderTop: '1px dashed #cbd5e1', color: '#1a1610' }}>
                 <span>Taxable Amount:</span>
                 <strong>₹{Number(inv.taxableAmount || 0).toLocaleString('en-IN')}</strong>
               </div>
@@ -567,7 +537,7 @@ export default function InvoiceViewModal() {
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  borderTop: '2px solid #b8860b',
+                  borderTop: '2px solid #2563eb',
                   paddingTop: '10px',
                   marginTop: '6px'
                 }}
@@ -575,7 +545,7 @@ export default function InvoiceViewModal() {
                 <span style={{ fontSize: '1.05rem', fontWeight: 900, color: '#1a1610' }}>
                   Grand Total:
                 </span>
-                <span style={{ fontSize: '1.35rem', fontWeight: 900, color: '#b8860b', fontFamily: 'var(--font-display)' }}>
+                <span style={{ fontSize: '1.35rem', fontWeight: 900, color: '#2563eb', fontFamily: 'var(--font-display)' }}>
                   ₹{Number(inv.grandTotal || inv.totalAmount || 0).toLocaleString('en-IN')}
                 </span>
               </div>
@@ -592,7 +562,7 @@ export default function InvoiceViewModal() {
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'flex-end',
-              borderTop: '1px solid #e7e3d8',
+              borderTop: '1px solid #e2e8f0',
               paddingTop: '24px',
               marginTop: '28px'
             }}
