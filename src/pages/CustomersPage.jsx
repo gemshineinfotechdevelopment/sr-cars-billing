@@ -4,22 +4,13 @@ import {
   Users, 
   Plus, 
   Search, 
-  Car, 
   Phone, 
   Mail, 
-  MapPin, 
-  FileText, 
   Edit3, 
   Trash2, 
   Eye, 
   History, 
-  X, 
-  Check, 
-  Building2, 
-  Gauge, 
-  Fuel, 
-  ShieldCheck,
-  ChevronRight
+  X 
 } from 'lucide-react';
 
 export default function CustomersPage() {
@@ -48,19 +39,7 @@ export default function CustomersPage() {
     phone: '',
     email: '',
     address: '',
-    gstin: '',
-    vehicles: [
-      {
-        id: 'VEH-' + Date.now(),
-        vehicleNumber: '',
-        brand: '',
-        model: '',
-        fuelType: 'Petrol',
-        vehicleType: 'Sedan',
-        chassisNumber: '',
-        odometer: ''
-      }
-    ]
+    gstin: ''
   };
 
   const [formData, setFormData] = useState(initialForm);
@@ -73,19 +52,7 @@ export default function CustomersPage() {
       phone: '',
       email: '',
       address: '',
-      gstin: '',
-      vehicles: [
-        {
-          id: 'VEH-' + Date.now(),
-          vehicleNumber: '',
-          brand: '',
-          model: '',
-          fuelType: 'Petrol',
-          vehicleType: 'Sedan',
-          chassisNumber: '',
-          odometer: ''
-        }
-      ]
+      gstin: ''
     });
     setIsModalOpen(true);
   };
@@ -98,58 +65,9 @@ export default function CustomersPage() {
       phone: cust.phone,
       email: cust.email || '',
       address: cust.address || '',
-      gstin: cust.gstin || '',
-      vehicles: cust.vehicles && cust.vehicles.length > 0 
-        ? JSON.parse(JSON.stringify(cust.vehicles))
-        : [
-            {
-              id: 'VEH-' + Date.now(),
-              vehicleNumber: '',
-              brand: '',
-              model: '',
-              fuelType: 'Petrol',
-              vehicleType: 'Sedan',
-              chassisNumber: '',
-              odometer: ''
-            }
-          ]
+      gstin: cust.gstin || ''
     });
     setIsModalOpen(true);
-  };
-
-  const handleAddVehicleRow = () => {
-    setFormData((prev) => ({
-      ...prev,
-      vehicles: [
-        ...prev.vehicles,
-        {
-          id: 'VEH-' + Date.now() + Math.random().toString().slice(-3),
-          vehicleNumber: '',
-          brand: '',
-          model: '',
-          fuelType: 'Petrol',
-          vehicleType: 'Sedan',
-          chassisNumber: '',
-          odometer: ''
-        }
-      ]
-    }));
-  };
-
-  const handleRemoveVehicleRow = (index) => {
-    if (formData.vehicles.length === 1) return;
-    setFormData((prev) => ({
-      ...prev,
-      vehicles: prev.vehicles.filter((_, i) => i !== index)
-    }));
-  };
-
-  const handleVehicleFieldChange = (index, field, value) => {
-    setFormData((prev) => {
-      const nextVehicles = [...prev.vehicles];
-      nextVehicles[index] = { ...nextVehicles[index], [field]: value };
-      return { ...prev, vehicles: nextVehicles };
-    });
   };
 
   const handleSubmit = (e) => {
@@ -159,10 +77,15 @@ export default function CustomersPage() {
       return;
     }
 
+    const customerPayload = {
+      ...formData,
+      vehicles: editingCustomer?.vehicles || []
+    };
+
     if (editingCustomer) {
-      updateCustomer(editingCustomer.id, formData);
+      updateCustomer(editingCustomer.id, customerPayload);
     } else {
-      addCustomer(formData);
+      addCustomer(customerPayload);
     }
     setIsModalOpen(false);
   };
@@ -319,7 +242,6 @@ export default function CustomersPage() {
                 <th style={{ padding: '12px 16px' }}>Customer ID</th>
                 <th style={{ padding: '12px 16px' }}>Customer Name & Contact</th>
                 <th style={{ padding: '12px 16px' }}>Address & GSTIN</th>
-                <th style={{ padding: '12px 16px' }}>Associated Vehicles</th>
                 <th style={{ padding: '12px 16px' }}>Total Invoices</th>
                 <th style={{ padding: '12px 16px', textAlign: 'right' }}>Actions</th>
               </tr>
@@ -327,7 +249,7 @@ export default function CustomersPage() {
             <tbody>
               {filteredCustomers.length === 0 ? (
                 <tr>
-                  <td colSpan={6} style={{ padding: '36px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                  <td colSpan={5} style={{ padding: '36px', textAlign: 'center', color: 'var(--text-muted)' }}>
                     No customer records matched your query. Click "Add Customer" to register a client.
                   </td>
                 </tr>
@@ -379,39 +301,6 @@ export default function CustomersPage() {
                             Individual Client (No GSTIN)
                           </div>
                         )}
-                      </td>
-
-                      {/* Associated Vehicles */}
-                      <td style={{ padding: '14px 16px' }}>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                          {cust.vehicles && cust.vehicles.length > 0 ? (
-                            cust.vehicles.map((v, idx) => (
-                              <div
-                                key={idx}
-                                style={{
-                                  display: 'inline-flex',
-                                  alignItems: 'center',
-                                  gap: '5px',
-                                  padding: '4px 8px',
-                                  borderRadius: '6px',
-                                  backgroundColor: '#fbf7ee',
-                                  border: '1px solid var(--border-gold)',
-                                  fontSize: '0.74rem'
-                                }}
-                              >
-                                <Car size={12} color="var(--gold-600)" />
-                                <div>
-                                  <strong style={{ color: 'var(--text-primary)' }}>{v.vehicleNumber}</strong>
-                                  <span style={{ color: 'var(--text-muted)', marginLeft: '4px' }}>
-                                    ({v.brand} {v.model})
-                                  </span>
-                                </div>
-                              </div>
-                            ))
-                          ) : (
-                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>No vehicles linked</span>
-                          )}
-                        </div>
                       </td>
 
                       {/* Total Invoices & Spend */}
@@ -535,7 +424,7 @@ export default function CustomersPage() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <Users size={20} color="var(--gold-500)" />
                 <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-primary)' }}>
-                  {editingCustomer ? 'Edit Customer & Fleet Details' : 'Register New Customer'}
+                  {editingCustomer ? 'Edit Customer Details' : 'Register New Customer'}
                 </h3>
               </div>
               <button
@@ -547,11 +436,11 @@ export default function CustomersPage() {
             </div>
 
             {/* Modal Form */}
-            <form onSubmit={handleSubmit} style={{ padding: '24px', maxHeight: '78vh', overflowY: 'auto' }}>
-              {/* Section 1: Customer Details */}
-              <div style={{ marginBottom: '24px' }}>
+            <form onSubmit={handleSubmit} style={{ padding: '24px', maxHeight: '80vh', overflowY: 'auto' }}>
+              {/* Customer Details */}
+              <div style={{ marginBottom: '20px' }}>
                 <h4 style={{ fontSize: '0.86rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--gold-600)', letterSpacing: '1px', marginBottom: '14px' }}>
-                  1. Customer Profile Information
+                  Customer Profile Information
                 </h4>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
@@ -638,178 +527,6 @@ export default function CustomersPage() {
                 </div>
               </div>
 
-              {/* Section 2: Associated Vehicles (Multi-Vehicle Support) */}
-              <div style={{ borderTop: '1.5px solid var(--border-subtle)', paddingTop: '20px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
-                  <h4 style={{ fontSize: '0.86rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--gold-600)', letterSpacing: '1px' }}>
-                    2. Associated Vehicles ({formData.vehicles.length})
-                  </h4>
-
-                  <button
-                    type="button"
-                    onClick={handleAddVehicleRow}
-                    style={{
-                      padding: '5px 12px',
-                      borderRadius: '6px',
-                      border: '1px solid var(--border-gold)',
-                      backgroundColor: 'var(--gold-100)',
-                      color: 'var(--gold-600)',
-                      fontSize: '0.76rem',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '4px'
-                    }}
-                  >
-                    <Plus size={14} />
-                    <span>Add Another Vehicle</span>
-                  </button>
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {formData.vehicles.map((veh, index) => (
-                    <div
-                      key={veh.id || index}
-                      style={{
-                        padding: '16px',
-                        borderRadius: '8px',
-                        backgroundColor: '#fdfbf7',
-                        border: '1px solid var(--border-subtle)',
-                        position: 'relative'
-                      }}
-                    >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                        <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--text-primary)' }}>
-                          Vehicle #{index + 1}
-                        </span>
-
-                        {formData.vehicles.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveVehicleRow(index)}
-                            style={{
-                              background: 'none',
-                              border: 'none',
-                              color: '#dc2626',
-                              fontSize: '0.74rem',
-                              fontWeight: 700,
-                              cursor: 'pointer'
-                            }}
-                          >
-                            Remove Vehicle
-                          </button>
-                        )}
-                      </div>
-
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px' }}>
-                        <div>
-                          <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 600, marginBottom: '4px' }}>
-                            Vehicle Number (Reg) *
-                          </label>
-                          <input
-                            type="text"
-                            className="form-input"
-                            value={veh.vehicleNumber}
-                            onChange={(e) => handleVehicleFieldChange(index, 'vehicleNumber', e.target.value.toUpperCase())}
-                            placeholder="TS 09 EA 4589"
-                            required
-                          />
-                        </div>
-
-                        <div>
-                          <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 600, marginBottom: '4px' }}>
-                            Brand / Make *
-                          </label>
-                          <input
-                            type="text"
-                            className="form-input"
-                            value={veh.brand}
-                            onChange={(e) => handleVehicleFieldChange(index, 'brand', e.target.value)}
-                            placeholder="e.g. Mercedes-Benz, BMW"
-                            required
-                          />
-                        </div>
-
-                        <div>
-                          <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 600, marginBottom: '4px' }}>
-                            Model & Variant *
-                          </label>
-                          <input
-                            type="text"
-                            className="form-input"
-                            value={veh.model}
-                            onChange={(e) => handleVehicleFieldChange(index, 'model', e.target.value)}
-                            placeholder="e.g. E-Class E 220d AMG"
-                            required
-                          />
-                        </div>
-
-                        <div>
-                          <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 600, marginBottom: '4px' }}>
-                            Fuel Type
-                          </label>
-                          <select
-                            className="form-input"
-                            value={veh.fuelType}
-                            onChange={(e) => handleVehicleFieldChange(index, 'fuelType', e.target.value)}
-                          >
-                            <option value="Petrol">Petrol</option>
-                            <option value="Diesel">Diesel</option>
-                            <option value="Electric">Electric</option>
-                            <option value="Hybrid">Hybrid</option>
-                            <option value="CNG">CNG</option>
-                          </select>
-                        </div>
-
-                        <div>
-                          <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 600, marginBottom: '4px' }}>
-                            Vehicle Type
-                          </label>
-                          <select
-                            className="form-input"
-                            value={veh.vehicleType}
-                            onChange={(e) => handleVehicleFieldChange(index, 'vehicleType', e.target.value)}
-                          >
-                            <option value="Sedan">Sedan</option>
-                            <option value="SUV">SUV</option>
-                            <option value="Hatchback">Hatchback</option>
-                            <option value="Coupe">Coupe</option>
-                            <option value="Luxury">Luxury Exotics</option>
-                          </select>
-                        </div>
-
-                        <div>
-                          <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 600, marginBottom: '4px' }}>
-                            Chassis Number (VIN)
-                          </label>
-                          <input
-                            type="text"
-                            className="form-input"
-                            value={veh.chassisNumber}
-                            onChange={(e) => handleVehicleFieldChange(index, 'chassisNumber', e.target.value.toUpperCase())}
-                            placeholder="WDB2130041A987654"
-                          />
-                        </div>
-
-                        <div>
-                          <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 600, marginBottom: '4px' }}>
-                            Odometer Reading
-                          </label>
-                          <input
-                            type="text"
-                            className="form-input"
-                            value={veh.odometer}
-                            onChange={(e) => handleVehicleFieldChange(index, 'odometer', e.target.value)}
-                            placeholder="e.g. 34,500 km"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
               {/* Modal Buttons */}
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '24px' }}>
                 <button
@@ -892,43 +609,6 @@ export default function CustomersPage() {
                 <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block' }}>Billing Address</span>
                 <span style={{ fontSize: '0.86rem', color: 'var(--text-secondary)' }}>{viewingCustomer.address || '—'}</span>
               </div>
-            </div>
-
-            <h4 style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--gold-600)', textTransform: 'uppercase', marginBottom: '12px' }}>
-              Registered Vehicles ({viewingCustomer.vehicles?.length || 0})
-            </h4>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {viewingCustomer.vehicles?.map((veh, idx) => (
-                <div
-                  key={idx}
-                  style={{
-                    padding: '12px 14px',
-                    borderRadius: '8px',
-                    backgroundColor: '#ffffff',
-                    border: '1.5px solid var(--border-gold)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between'
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <Car size={20} color="var(--gold-600)" />
-                    <div>
-                      <div style={{ fontWeight: 800, fontSize: '0.9rem', color: 'var(--text-primary)' }}>
-                        {veh.vehicleNumber} • {veh.brand} {veh.model}
-                      </div>
-                      <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
-                        Type: {veh.vehicleType} | Fuel: {veh.fuelType} | VIN: {veh.chassisNumber || 'N/A'}
-                      </div>
-                    </div>
-                  </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Odometer</div>
-                    <strong style={{ fontSize: '0.84rem', color: 'var(--gold-600)' }}>{veh.odometer || '—'}</strong>
-                  </div>
-                </div>
-              ))}
             </div>
 
             <div style={{ marginTop: '20px', textAlign: 'right' }}>

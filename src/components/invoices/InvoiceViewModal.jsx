@@ -71,8 +71,11 @@ export default function InvoiceViewModal() {
         className="modal-content printable-invoice-container" 
         onClick={(e) => e.stopPropagation()}
         style={{ 
-          maxWidth: '880px', 
+          maxWidth: '900px', 
           width: '100%', 
+          maxHeight: '92vh',
+          display: 'flex',
+          flexDirection: 'column',
           backgroundColor: '#ffffff', 
           color: '#1a1610',
           boxShadow: '0 20px 60px rgba(184, 134, 11, 0.22)',
@@ -85,13 +88,15 @@ export default function InvoiceViewModal() {
         <div
           className="no-print"
           style={{
+            flexShrink: 0,
             padding: '16px 24px',
             backgroundColor: '#ffffff',
             borderBottom: '1.5px solid var(--border-gold)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            color: '#1a1610'
+            color: '#1a1610',
+            zIndex: 10
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -177,7 +182,10 @@ export default function InvoiceViewModal() {
         <div
           id="printable-a4-invoice"
           style={{
-            padding: '36px 40px 48px',
+            flex: 1,
+            overflowY: 'auto',
+            minHeight: 0,
+            padding: '36px 40px 64px',
             backgroundColor: '#ffffff',
             color: '#1a1610',
             fontFamily: 'var(--font-sans)',

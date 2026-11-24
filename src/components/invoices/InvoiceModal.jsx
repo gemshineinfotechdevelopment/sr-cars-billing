@@ -439,6 +439,9 @@ export default function InvoiceModal() {
         style={{
           maxWidth: '1060px',
           width: '100%',
+          maxHeight: '92vh',
+          display: 'flex',
+          flexDirection: 'column',
           backgroundColor: '#ffffff',
           borderRadius: 'var(--radius-lg)',
           border: '2px solid var(--border-gold)',
@@ -449,7 +452,8 @@ export default function InvoiceModal() {
         {/* Modal Header */}
         <div
           style={{
-            padding: '18px 26px',
+            flexShrink: 0,
+            padding: '16px 26px',
             borderBottom: '1.5px solid var(--border-gold)',
             display: 'flex',
             alignItems: 'center',
@@ -478,8 +482,26 @@ export default function InvoiceModal() {
         </div>
 
         {/* Modal Form */}
-        <form onSubmit={handleConfirmInvoice} style={{ padding: '24px 28px', maxHeight: '82vh', overflowY: 'auto' }}>
-          {/* SECTION A: INVOICE INFORMATION */}
+        <form
+          onSubmit={handleConfirmInvoice}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            flex: 1,
+            minHeight: 0,
+            overflow: 'hidden'
+          }}
+        >
+          {/* Scrollable Form Content */}
+          <div
+            style={{
+              flex: 1,
+              overflowY: 'auto',
+              padding: '24px 28px 32px',
+              minHeight: 0
+            }}
+          >
+            {/* SECTION A: INVOICE INFORMATION */}
           <div style={{ marginBottom: '22px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--gold-600)', letterSpacing: '1px' }}>
@@ -1204,25 +1226,29 @@ export default function InvoiceModal() {
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Modal Actions */}
+          {/* Modal Actions (Fixed / Sticky Footer) */}
           <div
             style={{
+              flexShrink: 0,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
               flexWrap: 'wrap',
               gap: '12px',
-              marginTop: '26px',
-              borderTop: '1px solid var(--border-subtle)',
-              paddingTop: '18px'
+              padding: '16px 28px',
+              backgroundColor: '#ffffff',
+              borderTop: '1.5px solid var(--border-gold)',
+              boxShadow: '0 -4px 16px rgba(0, 0, 0, 0.05)',
+              zIndex: 10
             }}
           >
             <button
               type="button"
               onClick={() => setIsInvoiceModalOpen(false)}
               className="btn-outline"
-              style={{ padding: '9px 20px', fontSize: '0.86rem' }}
+              style={{ padding: '9px 22px', fontSize: '0.86rem' }}
             >
               Cancel
             </button>
@@ -1235,7 +1261,7 @@ export default function InvoiceModal() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px',
-                  padding: '10px 24px',
+                  padding: '10px 26px',
                   fontSize: '0.88rem',
                   fontWeight: 700,
                   borderRadius: 'var(--radius-md)',
